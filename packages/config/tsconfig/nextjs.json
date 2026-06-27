@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": false,
+    "jsx": "preserve",
+    "plugins": [{ "name": "next" }],
+    "paths": {}
+  },
+  "exclude": ["node_modules"]
+}

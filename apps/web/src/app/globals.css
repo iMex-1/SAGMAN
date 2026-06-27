@@ -1,0 +1,226 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        /* ── SAGMAN Brand ─────────────────────────────── */
+        --brand-blue: 221 83% 40%; /* #1e40af */
+        --brand-red: 0 72% 51%; /* #dc2626 */
+        --brand-white: 0 0% 100%;
+
+        /* ── Backgrounds ──────────────────────────────── */
+        --background: 210 20% 98%; /* Very light blue-gray */
+        --foreground: 215 28% 10%; /* Almost black */
+
+        /* ── Card ─────────────────────────────────────── */
+        --card: 0 0% 100%;
+        --card-foreground: 215 28% 10%;
+
+        /* ── Popover ──────────────────────────────────── */
+        --popover: 0 0% 100%;
+        --popover-foreground: 215 28% 10%;
+
+        /* ── Primary = Brand Blue ─────────────────────── */
+        --primary: 221 83% 40%;
+        --primary-foreground: 0 0% 100%;
+
+        /* ── Secondary ────────────────────────────────── */
+        --secondary: 214 32% 91%;
+        --secondary-foreground: 221 83% 25%;
+
+        /* ── Muted ────────────────────────────────────── */
+        --muted: 213 20% 94%;
+        --muted-foreground: 215 16% 47%;
+
+        /* ── Accent = Light Blue ──────────────────────── */
+        --accent: 213 60% 93%;
+        --accent-foreground: 221 83% 35%;
+
+        /* ── Destructive = Brand Red ──────────────────── */
+        --destructive: 0 72% 51%;
+        --destructive-foreground: 0 0% 100%;
+
+        /* ── Borders & Inputs ─────────────────────────── */
+        --border: 213 20% 88%;
+        --input: 213 20% 88%;
+        --ring: 221 83% 40%;
+
+        /* ── Radius ───────────────────────────────────── */
+        --radius: 0.625rem;
+
+        /* ── Sidebar (dark navy) ──────────────────────── */
+        --sidebar: 222 47% 9%; /* #0c1525 deep navy */
+        --sidebar-foreground: 210 20% 92%;
+        --sidebar-border: 220 30% 16%;
+        --sidebar-accent: 220 30% 18%;
+        --sidebar-accent-foreground: 0 0% 100%;
+        --sidebar-muted: 220 20% 55%;
+        --sidebar-active: 221 83% 40%; /* Brand blue for active items */
+
+        /* ── Success ──────────────────────────────────── */
+        --success: 142 76% 36%;
+        --success-foreground: 0 0% 100%;
+
+        /* ── Warning ──────────────────────────────────── */
+        --warning: 38 92% 50%;
+        --warning-foreground: 0 0% 100%;
+
+        /* ── Info ─────────────────────────────────────── */
+        --info: 199 89% 48%;
+        --info-foreground: 0 0% 100%;
+    }
+
+    /* Dark mode */
+    .dark {
+        --background: 222 47% 8%;
+        --foreground: 210 20% 95%;
+        --card: 222 47% 11%;
+        --card-foreground: 210 20% 95%;
+        --popover: 222 47% 11%;
+        --popover-foreground: 210 20% 95%;
+        --primary: 217 91% 60%;
+        --primary-foreground: 0 0% 100%;
+        --secondary: 220 30% 20%;
+        --secondary-foreground: 210 20% 95%;
+        --muted: 220 30% 18%;
+        --muted-foreground: 215 20% 60%;
+        --accent: 220 30% 20%;
+        --accent-foreground: 210 20% 95%;
+        --destructive: 0 63% 55%;
+        --destructive-foreground: 0 0% 100%;
+        --border: 220 25% 20%;
+        --input: 220 25% 20%;
+        --ring: 217 91% 60%;
+        --sidebar: 222 47% 6%;
+        --sidebar-foreground: 210 20% 88%;
+        --sidebar-border: 220 30% 14%;
+        --sidebar-accent: 220 30% 16%;
+        --sidebar-accent-foreground: 0 0% 100%;
+        --sidebar-muted: 220 20% 50%;
+        --sidebar-active: 217 91% 60%;
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+        box-sizing: border-box;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+        font-feature-settings:
+            "rlig" 1,
+            "calt" 1;
+    }
+
+    /* Arabic RTL font */
+    [dir="rtl"] {
+        font-family: var(--font-cairo), "Cairo", system-ui, sans-serif;
+    }
+
+    /* Smooth scrollbar */
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+        @apply bg-muted;
+    }
+    ::-webkit-scrollbar-thumb {
+        @apply bg-muted-foreground/30 rounded-full;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        @apply bg-muted-foreground/50;
+    }
+}
+
+@layer utilities {
+    /* Gradient backgrounds */
+    .bg-brand-gradient {
+        background: linear-gradient(
+            135deg,
+            hsl(var(--sidebar)) 0%,
+            hsl(221 83% 20%) 100%
+        );
+    }
+
+    .bg-portal-hero {
+        background: linear-gradient(
+            160deg,
+            hsl(222 47% 8%) 0%,
+            hsl(221 83% 20%) 50%,
+            hsl(222 40% 14%) 100%
+        );
+    }
+
+    /* Glass effect for portal cards */
+    .glass {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .glass-light {
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    /* Status colors matching PRD */
+    .status-received {
+        @apply bg-slate-100  text-slate-700  border-slate-200;
+    }
+    .status-diagnosing {
+        @apply bg-blue-50    text-blue-700   border-blue-200;
+    }
+    .status-awaiting {
+        @apply bg-amber-50   text-amber-700  border-amber-200;
+    }
+    .status-in-progress {
+        @apply bg-purple-50  text-purple-700 border-purple-200;
+    }
+    .status-waiting-parts {
+        @apply bg-orange-50 text-orange-700 border-orange-200;
+    }
+    .status-complete {
+        @apply bg-emerald-50 text-emerald-700 border-emerald-200;
+    }
+    .status-delivered {
+        @apply bg-slate-50   text-slate-400  border-slate-100;
+    }
+    .status-cancelled {
+        @apply bg-red-50     text-red-700    border-red-200;
+    }
+
+    /* Overdue animation */
+    @keyframes pulse-overdue {
+        0%,
+        100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.7;
+        }
+    }
+    .overdue-pulse {
+        animation: pulse-overdue 2s ease-in-out infinite;
+    }
+
+    /* Gear spin animation (for logo / loading states) */
+    @keyframes gear-spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+    .gear-spin {
+        animation: gear-spin 3s linear infinite;
+    }
+    .gear-spin-slow {
+        animation: gear-spin 8s linear infinite;
+    }
+}

@@ -1,0 +1,441 @@
+{
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "create": "Créer",
+    "add": "Ajouter",
+    "remove": "Retirer",
+    "close": "Fermer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "loading": "Chargement...",
+    "noResults": "Aucun résultat",
+    "error": "Une erreur est survenue",
+    "success": "Opération réussie",
+    "view": "Voir",
+    "actions": "Actions",
+    "status": "Statut",
+    "date": "Date",
+    "time": "Heure",
+    "notes": "Notes",
+    "all": "Tous",
+    "yes": "Oui",
+    "no": "Non",
+    "required": "Obligatoire",
+    "optional": "Optionnel",
+    "unknown": "Inconnu",
+    "total": "Total",
+    "currency": "DH",
+    "walkIn": "Passage direct",
+    "phone": "Téléphone",
+    "name": "Nom",
+    "email": "Email",
+    "submit": "Soumettre",
+    "sending": "Envoi en cours...",
+    "saving": "Enregistrement...",
+    "deleting": "Suppression...",
+    "networkError": "Impossible de joindre le serveur. Vérifiez que l'API est en cours d'exécution.",
+    "confirmDeleteTitle": "Confirmer la suppression",
+    "confirmDeleteDesc": "Cette action est irréversible.",
+    "page": "Page",
+    "of": "sur",
+    "items": "éléments",
+    "language": "Langue"
+  },
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "repairs": "Réparations",
+    "appointments": "Rendez-vous",
+    "cars": "Véhicules",
+    "stock": "Stock",
+    "calendar": "Calendrier",
+    "employees": "Employés",
+    "reports": "Rapports",
+    "notifications": "Notifications",
+    "settings": "Paramètres",
+    "logout": "Déconnexion"
+  },
+  "auth": {
+    "signIn": "Se connecter",
+    "signingIn": "Connexion...",
+    "email": "Email",
+    "emailPlaceholder": "manager@sagman.garage",
+    "password": "Mot de passe",
+    "passwordPlaceholder": "••••••••",
+    "forgotPassword": "Mot de passe oublié ? Contactez votre responsable.",
+    "invalidCredentials": "Email ou mot de passe incorrect",
+    "accountDeactivated": "Votre compte a été désactivé",
+    "welcome": "Bienvenue",
+    "systemTitle": "Système de gestion",
+    "subtitle": "Connectez-vous au système de gestion du garage"
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "today": "Aujourd'hui",
+    "thisWeek": "Cette semaine",
+    "thisMonth": "Ce mois",
+    "totalRevenue": "Chiffre d'affaires",
+    "carsReceived": "Véhicules reçus",
+    "carsDelivered": "Véhicules livrés",
+    "avgRepairTime": "Durée moyenne",
+    "onTimeRate": "Taux de ponctualité",
+    "delayedRepairs": "Réparations en retard",
+    "activeRepairs": "Réparations actives",
+    "overdueRepairs": "Réparations en souffrance",
+    "lowStockParts": "Pièces en rupture",
+    "pendingAppointments": "Rendez-vous en attente",
+    "emergencyRepairs": "Réparations urgentes",
+    "revenueChart": "Chiffre d'affaires du mois",
+    "mechanicPerformance": "Performance des mécaniciens",
+    "carsCompleted": "Véhicules traités",
+    "avgTimePerRepair": "Durée moy. par réparation",
+    "delays": "Retards"
+  },
+  "repair": {
+    "title": "Réparations",
+    "newRepair": "Nouvelle réparation",
+    "repairDetail": "Détail de la réparation",
+    "status": {
+      "received": "Reçu",
+      "diagnosing": "Diagnostic",
+      "awaiting_approval": "En attente d'approbation",
+      "in_progress": "En cours",
+      "waiting_for_parts": "Attente de pièces",
+      "complete": "Terminé",
+      "delivered": "Livré",
+      "cancelled": "Annulé"
+    },
+    "priority": {
+      "low": "Faible",
+      "normal": "Normal",
+      "high": "Élevé",
+      "emergency": "Urgence"
+    },
+    "fields": {
+      "car": "Véhicule",
+      "mechanic": "Mécanicien",
+      "priority": "Priorité",
+      "description": "Description du problème",
+      "internalNotes": "Notes internes",
+      "targetDate": "Date cible",
+      "estimatedHours": "Durée estimée (heures)",
+      "actualCompletion": "Date de fin réelle",
+      "diagnosis": "Rapport de diagnostic",
+      "partsTotal": "Total pièces",
+      "laborTotal": "Total main d'œuvre",
+      "discount": "Remise",
+      "finalTotal": "Total final"
+    },
+    "actions": {
+      "startDiagnosis": "Démarrer le diagnostic",
+      "submitForApproval": "Soumettre pour approbation",
+      "startRepair": "Démarrer la réparation",
+      "waitingForParts": "En attente de pièces",
+      "markComplete": "Marquer comme terminé",
+      "markDelivered": "Marquer comme livré",
+      "reopen": "Rouvrir",
+      "cancel": "Annuler la réparation",
+      "fileDelayReport": "Signaler un retard",
+      "shareDiagnosis": "Partager avec le client",
+      "approve": "Approuver",
+      "reject": "Refuser",
+      "bypass": "Contourner l'approbation"
+    },
+    "overdue": "En retard",
+    "overdueWarning": "Cette réparation est en retard ! Signalez un retard pour continuer.",
+    "noPaymentWarning": "Enregistrez le paiement avant de marquer comme livré",
+    "reopenReason": "Raison de la réouverture",
+    "cancellationReason": "Raison de l'annulation",
+    "delayReason": "Raison du retard",
+    "diagnosisSections": {
+      "issues": "Problèmes identifiés",
+      "severity": {
+        "Minor": "Mineur",
+        "Moderate": "Modéré",
+        "Critical": "Critique"
+      },
+      "recommendations": "Réparations recommandées",
+      "additionalNotes": "Notes supplémentaires",
+      "estimatedDuration": "Durée estimée"
+    },
+    "clientApproval": {
+      "pending": "En attente",
+      "approved": "Approuvé",
+      "rejected": "Refusé",
+      "bypassed": "Contourné"
+    },
+    "workLog": {
+      "title": "Journal de travail",
+      "addEntry": "Ajouter une entrée",
+      "description": "Description des travaux",
+      "hours": "Heures passées",
+      "by": "Par"
+    },
+    "parts": {
+      "title": "Pièces utilisées",
+      "addPart": "Ajouter une pièce",
+      "searchParts": "Rechercher une pièce",
+      "quantity": "Quantité",
+      "unitCost": "Coût unitaire",
+      "subtotal": "Sous-total",
+      "stockOverride": "Forcer (stock insuffisant)",
+      "noPartsYet": "Aucune pièce assignée"
+    },
+    "labor": {
+      "title": "Main d'œuvre",
+      "addItem": "Ajouter une prestation",
+      "description": "Description",
+      "cost": "Coût",
+      "noLaborYet": "Aucune prestation ajoutée"
+    },
+    "statusHistory": "Historique des statuts",
+    "mechanics": "Mécaniciens assignés",
+    "primary": "Principal",
+    "reassign": "Réassigner",
+    "payment": {
+      "title": "Paiement",
+      "register": "Enregistrer le paiement",
+      "amountBilled": "Montant facturé",
+      "amountReceived": "Montant reçu",
+      "changeDue": "Monnaie à rendre",
+      "method": "Méthode",
+      "cash": "Espèces",
+      "paid": "PAYÉ",
+      "invoiceNumber": "N° Facture",
+      "viewInvoice": "Voir la facture"
+    },
+    "photos": {
+      "title": "Photos",
+      "before": "Avant",
+      "during": "En cours",
+      "after": "Après",
+      "upload": "Télécharger une photo"
+    },
+    "filters": {
+      "allStatuses": "Tous les statuts",
+      "active": "Actif",
+      "overdue": "En retard",
+      "delivered": "Livré",
+      "cancelled": "Annulé"
+    }
+  },
+  "appointment": {
+    "title": "Rendez-vous",
+    "newAppointment": "Nouveau rendez-vous",
+    "status": {
+      "pending": "En attente",
+      "confirmed": "Confirmé",
+      "rescheduled": "Reporté",
+      "cancelled": "Annulé",
+      "converted": "Converti en réparation"
+    },
+    "fields": {
+      "clientName": "Nom du client",
+      "clientPhone": "Téléphone du client",
+      "vehicleMatricule": "Matricule du véhicule",
+      "purpose": "Motif / Description du problème",
+      "requestedDate": "Date souhaitée",
+      "requestedTime": "Heure souhaitée",
+      "notes": "Notes"
+    },
+    "actions": {
+      "confirm": "Confirmer",
+      "reschedule": "Reporter",
+      "cancel": "Annuler",
+      "convert": "Convertir en réparation"
+    },
+    "capacity": {
+      "warning": "La limite de capacité est atteinte pour cette date",
+      "current": "Rendez-vous déjà planifiés",
+      "limit": "Capacité maximale",
+      "proceedAnyway": "Confirmer quand même"
+    },
+    "managerNote": "Les rendez-vous créés par le responsable sont confirmés immédiatement.",
+    "convertDialog": {
+      "title": "Convertir en réparation",
+      "primaryMechanic": "Mécanicien principal",
+      "priority": "Priorité",
+      "description": "Description",
+      "targetDate": "Date cible"
+    }
+  },
+  "car": {
+    "title": "Véhicules",
+    "registerCar": "Enregistrer un véhicule",
+    "fields": {
+      "matricule": "Matricule / Immatriculation",
+      "make": "Marque",
+      "model": "Modèle",
+      "year": "Année",
+      "color": "Couleur",
+      "vin": "N° de châssis (VIN)",
+      "mileage": "Kilométrage (km)",
+      "notes": "Notes",
+      "client": "Client lié",
+      "clientHint": "Laisser vide pour un passage direct"
+    },
+    "repairHistory": "Historique des réparations",
+    "newRepair": "Nouvelle réparation",
+    "noRepairs": "Aucune réparation enregistrée",
+    "activeRepairBlock": "Ce véhicule a une réparation active",
+    "walkin": "Passage direct (sans compte client)"
+  },
+  "employee": {
+    "title": "Employés",
+    "newEmployee": "Nouvel employé",
+    "roles": {
+      "manager": "Responsable",
+      "mechanic": "Mécanicien",
+      "overseer": "Superviseur"
+    },
+    "fields": {
+      "fullName": "Nom complet",
+      "email": "Email",
+      "password": "Mot de passe",
+      "phone": "Téléphone",
+      "specialty": "Spécialité",
+      "role": "Rôle",
+      "status": "Statut",
+      "joinDate": "Date d'embauche"
+    },
+    "status": {
+      "active": "Actif",
+      "inactive": "Inactif"
+    },
+    "actions": {
+      "deactivate": "Désactiver",
+      "activate": "Activer",
+      "resetPassword": "Réinitialiser le mot de passe",
+      "newPassword": "Nouveau mot de passe"
+    },
+    "lastManager": "Impossible de désactiver le dernier responsable actif",
+    "deactivateConfirm": "Êtes-vous sûr de vouloir désactiver cet employé ?",
+    "historyPreserved": "L'historique sera conservé"
+  },
+  "stock": {
+    "title": "Stock & Pièces",
+    "newPart": "Nouvelle pièce",
+    "fields": {
+      "name": "Nom de la pièce",
+      "reference": "Référence",
+      "category": "Catégorie",
+      "compatibleModels": "Modèles compatibles",
+      "unitCost": "Coût unitaire",
+      "quantity": "Quantité en stock",
+      "minThreshold": "Seuil minimum",
+      "supplier": "Fournisseur"
+    },
+    "categories": {
+      "Engine": "Moteur",
+      "Brakes": "Freins",
+      "Electrical": "Électrique",
+      "Bodywork": "Carrosserie",
+      "Suspension": "Suspension",
+      "Other": "Autre"
+    },
+    "lowStock": "Stock faible",
+    "outOfStock": "Rupture de stock",
+    "addStock": "Ajouter du stock",
+    "adjustStock": "Ajuster le stock",
+    "transactionHistory": "Historique des transactions",
+    "transactions": {
+      "received": "Réception",
+      "used": "Utilisé",
+      "adjustment": "Ajustement"
+    }
+  },
+  "settings": {
+    "title": "Paramètres",
+    "sections": {
+      "garage": "Informations du garage",
+      "operational": "Paramètres opérationnels",
+      "portal": "Portail client",
+      "session": "Session"
+    },
+    "fields": {
+      "garageName": "Nom du garage",
+      "garageAddress": "Adresse",
+      "garagePhone": "Téléphone",
+      "garageLogo": "Logo",
+      "maxConcurrentCars": "Capacité maximale (véhicules/jour)",
+      "workingHours": "Horaires d'ouverture",
+      "overseerWhatsapp": "Numéro WhatsApp du superviseur",
+      "requireDiagnosisApproval": "Approbation du diagnostic par le responsable",
+      "requireClientApproval": "Approbation client avant démarrage",
+      "currencyLabel": "Devise",
+      "sessionTimeout": "Expiration de session (heures)"
+    },
+    "saved": "Paramètres enregistrés avec succès"
+  },
+  "portal": {
+    "landing": {
+      "tagline": "Votre véhicule entre de bonnes mains",
+      "subtitle": "Suivez l'état de réparation de votre véhicule en temps réel et prenez rendez-vous en ligne.",
+      "bookAppointment": "Prendre rendez-vous",
+      "trackRepair": "Suivre ma réparation",
+      "ourServices": "Nos services",
+      "contactUs": "Nous contacter",
+      "openingHours": "Horaires d'ouverture",
+      "services": {
+        "engine": "Moteur & Transmission",
+        "brakes": "Freins & Suspension",
+        "electrical": "Électrique & Diagnostic",
+        "bodywork": "Carrosserie & Peinture",
+        "maintenance": "Entretien & Vidange",
+        "tires": "Pneus & Géométrie"
+      }
+    },
+    "login": {
+      "title": "Espace client",
+      "subtitle": "Entrez votre numéro de téléphone pour accéder à votre espace",
+      "phoneLabel": "Numéro de téléphone",
+      "phonePlaceholder": "+212 6XX XXX XXX",
+      "sendOtp": "Envoyer le code",
+      "sendingOtp": "Envoi...",
+      "otpLabel": "Code de vérification",
+      "otpHint": "Entrez le code à 6 chiffres envoyé par SMS",
+      "verify": "Vérifier",
+      "verifying": "Vérification...",
+      "changePhone": "Changer de numéro",
+      "otpSent": "Code envoyé ! Vérifiez vos SMS.",
+      "invalidOtp": "Code invalide ou expiré",
+      "otpExpiry": "Le code expire dans 10 minutes"
+    },
+    "myCars": {
+      "title": "Mes véhicules",
+      "noActiveCars": "Aucune réparation active en ce moment",
+      "viewHistory": "Voir l'historique"
+    },
+    "repairStatus": {
+      "title": "Suivi de réparation",
+      "currentStatus": "Statut actuel",
+      "repairProgress": "Progression de la réparation",
+      "estimatedCompletion": "Date de fin estimée",
+      "diagnosisResult": "Résultat du diagnostic",
+      "issues": "Problèmes identifiés",
+      "recommendations": "Travaux recommandés",
+      "estimatedCost": "Estimation du coût",
+      "contactGarage": "Contacter le garage",
+      "notFound": "Réparation introuvable"
+    },
+    "booking": {
+      "title": "Prendre rendez-vous",
+      "subtitle": "Remplissez le formulaire pour demander un rendez-vous",
+      "selectCar": "Sélectionner un véhicule",
+      "orNewCar": "ou entrer un nouveau matricule",
+      "newMatricule": "Nouveau matricule",
+      "issue": "Description du problème",
+      "preferredDate": "Date souhaitée",
+      "notes": "Notes supplémentaires",
+      "submit": "Demander un rendez-vous",
+      "success": "Votre demande a été envoyée ! Nous vous confirmerons rapidement.",
+      "availableDays": "Sélectionnez parmi les jours disponibles"
+    }
+  }
+}

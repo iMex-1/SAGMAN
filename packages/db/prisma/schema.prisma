@@ -1,0 +1,409 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── ENUMS ────────────────────────────────────────────────────────────────────
+
+enum Role {
+  overseer
+  manager
+  mechanic
+}
+
+enum UserStatus {
+  active
+  inactive
+}
+
+enum AppointmentStatus {
+  pending
+  confirmed
+  rescheduled
+  cancelled
+  converted
+}
+
+enum RepairStatus {
+  received
+  diagnosing
+  awaiting_approval
+  in_progress
+  waiting_for_parts
+  complete
+  delivered
+  cancelled
+}
+
+enum Priority {
+  low
+  normal
+  high
+  emergency
+}
+
+enum ClientApprovalStatus {
+  pending
+  approved
+  rejected
+  bypassed
+}
+
+enum StockTransactionType {
+  received
+  used
+  adjustment
+}
+
+enum PhotoType {
+  before
+  during
+  after
+}
+
+enum PartCategory {
+  Engine
+  Brakes
+  Electrical
+  Bodywork
+  Suspension
+  Other
+}
+
+// ─── MODELS ───────────────────────────────────────────────────────────────────
+
+model User {
+  id           String     @id @default(cuid())
+  name         String
+  email        String     @unique
+  passwordHash String     @map("password_hash")
+  role         Role
+  phone        String?
+  specialty    String?
+  status       UserStatus @default(active)
+  createdAt    DateTime   @default(now()) @map("created_at")
+
+  createdRepairs    RepairJob[]        @relation("CreatedRepairs")
+  primaryRepairs    RepairJob[]        @relation("PrimaryMechanic")
+  repairMechanics   RepairMechanic[]
+  workLogs          RepairWorkLog[]
+  statusLogs        RepairStatusLog[]
+  delayReports      DelayReport[]
+  stockTransactions StockTransaction[]
+  repairParts       RepairPart[]
+  laborItems        LaborItem[]
+  payments          Payment[]
+  photos            RepairPhoto[]
+  notifications     NotificationLog[]
+  appointments      Appointment[]
+
+  @@map("users")
+}
+
+model Client {
+  id           String    @id @default(cuid())
+  name         String
+  phone        String    @unique
+  otpCode      String?   @map("otp_code")
+  otpExpiresAt DateTime? @map("otp_expires_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  cars         Car[]
+  appointments Appointment[]
+
+  @@map("clients")
+}
+
+model Car {
+  id        String    @id @default(cuid())
+  matricule String    @unique
+  make      String
+  model     String
+  year      Int?
+  color     String?
+  vin       String?
+  mileage   Int?
+  notes     String?
+  clientId  String?   @map("client_id")
+  deletedAt DateTime? @map("deleted_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  client       Client?       @relation(fields: [clientId], references: [id])
+  repairs      RepairJob[]
+  appointments Appointment[]
+
+  @@map("cars")
+}
+
+model Appointment {
+  id                 String            @id @default(cuid())
+  clientId           String?           @map("client_id")
+  clientName         String            @map("client_name")
+  clientPhone        String            @map("client_phone")
+  carId              String?           @map("car_id")
+  carMatricule       String?           @map("car_matricule")
+  purpose            String
+  requestedAt        DateTime          @map("requested_at")
+  confirmedAt        DateTime?         @map("confirmed_at")
+  rescheduledTo      DateTime?         @map("rescheduled_to")
+  status             AppointmentStatus @default(pending)
+  cancellationReason String?           @map("cancellation_reason")
+  createdById        String            @map("created_by")
+  notes              String?
+  deletedAt          DateTime?         @map("deleted_at")
+  createdAt          DateTime          @default(now()) @map("created_at")
+
+  client    Client?    @relation(fields: [clientId], references: [id])
+  car       Car?       @relation(fields: [carId], references: [id])
+  createdBy User       @relation(fields: [createdById], references: [id])
+  repairJob RepairJob?
+
+  @@map("appointments")
+}
+
+model RepairJob {
+  id                         String               @id @default(cuid())
+  carId                      String               @map("car_id")
+  appointmentId              String?              @unique @map("appointment_id")
+  createdById                String               @map("created_by")
+  primaryMechanicId          String               @map("primary_mechanic_id")
+  status                     RepairStatus         @default(received)
+  priority                   Priority             @default(normal)
+  description                String
+  internalNotes              String?              @map("internal_notes")
+  diagnosisReport            Json?                @map("diagnosis_report")
+  diagnosisShared            Boolean              @default(false) @map("diagnosis_shared")
+  clientApprovalStatus       ClientApprovalStatus @default(pending) @map("client_approval_status")
+  clientApprovalBypassReason String?              @map("client_approval_bypass_reason")
+  estimatedDurationHours     Float?               @map("estimated_duration_hours")
+  estimatedCost              Decimal?             @db.Decimal(10, 2) @map("estimated_cost")
+  partsTotal                 Decimal              @default(0) @db.Decimal(10, 2) @map("parts_total")
+  laborTotal                 Decimal              @default(0) @db.Decimal(10, 2) @map("labor_total")
+  discountAmount             Decimal              @default(0) @db.Decimal(10, 2) @map("discount_amount")
+  finalTotal                 Decimal              @default(0) @db.Decimal(10, 2) @map("final_total")
+  targetCompletionDate       DateTime?            @map("target_completion_date")
+  actualCompletionDate       DateTime?            @map("actual_completion_date")
+  cancellationReason         String?              @map("cancellation_reason")
+  reopenedReason             String?              @map("reopened_reason")
+  createdAt                  DateTime             @default(now()) @map("created_at")
+  updatedAt                  DateTime             @updatedAt @map("updated_at")
+
+  car             Car               @relation(fields: [carId], references: [id])
+  appointment     Appointment?      @relation(fields: [appointmentId], references: [id])
+  createdBy       User              @relation("CreatedRepairs", fields: [createdById], references: [id])
+  primaryMechanic User              @relation("PrimaryMechanic", fields: [primaryMechanicId], references: [id])
+  mechanics       RepairMechanic[]
+  statusLogs      RepairStatusLog[]
+  workLogs        RepairWorkLog[]
+  delayReports    DelayReport[]
+  parts           RepairPart[]
+  laborItems      LaborItem[]
+  payment         Payment?
+  photos          RepairPhoto[]
+  notifications   NotificationLog[]
+
+  @@index([carId, status])
+  @@index([targetCompletionDate])
+  @@index([status])
+  @@index([priority])
+  @@map("repair_jobs")
+}
+
+model RepairMechanic {
+  repairId   String   @map("repair_id")
+  mechanicId String   @map("mechanic_id")
+  isPrimary  Boolean  @default(false) @map("is_primary")
+  assignedAt DateTime @default(now()) @map("assigned_at")
+
+  repair   RepairJob @relation(fields: [repairId], references: [id], onDelete: Cascade)
+  mechanic User      @relation(fields: [mechanicId], references: [id])
+
+  @@id([repairId, mechanicId])
+  @@map("repair_mechanics")
+}
+
+model RepairStatusLog {
+  id          String   @id @default(cuid())
+  repairId    String   @map("repair_id")
+  fromStatus  String?  @map("from_status")
+  toStatus    String   @map("to_status")
+  changedById String   @map("changed_by")
+  note        String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  repair    RepairJob @relation(fields: [repairId], references: [id], onDelete: Cascade)
+  changedBy User      @relation(fields: [changedById], references: [id])
+
+  @@index([repairId])
+  @@map("repair_status_logs")
+}
+
+model RepairWorkLog {
+  id          String   @id @default(cuid())
+  repairId    String   @map("repair_id")
+  mechanicId  String   @map("mechanic_id")
+  description String
+  hoursSpent  Float    @map("hours_spent")
+  loggedAt    DateTime @default(now()) @map("logged_at")
+
+  repair   RepairJob @relation(fields: [repairId], references: [id], onDelete: Cascade)
+  mechanic User      @relation(fields: [mechanicId], references: [id])
+
+  @@map("repair_work_logs")
+}
+
+model DelayReport {
+  id           String   @id @default(cuid())
+  repairId     String   @map("repair_id")
+  reportedById String   @map("reported_by")
+  reason       String
+  evidenceNote String?  @map("evidence_note")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  repair     RepairJob @relation(fields: [repairId], references: [id], onDelete: Cascade)
+  reportedBy User      @relation(fields: [reportedById], references: [id])
+
+  @@map("delay_reports")
+}
+
+model Part {
+  id               String       @id @default(cuid())
+  name             String
+  reference        String?
+  category         PartCategory @default(Other)
+  compatibleModels String?      @map("compatible_models")
+  unitCost         Decimal      @db.Decimal(10, 2) @map("unit_cost")
+  quantity         Int          @default(0)
+  minThreshold     Int          @default(0) @map("min_threshold")
+  supplier         String?
+  deletedAt        DateTime?    @map("deleted_at")
+  createdAt        DateTime     @default(now()) @map("created_at")
+  updatedAt        DateTime     @updatedAt @map("updated_at")
+
+  stockTransactions StockTransaction[]
+  repairParts       RepairPart[]
+
+  @@index([quantity, minThreshold])
+  @@map("parts")
+}
+
+model StockTransaction {
+  id             String               @id @default(cuid())
+  partId         String               @map("part_id")
+  type           StockTransactionType
+  quantityChange Int                  @map("quantity_change")
+  quantityAfter  Int                  @map("quantity_after")
+  repairId       String?              @map("repair_id")
+  doneById       String               @map("done_by")
+  note           String?
+  createdAt      DateTime             @default(now()) @map("created_at")
+
+  part   Part @relation(fields: [partId], references: [id])
+  doneBy User @relation(fields: [doneById], references: [id])
+
+  @@index([partId])
+  @@map("stock_transactions")
+}
+
+model RepairPart {
+  id             String   @id @default(cuid())
+  repairId       String   @map("repair_id")
+  partId         String   @map("part_id")
+  quantityUsed   Int      @map("quantity_used")
+  unitCostAtTime Decimal  @db.Decimal(10, 2) @map("unit_cost_at_time")
+  stockOverride  Boolean  @default(false) @map("stock_override")
+  addedById      String   @map("added_by")
+  addedAt        DateTime @default(now()) @map("added_at")
+
+  repair  RepairJob @relation(fields: [repairId], references: [id], onDelete: Cascade)
+  part    Part      @relation(fields: [partId], references: [id])
+  addedBy User      @relation(fields: [addedById], references: [id])
+
+  @@map("repair_parts")
+}
+
+model LaborItem {
+  id          String   @id @default(cuid())
+  repairId    String   @map("repair_id")
+  description String
+  cost        Decimal  @db.Decimal(10, 2)
+  addedById   String   @map("added_by")
+  addedAt     DateTime @default(now()) @map("added_at")
+
+  repair  RepairJob @relation(fields: [repairId], references: [id], onDelete: Cascade)
+  addedBy User      @relation(fields: [addedById], references: [id])
+
+  @@map("labor_items")
+}
+
+model Payment {
+  id             String   @id @default(cuid())
+  repairId       String   @unique @map("repair_id")
+  amountBilled   Decimal  @db.Decimal(10, 2) @map("amount_billed")
+  partsTotal     Decimal  @db.Decimal(10, 2) @map("parts_total")
+  laborTotal     Decimal  @db.Decimal(10, 2) @map("labor_total")
+  discountAmount Decimal  @default(0) @db.Decimal(10, 2) @map("discount_amount")
+  finalTotal     Decimal  @db.Decimal(10, 2) @map("final_total")
+  amountReceived Decimal  @db.Decimal(10, 2) @map("amount_received")
+  changeDue      Decimal  @db.Decimal(10, 2) @map("change_due")
+  method         String   @default("cash")
+  paidByName     String?  @map("paid_by_name")
+  receivedById   String   @map("received_by")
+  invoiceNumber  String   @unique @map("invoice_number")
+  notes          String?
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  repair     RepairJob @relation(fields: [repairId], references: [id])
+  receivedBy User      @relation(fields: [receivedById], references: [id])
+
+  @@map("payments")
+}
+
+model RepairPhoto {
+  id           String    @id @default(cuid())
+  repairId     String    @map("repair_id")
+  uploadedById String    @map("uploaded_by")
+  type         PhotoType
+  filePath     String    @map("file_path")
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  repair     RepairJob @relation(fields: [repairId], references: [id], onDelete: Cascade)
+  uploadedBy User      @relation(fields: [uploadedById], references: [id])
+
+  @@map("repair_photos")
+}
+
+model NotificationLog {
+  id             String   @id @default(cuid())
+  type           String
+  recipientPhone String   @map("recipient_phone")
+  sentById       String   @map("sent_by")
+  messagePreview String   @map("message_preview")
+  repairId       String?  @map("repair_id")
+  appointmentId  String?  @map("appointment_id")
+  sentAt         DateTime @default(now()) @map("sent_at")
+
+  sentBy User       @relation(fields: [sentById], references: [id])
+  repair RepairJob? @relation(fields: [repairId], references: [id])
+
+  @@index([sentAt])
+  @@map("notification_logs")
+}
+
+model SystemSettings {
+  key   String @id
+  value String
+
+  @@map("system_settings")
+}
+
+model InvoiceCounter {
+  year    Int @id
+  lastSeq Int @default(0) @map("last_seq")
+
+  @@map("invoice_counters")
+}
