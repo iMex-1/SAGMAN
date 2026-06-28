@@ -1,0 +1,441 @@
+{
+  "common": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "create": "إنشاء",
+    "add": "إضافة",
+    "remove": "إزالة",
+    "close": "إغلاق",
+    "back": "رجوع",
+    "next": "التالي",
+    "previous": "السابق",
+    "search": "بحث",
+    "filter": "تصفية",
+    "loading": "جار التحميل...",
+    "noResults": "لا توجد نتائج",
+    "error": "حدث خطأ",
+    "success": "تمت العملية بنجاح",
+    "view": "عرض",
+    "actions": "الإجراءات",
+    "status": "الحالة",
+    "date": "التاريخ",
+    "time": "الوقت",
+    "notes": "ملاحظات",
+    "all": "الكل",
+    "yes": "نعم",
+    "no": "لا",
+    "required": "مطلوب",
+    "optional": "اختياري",
+    "unknown": "غير معروف",
+    "total": "الإجمالي",
+    "currency": "درهم",
+    "walkIn": "زبون مباشر",
+    "phone": "الهاتف",
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "submit": "إرسال",
+    "sending": "جار الإرسال...",
+    "saving": "جار الحفظ...",
+    "deleting": "جار الحذف...",
+    "networkError": "تعذر الاتصال بالخادم. تحقق من تشغيل الواجهة البرمجية.",
+    "confirmDeleteTitle": "تأكيد الحذف",
+    "confirmDeleteDesc": "هذا الإجراء لا يمكن التراجع عنه.",
+    "page": "صفحة",
+    "of": "من",
+    "items": "عناصر",
+    "language": "اللغة"
+  },
+  "nav": {
+    "dashboard": "لوحة التحكم",
+    "repairs": "الإصلاحات",
+    "appointments": "المواعيد",
+    "cars": "السيارات",
+    "stock": "المخزون",
+    "calendar": "التقويم",
+    "employees": "الموظفون",
+    "reports": "التقارير",
+    "notifications": "الإشعارات",
+    "settings": "الإعدادات",
+    "logout": "تسجيل الخروج"
+  },
+  "auth": {
+    "signIn": "تسجيل الدخول",
+    "signingIn": "جار الدخول...",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "manager@sagman.garage",
+    "password": "كلمة المرور",
+    "passwordPlaceholder": "••••••••",
+    "forgotPassword": "نسيت كلمة المرور؟ تواصل مع المسؤول.",
+    "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+    "accountDeactivated": "تم تعطيل حسابك",
+    "welcome": "مرحباً",
+    "systemTitle": "نظام الإدارة",
+    "subtitle": "تسجيل الدخول إلى نظام إدارة المرأب"
+  },
+  "dashboard": {
+    "title": "لوحة التحكم",
+    "today": "اليوم",
+    "thisWeek": "هذا الأسبوع",
+    "thisMonth": "هذا الشهر",
+    "totalRevenue": "رقم الأعمال",
+    "carsReceived": "سيارات مستقبلة",
+    "carsDelivered": "سيارات مسلمة",
+    "avgRepairTime": "متوسط وقت الإصلاح",
+    "onTimeRate": "معدل الالتزام بالمواعيد",
+    "delayedRepairs": "إصلاحات متأخرة",
+    "activeRepairs": "الإصلاحات الجارية",
+    "overdueRepairs": "الإصلاحات المتأخرة",
+    "lowStockParts": "قطع نفدت من المخزون",
+    "pendingAppointments": "مواعيد بانتظار التأكيد",
+    "emergencyRepairs": "إصلاحات طارئة",
+    "revenueChart": "رقم الأعمال الشهري",
+    "mechanicPerformance": "أداء الميكانيكيين",
+    "carsCompleted": "سيارات منجزة",
+    "avgTimePerRepair": "متوسط الوقت لكل إصلاح",
+    "delays": "التأخيرات"
+  },
+  "repair": {
+    "title": "الإصلاحات",
+    "newRepair": "إصلاح جديد",
+    "repairDetail": "تفاصيل الإصلاح",
+    "status": {
+      "received": "مستقبل",
+      "diagnosing": "قيد التشخيص",
+      "awaiting_approval": "بانتظار الموافقة",
+      "in_progress": "قيد التنفيذ",
+      "waiting_for_parts": "انتظار القطع",
+      "complete": "منتهٍ",
+      "delivered": "مسلّم",
+      "cancelled": "ملغى"
+    },
+    "priority": {
+      "low": "منخفض",
+      "normal": "عادي",
+      "high": "عالي",
+      "emergency": "طارئ"
+    },
+    "fields": {
+      "car": "السيارة",
+      "mechanic": "الميكانيكي",
+      "priority": "الأولوية",
+      "description": "وصف المشكلة",
+      "internalNotes": "ملاحظات داخلية",
+      "targetDate": "التاريخ المستهدف",
+      "estimatedHours": "المدة التقديرية (ساعات)",
+      "actualCompletion": "تاريخ الانتهاء الفعلي",
+      "diagnosis": "تقرير التشخيص",
+      "partsTotal": "إجمالي القطع",
+      "laborTotal": "إجمالي اليد العاملة",
+      "discount": "تخفيض",
+      "finalTotal": "المجموع النهائي"
+    },
+    "actions": {
+      "startDiagnosis": "بدء التشخيص",
+      "submitForApproval": "إرسال للموافقة",
+      "startRepair": "بدء الإصلاح",
+      "waitingForParts": "انتظار القطع",
+      "markComplete": "تحديد كمنتهٍ",
+      "markDelivered": "تحديد كمسلّم",
+      "reopen": "إعادة فتح",
+      "cancel": "إلغاء الإصلاح",
+      "fileDelayReport": "الإبلاغ عن تأخير",
+      "shareDiagnosis": "مشاركة مع العميل",
+      "approve": "موافقة",
+      "reject": "رفض",
+      "bypass": "تجاوز الموافقة"
+    },
+    "overdue": "متأخر",
+    "overdueWarning": "هذا الإصلاح متأخر! أرسل تقرير تأخير للمتابعة.",
+    "noPaymentWarning": "سجّل الدفع قبل تحديد كمسلّم",
+    "reopenReason": "سبب إعادة الفتح",
+    "cancellationReason": "سبب الإلغاء",
+    "delayReason": "سبب التأخير",
+    "diagnosisSections": {
+      "issues": "المشكلات المحددة",
+      "severity": {
+        "Minor": "بسيط",
+        "Moderate": "متوسط",
+        "Critical": "خطير"
+      },
+      "recommendations": "الإصلاحات الموصى بها",
+      "additionalNotes": "ملاحظات إضافية",
+      "estimatedDuration": "المدة التقديرية"
+    },
+    "clientApproval": {
+      "pending": "بانتظار الموافقة",
+      "approved": "موافق عليه",
+      "rejected": "مرفوض",
+      "bypassed": "تم التجاوز"
+    },
+    "workLog": {
+      "title": "سجل الأعمال",
+      "addEntry": "إضافة سجل",
+      "description": "وصف العمل",
+      "hours": "الساعات المنجزة",
+      "by": "بواسطة"
+    },
+    "parts": {
+      "title": "القطع المستخدمة",
+      "addPart": "إضافة قطعة",
+      "searchParts": "البحث عن قطعة",
+      "quantity": "الكمية",
+      "unitCost": "تكلفة الوحدة",
+      "subtotal": "المجموع الفرعي",
+      "stockOverride": "فرض (مخزون غير كافٍ)",
+      "noPartsYet": "لم تُضف قطع بعد"
+    },
+    "labor": {
+      "title": "اليد العاملة",
+      "addItem": "إضافة خدمة",
+      "description": "الوصف",
+      "cost": "التكلفة",
+      "noLaborYet": "لم تُضف خدمات بعد"
+    },
+    "statusHistory": "سجل الحالات",
+    "mechanics": "الميكانيكيون المعينون",
+    "primary": "رئيسي",
+    "reassign": "إعادة التعيين",
+    "payment": {
+      "title": "الدفع",
+      "register": "تسجيل الدفع",
+      "amountBilled": "المبلغ المفوتر",
+      "amountReceived": "المبلغ المستلم",
+      "changeDue": "الباقي",
+      "method": "طريقة الدفع",
+      "cash": "نقداً",
+      "paid": "مدفوع",
+      "invoiceNumber": "رقم الفاتورة",
+      "viewInvoice": "عرض الفاتورة"
+    },
+    "photos": {
+      "title": "الصور",
+      "before": "قبل",
+      "during": "أثناء",
+      "after": "بعد",
+      "upload": "تحميل صورة"
+    },
+    "filters": {
+      "allStatuses": "كل الحالات",
+      "active": "نشط",
+      "overdue": "متأخر",
+      "delivered": "مسلّم",
+      "cancelled": "ملغى"
+    }
+  },
+  "appointment": {
+    "title": "المواعيد",
+    "newAppointment": "موعد جديد",
+    "status": {
+      "pending": "بانتظار التأكيد",
+      "confirmed": "مؤكد",
+      "rescheduled": "مؤجل",
+      "cancelled": "ملغى",
+      "converted": "تحول إلى إصلاح"
+    },
+    "fields": {
+      "clientName": "اسم العميل",
+      "clientPhone": "هاتف العميل",
+      "vehicleMatricule": "رقم لوحة السيارة",
+      "purpose": "السبب / وصف المشكلة",
+      "requestedDate": "التاريخ المطلوب",
+      "requestedTime": "الوقت المطلوب",
+      "notes": "ملاحظات"
+    },
+    "actions": {
+      "confirm": "تأكيد",
+      "reschedule": "تأجيل",
+      "cancel": "إلغاء",
+      "convert": "تحويل إلى إصلاح"
+    },
+    "capacity": {
+      "warning": "تم الوصول إلى الطاقة الاستيعابية القصوى لهذا اليوم",
+      "current": "المواعيد المجدولة حالياً",
+      "limit": "الحد الأقصى للسعة",
+      "proceedAnyway": "تأكيد على أي حال"
+    },
+    "managerNote": "المواعيد التي ينشئها المسؤول يتم تأكيدها فوراً.",
+    "convertDialog": {
+      "title": "تحويل إلى إصلاح",
+      "primaryMechanic": "الميكانيكي الرئيسي",
+      "priority": "الأولوية",
+      "description": "الوصف",
+      "targetDate": "التاريخ المستهدف"
+    }
+  },
+  "car": {
+    "title": "السيارات",
+    "registerCar": "تسجيل سيارة",
+    "fields": {
+      "matricule": "رقم اللوحة",
+      "make": "الماركة",
+      "model": "الموديل",
+      "year": "سنة الصنع",
+      "color": "اللون",
+      "vin": "رقم الهيكل (VIN)",
+      "mileage": "العداد (كم)",
+      "notes": "ملاحظات",
+      "client": "العميل المرتبط",
+      "clientHint": "اتركه فارغاً للزوار المباشرين"
+    },
+    "repairHistory": "سجل الإصلاحات",
+    "newRepair": "إصلاح جديد",
+    "noRepairs": "لا توجد إصلاحات مسجلة",
+    "activeRepairBlock": "هذه السيارة لديها إصلاح نشط",
+    "walkin": "زبون مباشر (بدون حساب)"
+  },
+  "employee": {
+    "title": "الموظفون",
+    "newEmployee": "موظف جديد",
+    "roles": {
+      "manager": "مسؤول",
+      "mechanic": "ميكانيكي",
+      "overseer": "مشرف"
+    },
+    "fields": {
+      "fullName": "الاسم الكامل",
+      "email": "البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "phone": "الهاتف",
+      "specialty": "التخصص",
+      "role": "الدور",
+      "status": "الحالة",
+      "joinDate": "تاريخ الالتحاق"
+    },
+    "status": {
+      "active": "نشط",
+      "inactive": "غير نشط"
+    },
+    "actions": {
+      "deactivate": "تعطيل",
+      "activate": "تفعيل",
+      "resetPassword": "إعادة تعيين كلمة المرور",
+      "newPassword": "كلمة المرور الجديدة"
+    },
+    "lastManager": "لا يمكن تعطيل آخر مسؤول نشط",
+    "deactivateConfirm": "هل أنت متأكد من تعطيل هذا الموظف؟",
+    "historyPreserved": "سيتم الاحتفاظ بالسجل التاريخي"
+  },
+  "stock": {
+    "title": "المخزون والقطع",
+    "newPart": "قطعة جديدة",
+    "fields": {
+      "name": "اسم القطعة",
+      "reference": "المرجع",
+      "category": "الفئة",
+      "compatibleModels": "الموديلات المتوافقة",
+      "unitCost": "تكلفة الوحدة",
+      "quantity": "الكمية في المخزون",
+      "minThreshold": "الحد الأدنى",
+      "supplier": "المورد"
+    },
+    "categories": {
+      "Engine": "المحرك",
+      "Brakes": "الفرامل",
+      "Electrical": "الكهرباء",
+      "Bodywork": "الهيكل",
+      "Suspension": "التعليق",
+      "Other": "أخرى"
+    },
+    "lowStock": "مخزون منخفض",
+    "outOfStock": "نفد من المخزون",
+    "addStock": "إضافة مخزون",
+    "adjustStock": "تعديل المخزون",
+    "transactionHistory": "سجل المعاملات",
+    "transactions": {
+      "received": "استلام",
+      "used": "مُستخدم",
+      "adjustment": "تعديل"
+    }
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "sections": {
+      "garage": "معلومات المرأب",
+      "operational": "الإعدادات التشغيلية",
+      "portal": "بوابة العميل",
+      "session": "الجلسة"
+    },
+    "fields": {
+      "garageName": "اسم المرأب",
+      "garageAddress": "العنوان",
+      "garagePhone": "الهاتف",
+      "garageLogo": "الشعار",
+      "maxConcurrentCars": "الطاقة الاستيعابية القصوى (سيارات/يوم)",
+      "workingHours": "ساعات العمل",
+      "overseerWhatsapp": "رقم واتساب المشرف",
+      "requireDiagnosisApproval": "موافقة المسؤول على التشخيص",
+      "requireClientApproval": "موافقة العميل قبل البدء",
+      "currencyLabel": "العملة",
+      "sessionTimeout": "انتهاء الجلسة (ساعات)"
+    },
+    "saved": "تم حفظ الإعدادات بنجاح"
+  },
+  "portal": {
+    "landing": {
+      "tagline": "سيارتك في أيدٍ أمينة",
+      "subtitle": "تابع حالة إصلاح سيارتك في الوقت الفعلي واحجز موعدك عبر الإنترنت.",
+      "bookAppointment": "احجز موعداً",
+      "trackRepair": "تابع إصلاحي",
+      "ourServices": "خدماتنا",
+      "contactUs": "اتصل بنا",
+      "openingHours": "ساعات العمل",
+      "services": {
+        "engine": "المحرك وناقل الحركة",
+        "brakes": "الفرامل والتعليق",
+        "electrical": "الكهرباء والتشخيص",
+        "bodywork": "الهيكل والطلاء",
+        "maintenance": "الصيانة وتغيير الزيت",
+        "tires": "الإطارات وضبط الجنوط"
+      }
+    },
+    "login": {
+      "title": "فضاء العميل",
+      "subtitle": "أدخل رقم هاتفك للوصول إلى حسابك",
+      "phoneLabel": "رقم الهاتف",
+      "phonePlaceholder": "+212 6XX XXX XXX",
+      "sendOtp": "إرسال الرمز",
+      "sendingOtp": "جار الإرسال...",
+      "otpLabel": "رمز التحقق",
+      "otpHint": "أدخل الرمز المكون من 6 أرقام المرسل إليك",
+      "verify": "تحقق",
+      "verifying": "جار التحقق...",
+      "changePhone": "تغيير الرقم",
+      "otpSent": "تم الإرسال! تحقق من رسائلك.",
+      "invalidOtp": "الرمز غير صحيح أو منتهي الصلاحية",
+      "otpExpiry": "الرمز صالح لمدة 10 دقائق"
+    },
+    "myCars": {
+      "title": "سياراتي",
+      "noActiveCars": "لا توجد إصلاحات نشطة حالياً",
+      "viewHistory": "عرض السجل"
+    },
+    "repairStatus": {
+      "title": "متابعة الإصلاح",
+      "currentStatus": "الحالة الحالية",
+      "repairProgress": "تقدم الإصلاح",
+      "estimatedCompletion": "تاريخ الانتهاء المتوقع",
+      "diagnosisResult": "نتيجة التشخيص",
+      "issues": "المشكلات المحددة",
+      "recommendations": "الأعمال الموصى بها",
+      "estimatedCost": "التكلفة التقديرية",
+      "contactGarage": "الاتصال بالمرأب",
+      "notFound": "الإصلاح غير موجود"
+    },
+    "booking": {
+      "title": "حجز موعد",
+      "subtitle": "املأ النموذج لطلب موعد",
+      "selectCar": "اختر سيارة",
+      "orNewCar": "أو أدخل رقم لوحة جديد",
+      "newMatricule": "رقم اللوحة الجديد",
+      "issue": "وصف المشكلة",
+      "preferredDate": "التاريخ المفضل",
+      "notes": "ملاحظات إضافية",
+      "submit": "طلب موعد",
+      "success": "تم إرسال طلبك! سنؤكد موعدك قريباً.",
+      "availableDays": "اختر من الأيام المتاحة"
+    }
+  }
+}

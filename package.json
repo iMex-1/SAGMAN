@@ -1,0 +1,40 @@
+{
+  "name": "sagman",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Sagman Garage Management System",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "dev:api": "pnpm --filter @sagman/api dev",
+    "dev:web": "pnpm --filter @sagman/web dev",
+    "build:api": "pnpm --filter @sagman/api build",
+    "build:web": "pnpm --filter @sagman/web build",
+    "db:generate": "pnpm --filter @sagman/db generate",
+    "db:migrate:dev": "pnpm --filter @sagman/db migrate:dev",
+    "db:migrate:deploy": "pnpm --filter @sagman/db migrate:deploy",
+    "db:seed": "pnpm --filter @sagman/db seed",
+    "db:studio": "pnpm --filter @sagman/db studio",
+    "db:reset": "pnpm --filter @sagman/db reset",
+    "typecheck": "pnpm -r --parallel typecheck",
+    "lint": "pnpm -r --parallel lint",
+    "clean": "pnpm -r exec -- rm -rf dist .next .turbo"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "@parcel/watcher",
+      "@swc/core",
+      "esbuild",
+      "prisma",
+      "sharp",
+      "unrs-resolver"
+    ]
+  }
+}
