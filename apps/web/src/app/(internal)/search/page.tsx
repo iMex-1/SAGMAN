@@ -1,138 +1,181 @@
-'use client'
+"use client";
 
-import { Suspense, useState, useEffect, FormEvent } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import Link from 'next/link'
-import { Search, Loader2, Car, Users, Wrench, FileText } from 'lucide-react'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { api, ApiError } from '@/lib/api-client'
-import { cn } from '@/lib/utils'
+import { useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import Link from "next/link";
+import {
+  Search,
+  Loader2,
+  AlertCircle,
+  Car,
+  User,
+  Wrench,
+  FileText,
+  ArrowRight,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { api, ApiError } from "@/lib/api-client";
 
-interface SearchResults {
-  cars: Array<{ id: string; matricule: string; make: string; model: string; year?: number }>
-  clients: Array<{ id: string; name: string; phone: string }>
+interface SearchResult {
+  cars: Array<{
+    id: string;
+    matricule: string;
+    make: string;
+    model: string;
+    year: number;
+  }>;
+  clients: Array<{
+    id: string;
+    name: string;
+    phone: string;
+  }>;
   repairs: Array<{
-    id: string
-    status: string
-    priority: string
-    car: { matricule: string; make: string; model: string }
-  }>
+    id: string;
+    status: string;
+    priority: string;
+    description: string;
+    car: { matricule: string; make: string; model: string };
+  }>;
   invoices: Array<{
-    id: string
-    invoiceNumber: string
-    finalTotal: number
-    createdAt: string
-    repair: { id: string; car: { matricule: string } }
-  }>
+    id: string;
+    invoiceNumber: string;
+    finalTotal: number;
+    createdAt: string;
+    repair: { id: string; car: { matricule: string } };
+  }>;
 }
 
-const STATUS_LABELS: Record<string, string> = {
-  received: 'Reçu',
-  diagnosing: 'Diagnostic',
-  awaiting_approval: 'En attente',
-  in_progress: 'En cours',
-  waiting_for_parts: 'Att. pièces',
-  complete: 'Terminé',
-  delivered: 'Livré',
-  cancelled: 'Annulé',
+const STATUS_VARIANTS: Record<string, string> = {
+  received: "bg-blue-100 text-blue-700",
+  diagnosing: "bg-purple-100 text-purple-700",
+  awaiting_approval: "bg-amber-100 text-amber-700",
+  in_progress: "bg-orange-100 text-orange-700",
+  waiting_for_parts: "bg-red-100 text-red-700",
+  complete: "bg-emerald-100 text-emerald-700",
+  delivered: "bg-slate-100 text-slate-700",
+  cancelled: "bg-gray-100 text-gray-700",
+};
+
+const PRIORITY_VARIANTS: Record<string, string> = {
+  low: "bg-green-100 text-green-700",
+  normal: "bg-blue-100 text-blue-700",
+  high: "bg-orange-100 text-orange-700",
+  emergency: "bg-red-100 text-red-700",
+};
+
+function formatDate(dateStr: string) {
+  return new Date(dateStr).toLocaleDateString("fr-FR");
 }
 
-const STATUS_VARIANTS: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
-  received: 'secondary',
-  diagnosing: 'default',
-  awaiting_approval: 'outline',
-  in_progress: 'default',
-  waiting_for_parts: 'outline',
-  complete: 'secondary',
-  delivered: 'secondary',
-  cancelled: 'destructive',
+function formatCurrency(amount: number) {
+  return `${amount.toFixed(2)} DH`;
 }
 
-function SearchContent() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const initialQuery = searchParams.get('q') ?? ''
+export default function SearchPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const [query, setQuery] = useState(searchParams.get("q") || "");
+  const [results, setResults] = useState<SearchResult | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const [inputValue, setInputValue] = useState(initialQuery)
-  const [query, setQuery] = useState(initialQuery)
-  const [results, setResults] = useState<SearchResults | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const hasResults =
+    results &&
+    (results.cars.length > 0 ||
+      results.clients.length > 0 ||
+      results.repairs.length > 0 ||
+      results.invoices.length > 0);
 
-  useEffect(() => {
-    if (!query.trim()) {
-      setResults(null)
-      return
+  const resultCount =
+    (results?.cars.length || 0) +
+    (results?.clients.length || 0) +
+    (results?.repairs.length || 0) +
+    (results?.invoices.length || 0);
+
+  async function performSearch(searchTerm: string) {
+    if (!searchTerm.trim()) {
+      setResults(null);
+      return;
     }
 
-    let cancelled = false
-
-    async function doSearch() {
-      setLoading(true)
-      setError(null)
-      try {
-        const res = await api.get<{ data: SearchResults }>(
-          `/search?q=${encodeURIComponent(query)}&limit=8`,
-        )
-        if (!cancelled) setResults(res.data)
-      } catch (err) {
-        if (!cancelled)
-          setError(err instanceof ApiError ? err.message : 'Erreur lors de la recherche.')
-      } finally {
-        if (!cancelled) setLoading(false)
-      }
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await api.get<{ data: SearchResult }>(
+        `/search?q=${encodeURIComponent(searchTerm.trim())}&limit=5`,
+      );
+      setResults(res.data);
+    } catch (err) {
+      setError(
+        err instanceof ApiError ? err.message : "Erreur lors de la recherche.",
+      );
+    } finally {
+      setLoading(false);
     }
-
-    doSearch()
-    return () => {
-      cancelled = true
-    }
-  }, [query])
-
-  function handleSubmit(e: FormEvent) {
-    e.preventDefault()
-    const q = inputValue.trim()
-    if (!q) return
-    setQuery(q)
-    router.replace(`/search?q=${encodeURIComponent(q)}`)
   }
 
-  const total =
-    (results?.cars.length ?? 0) +
-    (results?.clients.length ?? 0) +
-    (results?.repairs.length ?? 0) +
-    (results?.invoices.length ?? 0)
+  useEffect(() => {
+    const q = searchParams.get("q");
+    if (q && q !== query) {
+      setQuery(q);
+      performSearch(q);
+    }
+  }, [searchParams]);
 
-  const hasResults = results !== null && total > 0
+  function handleSearch(e: React.FormEvent) {
+    e.preventDefault();
+    if (query.trim()) {
+      router.push(`/search?q=${encodeURIComponent(query.trim())}`);
+    }
+  }
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div>
+      {/* Header & Search */}
+      <div className="space-y-4">
         <h1 className="text-2xl font-bold">Recherche globale</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Rechercher des véhicules, clients, réparations et factures
-        </p>
+        
+        <form onSubmit={handleSearch} className="max-w-xl">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="Rechercher véhicules, clients, réparations, factures..."
+              className="pl-9 pr-20"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <Button
+              type="submit"
+              size="sm"
+              className="absolute right-1 top-1/2 h-7 -translate-y-1/2"
+              disabled={!query.trim() || loading}
+            >
+              {loading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                "Chercher"
+              )}
+            </Button>
+          </div>
+        </form>
+
+        {query && !loading && results && (
+          <p className="text-sm text-muted-foreground">
+            {resultCount} résultat{resultCount !== 1 ? "s" : ""} pour &quot;{query}&quot;
+          </p>
+        )}
       </div>
 
-      {/* Search bar */}
-      <form onSubmit={handleSubmit} className="flex gap-2">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Matricule, nom client, numéro facture…"
-            className="pl-9"
-            autoFocus
-          />
+      {/* Error */}
+      {error && (
+        <div className="flex items-center gap-3 rounded-md border border-destructive/50 bg-destructive/10 p-4 text-destructive">
+          <AlertCircle className="h-5 w-5 shrink-0" />
+          <p className="text-sm">{error}</p>
         </div>
-        <Button type="submit" disabled={loading}>
-          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Rechercher'}
-        </Button>
-      </form>
+      )}
 
       {/* Loading */}
       {loading && (
@@ -141,182 +184,194 @@ function SearchContent() {
         </div>
       )}
 
-      {/* Error */}
-      {error && !loading && (
-        <div className="rounded-md border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
-          {error}
-        </div>
-      )}
-
       {/* No results */}
-      {!loading && results !== null && !hasResults && (
+      {query && !loading && results && !hasResults && (
         <div className="rounded-lg border bg-card p-12 text-center">
-          <Search className="mx-auto h-10 w-10 text-muted-foreground/40" />
-          <p className="mt-3 text-muted-foreground">
-            Aucun résultat pour &quot;{query}&quot;
+          <Search className="mx-auto h-12 w-12 text-muted-foreground/40" />
+          <p className="mt-4 text-muted-foreground">
+            Aucun résultat trouvé pour &quot;{query}&quot;
+          </p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Essayez avec d&apos;autres mots-clés ou vérifiez l&apos;orthographe
           </p>
         </div>
       )}
 
       {/* Results */}
-      {!loading && hasResults && (
-        <div className="space-y-6">
+      {results && hasResults && (
+        <div className="grid gap-6 lg:grid-cols-2">
           {/* Vehicles */}
           {results.cars.length > 0 && (
-            <section>
-              <div className="mb-3 flex items-center gap-2">
-                <Car className="h-4 w-4 text-muted-foreground" />
-                <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                  Véhicules
-                </h2>
-                <Badge variant="secondary">{results.cars.length}</Badge>
-              </div>
-              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <Car className="h-4 w-4" />
+                  Véhicules ({results.cars.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
                 {results.cars.map((car) => (
                   <Link
                     key={car.id}
                     href={`/cars/${car.id}`}
-                    className="flex items-center gap-3 rounded-lg border bg-card p-3 transition-colors hover:bg-muted/50"
+                    className="flex items-center justify-between rounded-lg border p-3 transition-colors hover:bg-muted/50"
                   >
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-950">
-                      <Car className="h-4 w-4 text-blue-600" />
-                    </div>
-                    <div className="min-w-0">
-                      <p className="truncate font-semibold">{car.matricule}</p>
-                      <p className="truncate text-xs text-muted-foreground">
-                        {car.make} {car.model}
-                        {car.year ? ` · ${car.year}` : ''}
+                    <div>
+                      <p className="font-semibold">{car.matricule}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {car.make} {car.model} ({car.year})
                       </p>
                     </div>
+                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
                   </Link>
                 ))}
-              </div>
-            </section>
+              </CardContent>
+            </Card>
           )}
 
           {/* Clients */}
           {results.clients.length > 0 && (
-            <section>
-              <div className="mb-3 flex items-center gap-2">
-                <Users className="h-4 w-4 text-muted-foreground" />
-                <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                  Clients
-                </h2>
-                <Badge variant="secondary">{results.clients.length}</Badge>
-              </div>
-              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <User className="h-4 w-4" />
+                  Clients ({results.clients.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
                 {results.clients.map((client) => (
                   <Link
                     key={client.id}
                     href={`/clients/${client.id}`}
-                    className="flex items-center gap-3 rounded-lg border bg-card p-3 transition-colors hover:bg-muted/50"
+                    className="flex items-center justify-between rounded-lg border p-3 transition-colors hover:bg-muted/50"
                   >
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-950">
-                      <Users className="h-4 w-4 text-purple-600" />
+                    <div>
+                      <p className="font-semibold">{client.name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {client.phone}
+                      </p>
                     </div>
-                    <div className="min-w-0">
-                      <p className="truncate font-semibold">{client.name}</p>
-                      <p className="truncate text-xs text-muted-foreground">{client.phone}</p>
-                    </div>
+                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
                   </Link>
                 ))}
-              </div>
-            </section>
+              </CardContent>
+            </Card>
           )}
 
           {/* Repairs */}
           {results.repairs.length > 0 && (
-            <section>
-              <div className="mb-3 flex items-center gap-2">
-                <Wrench className="h-4 w-4 text-muted-foreground" />
-                <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                  Réparations
-                </h2>
-                <Badge variant="secondary">{results.repairs.length}</Badge>
-              </div>
-              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <Wrench className="h-4 w-4" />
+                  Réparations ({results.repairs.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
                 {results.repairs.map((repair) => (
                   <Link
                     key={repair.id}
                     href={`/repairs/${repair.id}`}
-                    className="flex items-center justify-between gap-3 rounded-lg border bg-card p-3 transition-colors hover:bg-muted/50"
+                    className="rounded-lg border p-3 transition-colors hover:bg-muted/50 block"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-950">
-                        <Wrench className="h-4 w-4 text-amber-600" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="truncate font-semibold">{repair.car.matricule}</p>
-                        <p className="truncate text-xs text-muted-foreground">
-                          {repair.car.make} {repair.car.model}
+                    <div className="flex items-start justify-between">
+                      <div className="space-y-1 flex-1">
+                        <div className="flex items-center gap-2">
+                          <p className="font-semibold">#{repair.id.slice(0, 8)}</p>
+                          <Badge
+                            className={
+                              STATUS_VARIANTS[repair.status] ||
+                              "bg-slate-100 text-slate-700"
+                            }
+                          >
+                            {repair.status}
+                          </Badge>
+                          <Badge
+                            className={
+                              PRIORITY_VARIANTS[repair.priority] ||
+                              "bg-slate-100 text-slate-700"
+                            }
+                          >
+                            {repair.priority}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          {repair.car.matricule} — {repair.car.make}{" "}
+                          {repair.car.model}
                         </p>
+                        <p className="text-sm">{repair.description}</p>
                       </div>
+                      <ArrowRight className="h-4 w-4 text-muted-foreground mt-1" />
                     </div>
-                    <Badge variant={STATUS_VARIANTS[repair.status] ?? 'secondary'}>
-                      {STATUS_LABELS[repair.status] ?? repair.status}
-                    </Badge>
                   </Link>
                 ))}
-              </div>
-            </section>
+              </CardContent>
+            </Card>
           )}
 
           {/* Invoices */}
           {results.invoices.length > 0 && (
-            <section>
-              <div className="mb-3 flex items-center gap-2">
-                <FileText className="h-4 w-4 text-muted-foreground" />
-                <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                  Factures
-                </h2>
-                <Badge variant="secondary">{results.invoices.length}</Badge>
-              </div>
-              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <FileText className="h-4 w-4" />
+                  Factures ({results.invoices.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
                 {results.invoices.map((invoice) => (
                   <Link
                     key={invoice.id}
-                    href={`/repairs/${invoice.repair.id}`}
-                    className="flex items-center justify-between gap-3 rounded-lg border bg-card p-3 transition-colors hover:bg-muted/50"
+                    href={`/repairs/${invoice.repair.id}#payment`}
+                    className="flex items-center justify-between rounded-lg border p-3 transition-colors hover:bg-muted/50"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-950">
-                        <FileText className="h-4 w-4 text-emerald-600" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="truncate font-semibold">{invoice.invoiceNumber}</p>
-                        <p className="truncate text-xs text-muted-foreground">
-                          {invoice.repair.car.matricule}
-                        </p>
-                      </div>
+                    <div>
+                      <p className="font-semibold">{invoice.invoiceNumber}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {invoice.repair.car.matricule} —{" "}
+                        {formatDate(invoice.createdAt)}
+                      </p>
+                      <p className="text-sm font-medium text-emerald-600">
+                        {formatCurrency(invoice.finalTotal)}
+                      </p>
                     </div>
-                    <span className="shrink-0 text-sm font-semibold text-emerald-600">
-                      {Number(invoice.finalTotal).toFixed(2)} DH
-                    </span>
+                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
                   </Link>
                 ))}
-              </div>
-            </section>
+              </CardContent>
+            </Card>
           )}
         </div>
       )}
 
-      {/* Empty initial state */}
-      {!loading && results === null && !error && (
+      {/* Empty state */}
+      {!query && !loading && (
         <div className="rounded-lg border bg-card p-12 text-center">
-          <Search className="mx-auto h-10 w-10 text-muted-foreground/40" />
-          <p className="mt-3 text-muted-foreground">
-            Saisissez un terme pour lancer la recherche
+          <Search className="mx-auto h-12 w-12 text-muted-foreground/40" />
+          <p className="mt-4 text-lg font-medium">Recherche globale</p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Recherchez dans tous les véhicules, clients, réparations et factures
           </p>
+          <div className="mt-6 grid grid-cols-2 gap-4 text-left max-w-md mx-auto text-sm text-muted-foreground">
+            <div>
+              <p className="font-medium">Exemples de recherche :</p>
+              <ul className="mt-2 space-y-1">
+                <li>• Plaque d&apos;immatriculation</li>
+                <li>• Nom du client</li>
+                <li>• Numéro de téléphone</li>
+              </ul>
+            </div>
+            <div>
+              <p className="font-medium">&nbsp;</p>
+              <ul className="mt-2 space-y-1">
+                <li>• ID de réparation</li>
+                <li>• Numéro de facture</li>
+                <li>• Marque de véhicule</li>
+              </ul>
+            </div>
+          </div>
         </div>
       )}
     </div>
-  )
-}
-
-export default function SearchPage() {
-  return (
-    <Suspense fallback={<div className="p-6">Chargement...</div>}>
-      <SearchContent />
-    </Suspense>
-  )
+  );
 }

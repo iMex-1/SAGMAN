@@ -7,12 +7,14 @@ import {
   Wrench, Shield, Clock, Phone, MapPin, MessageCircle,
   ChevronRight, Zap, Settings, Palette, Truck, CheckCircle,
 } from 'lucide-react'
+import { api } from '@/lib/api-client'
 
 interface GarageSettings {
   garage_name?: string
   garage_address?: string
   garage_phone?: string
-  working_hours?: string
+  garage_hours?: string
+  garage_email?: string
 }
 
 const SERVICES = [
@@ -76,13 +78,19 @@ export default function PortalLandingPage() {
   const [settings, setSettings] = useState<GarageSettings>({})
 
   useEffect(() => {
-    // Defaults — replaced by real API data in Phase 4
-    setSettings({
-      garage_name: 'Garage Sagman',
-      garage_address: 'Casablanca, Maroc',
-      garage_phone: '+212 5XX XXX XXX',
-      working_hours: 'Lun–Sam 08:00–18:00',
-    })
+    // Load garage settings from API
+    api.get<{ data: GarageSettings }>('/settings/public')
+      .then(res => setSettings(res.data))
+      .catch(() => {
+        // Fallback to defaults on error
+        setSettings({
+          garage_name: 'Garage Sagman',
+          garage_address: 'Casablanca, Maroc',
+          garage_phone: '+212 5XX XXX XXX',
+          garage_hours: 'Lun–Sam 08:00–18:00',
+          garage_email: 'contact@sagman.ma'
+        })
+      })
   }, [])
 
   return (
@@ -101,7 +109,7 @@ export default function PortalLandingPage() {
           {/* Certified badge */}
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm font-medium backdrop-blur-sm">
             <span>🔧</span>
-            <span>Garage certifié · Casablanca</span>
+            <span>Garage certifié · {settings.garage_address?.split(',')[0] || 'Casablanca'}</span>
           </div>
 
           {/* Animated gear logo */}
@@ -252,7 +260,7 @@ export default function PortalLandingPage() {
             {[
               { icon: MapPin, label: 'Adresse', value: settings.garage_address ?? 'Casablanca, Maroc' },
               { icon: Phone, label: 'Téléphone', value: settings.garage_phone ?? '+212 5XX XXX XXX' },
-              { icon: Clock, label: 'Horaires', value: settings.working_hours ?? 'Lun–Sam 08:00–18:00' },
+              { icon: Clock, label: 'Horaires', value: settings.garage_hours ?? 'Lun–Sam 08:00–18:00' },
             ].map(item => (
               <div key={item.label} className="flex items-start gap-3">
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/10">

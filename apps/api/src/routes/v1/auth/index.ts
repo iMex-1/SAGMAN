@@ -1,10 +1,73 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify'
 import bcrypt from 'bcryptjs'
-import { LoginSchema, RequestOtpSchema, VerifyOtpSchema } from '@sagman/shared'
-import { OtpService } from '../../../services/otp.service'
+import { LoginSchema, RegisterSchema } from '@sagman/shared'
 import { Errors } from '../../../utils/errors'
+import { JwtPayload } from '../../../plugins/jwt'
 
 export async function authRoutes(fastify: FastifyInstance) {
+  // ─── EMPLOYEE/MANAGER AUTHENTICATION ──────────────────────────────────────
+
+
+  // POST /api/v1/auth/register
+  fastify.post(
+    '/register',
+    {
+      config: { rateLimit: { max: 3, timeWindow: '1 hour' } },
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      const body = RegisterSchema.parse(request.body)
+
+      // Check if user with phone already exists
+      const existingUser = await fastify.prisma.user.findUnique({
+        where: { phone: body.phone },
+      })
+
+      if (existingUser) {
+        throw Errors.BadRequest('A user with this phone number already exists')
+      }
+
+      // Check if user with email already exists
+      const existingUserByEmail = await fastify.prisma.user.findUnique({
+        where: { email: body.phone },
+      })
+
+      if (existingUserByEmail) {
+        throw Errors.BadRequest('A user with this phone number already exists')
+      }
+
+      const passwordHash = await bcrypt.hash(body.password, 10)
+
+      const user = await fastify.prisma.user.create({
+        data: {
+          name: body.name,
+          phone: body.phone,
+          email: body.phone, // Store phone as email for compatibility
+          passwordHash,
+          role: body.role as any,
+          specialty: body.specialty ?? undefined,
+          status: 'active',
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+          phone: true,
+          specialty: true,
+          status: true,
+          createdAt: true,
+        },
+      })
+
+      return reply.status(201).send({
+        data: {
+          user,
+          message: 'Account created successfully',
+        },
+      })
+    },
+  )
+
   // POST /api/v1/auth/login
   fastify.post(
     '/login',
@@ -14,12 +77,18 @@ export async function authRoutes(fastify: FastifyInstance) {
     async (request: FastifyRequest, reply: FastifyReply) => {
       const body = LoginSchema.parse(request.body)
 
-      const user = await fastify.prisma.user.findUnique({
-        where: { email: body.email },
+      // Try to find user by phone or email
+      const user = await fastify.prisma.user.findFirst({
+        where: {
+          OR: [
+            { phone: body.identifier },
+            { email: body.identifier },
+          ],
+        },
       })
 
       if (!user) {
-        throw Errors.Unauthorized('Invalid email or password')
+        throw Errors.Unauthorized('Invalid credentials')
       }
 
       if (user.status !== 'active') {
@@ -28,7 +97,7 @@ export async function authRoutes(fastify: FastifyInstance) {
 
       const passwordValid = await bcrypt.compare(body.password, user.passwordHash)
       if (!passwordValid) {
-        throw Errors.Unauthorized('Invalid email or password')
+        throw Errors.Unauthorized('Invalid credentials')
       }
 
       const accessToken = fastify.jwt.sign(
@@ -50,6 +119,7 @@ export async function authRoutes(fastify: FastifyInstance) {
             name: user.name,
             email: user.email,
             role: user.role,
+            phone: user.phone,
           },
         },
       })
@@ -104,82 +174,125 @@ export async function authRoutes(fastify: FastifyInstance) {
     },
   )
 
-  // POST /api/v1/auth/portal/request-otp
+  // ─── PORTAL CLIENT AUTHENTICATION (Phone + Password) ────────────────────────
+
+  // POST /api/v1/auth/portal/register — create a new client account
   fastify.post(
-    '/portal/request-otp',
+    '/portal/register',
     {
-      config: { rateLimit: { max: 3, timeWindow: '10 minutes' } },
+      config: { rateLimit: { max: 5, timeWindow: '1 hour' } },
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
-      const { phone } = RequestOtpSchema.parse(request.body)
+      const body = request.body as {
+        name: string
+        phone: string
+        password: string
+      }
 
-      const otp = OtpService.generate()
-      const otpExpiresAt = OtpService.getExpiry()
+      if (!body.name || body.name.length < 2) {
+        throw Errors.ValidationError('Name must be at least 2 characters')
+      }
 
-      // Upsert client — create if first time
-      await fastify.prisma.client.upsert({
-        where: { phone },
-        create: {
-          phone,
-          name: phone, // Will be updated when client provides name
-          otpCode: otp,
-          otpExpiresAt,
+      if (!body.phone || !/^\+?[1-9]\d{7,14}$/.test(body.phone)) {
+        throw Errors.ValidationError('Invalid phone number format')
+      }
+
+      if (!body.password || body.password.length < 6) {
+        throw Errors.ValidationError('Password must be at least 6 characters')
+      }
+
+      // Check if user with phone already exists
+      const existingUser = await fastify.prisma.user.findUnique({
+        where: { phone: body.phone },
+      })
+
+      if (existingUser) {
+        throw Errors.BadRequest('A user with this phone number already exists')
+      }
+
+      const passwordHash = await bcrypt.hash(body.password, 10)
+
+      // Create user with a client-friendly role (using 'overseer' as placeholder for client)
+      // This is a temporary approach; consider adding a dedicated Client model or role later
+      const user = await fastify.prisma.user.create({
+        data: {
+          name: body.name,
+          phone: body.phone,
+          email: `client_${body.phone}@sagman.local`, // Pseudo-email for compatibility
+          passwordHash,
+          role: 'overseer', // or could create a dedicated role
+          status: 'active',
         },
-        update: {
-          otpCode: otp,
-          otpExpiresAt,
+        select: {
+          id: true,
+          name: true,
+          phone: true,
+          createdAt: true,
         },
       })
 
-      // In production: send OTP via SMS provider
-      // In development: return OTP in response for testing
-      const response: Record<string, any> = {
-        data: { message: 'OTP sent to your phone number' },
-      }
-      if (process.env.NODE_ENV === 'development') {
-        response.data._devOtp = otp
-      }
-
-      return reply.send(response)
+      return reply.status(201).send({
+        data: {
+          user,
+          message: 'Account created successfully',
+        },
+      })
     },
   )
 
-  // POST /api/v1/auth/portal/verify-otp
-  fastify.post('/portal/verify-otp', async (request: FastifyRequest, reply: FastifyReply) => {
-    const { phone, otp } = VerifyOtpSchema.parse(request.body)
+  // POST /api/v1/auth/portal/login — client login with phone & password
+  fastify.post(
+    '/portal/login',
+    {
+      config: { rateLimit: { max: 5, timeWindow: '15 minutes' } },
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      const body = request.body as {
+        phone: string
+        password: string
+      }
 
-    const client = await fastify.prisma.client.findUnique({
-      where: { phone },
-    })
+      if (!body.phone) {
+        throw Errors.ValidationError('Phone number required')
+      }
 
-    if (!client) {
-      throw Errors.Unauthorized('No OTP request found for this phone number')
-    }
+      if (!body.password) {
+        throw Errors.ValidationError('Password required')
+      }
 
-    if (!OtpService.isValid(client.otpCode, client.otpExpiresAt, otp)) {
-      throw Errors.Unauthorized('Invalid or expired OTP')
-    }
+      // Find user by phone (clients)
+      const user = await fastify.prisma.user.findUnique({
+        where: { phone: body.phone },
+      })
 
-    // Clear OTP after successful verification
-    await fastify.prisma.client.update({
-      where: { phone },
-      data: { otpCode: null, otpExpiresAt: null },
-    })
+      if (!user) {
+        throw Errors.Unauthorized('Invalid credentials')
+      }
 
-    const accessToken = fastify.jwt.sign(
-      { sub: client.id, role: 'client', type: 'client' },
-      { expiresIn: '7d' },
-    )
+      if (user.status !== 'active') {
+        throw Errors.Unauthorized('Your account has been deactivated')
+      }
 
-    return reply.send({
-      data: {
-        accessToken,
-        client: {
-          id: client.id,
-          name: client.name,
-          phone: client.phone,
+      const passwordValid = await bcrypt.compare(body.password, user.passwordHash)
+      if (!passwordValid) {
+        throw Errors.Unauthorized('Invalid credentials')
+      }
+
+      const accessToken = fastify.jwt.sign(
+        { sub: user.id, role: user.role, type: 'client' } as JwtPayload,
+        { expiresIn: process.env.JWT_ACCESS_EXPIRES_IN ?? '8h' },
+      )
+
+      return reply.send({
+        data: {
+          accessToken,
+          client: {
+            id: user.id,
+            name: user.name,
+            phone: user.phone,
+          },
         },
-      },
-    })
-  })
+      })
+    },
+  )
 }

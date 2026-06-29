@@ -82,7 +82,7 @@ model User {
   email        String     @unique
   passwordHash String     @map("password_hash")
   role         Role
-  phone        String?
+  phone        String?    @unique
   specialty    String?
   status       UserStatus @default(active)
   createdAt    DateTime   @default(now()) @map("created_at")
@@ -104,20 +104,6 @@ model User {
   @@map("users")
 }
 
-model Client {
-  id           String    @id @default(cuid())
-  name         String
-  phone        String    @unique
-  otpCode      String?   @map("otp_code")
-  otpExpiresAt DateTime? @map("otp_expires_at")
-  createdAt    DateTime  @default(now()) @map("created_at")
-
-  cars         Car[]
-  appointments Appointment[]
-
-  @@map("clients")
-}
-
 model Car {
   id        String    @id @default(cuid())
   matricule String    @unique
@@ -132,7 +118,7 @@ model Car {
   deletedAt DateTime? @map("deleted_at")
   createdAt DateTime  @default(now()) @map("created_at")
 
-  client       Client?       @relation(fields: [clientId], references: [id])
+  client       User?         @relation(fields: [clientId], references: [id])
   repairs      RepairJob[]
   appointments Appointment[]
 
@@ -141,7 +127,6 @@ model Car {
 
 model Appointment {
   id                 String            @id @default(cuid())
-  clientId           String?           @map("client_id")
   clientName         String            @map("client_name")
   clientPhone        String            @map("client_phone")
   carId              String?           @map("car_id")
@@ -157,7 +142,6 @@ model Appointment {
   deletedAt          DateTime?         @map("deleted_at")
   createdAt          DateTime          @default(now()) @map("created_at")
 
-  client    Client?    @relation(fields: [clientId], references: [id])
   car       Car?       @relation(fields: [carId], references: [id])
   createdBy User       @relation(fields: [createdById], references: [id])
   repairJob RepairJob?

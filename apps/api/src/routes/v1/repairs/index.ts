@@ -984,4 +984,97 @@ export async function repairRoutes(fastify: FastifyInstance) {
       return reply.send({ data: mechanics })
     },
   )
+
+  // ── POST /:id/notify — Generate WhatsApp notification URL ───────────────────
+  fastify.post(
+    '/:id/notify',
+    { preHandler: authorize(['manager']) },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      const { id } = request.params as { id: string }
+      const user = request.user as JwtPayload
+      const body = request.body as { 
+        template: 'T-03' | 'T-04' 
+        notes?: string 
+      }
+
+      const repair = await fastify.prisma.repairJob.findUnique({
+        where: { id },
+        include: {
+          car: {
+            include: { client: true }
+          }
+        }
+      })
+      if (!repair) throw Errors.NotFound('Repair', id)
+      
+      const client = repair.car.client
+      if (!client) throw Errors.BadRequest('No client associated with this repair')
+
+      let waUrl = ''
+      let messagePreview = ''
+
+      if (body.template === 'T-03' && repair.diagnosisReport) {
+        // Diagnosis results notification
+        const issues = (repair.diagnosisReport as any)?.issues || []
+        const recommendations = (repair.diagnosisReport as any)?.recommendedRepairs || 'Aucune recommandation'
+        
+        const issuesText = issues.length > 0 
+          ? issues.map((issue: any) => `• ${issue.description} (${issue.severity})`).join('\n')
+          : 'Diagnostic en cours'
+        
+        const message = `Bonjour ${client.name},
+
+Le diagnostic de votre véhicule est terminé.
+
+🚗 Véhicule : ${repair.car.make} ${repair.car.model} — ${repair.car.matricule}
+
+🔍 DIAGNOSTIC :
+${issuesText}
+
+💡 RECOMMANDATIONS :
+${recommendations}
+
+${body.notes ? `📝 NOTES :\n${body.notes}\n\n` : ''}Pour toute question, contactez-nous.
+
+Garage Sagman`
+        
+        waUrl = `https://wa.me/${client.phone.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`
+        messagePreview = message.slice(0, 200)
+        
+      } else if (body.template === 'T-04' && repair.status === 'complete') {
+        // Car ready for pickup notification
+        const message = `Bonjour ${client.name},
+
+Bonne nouvelle ! Votre véhicule est prêt pour la récupération.
+
+🚗 Véhicule : ${repair.car.make} ${repair.car.model} — ${repair.car.matricule}
+✅ Réparation terminée
+📅 Disponible dès maintenant
+
+${body.notes ? `📝 INFORMATIONS :\n${body.notes}\n\n` : ''}Nos horaires : Lun-Sam 8h-18h
+Contact : +212 5XX XXX XXX
+
+Garage Sagman`
+        
+        waUrl = `https://wa.me/${client.phone.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`
+        messagePreview = message.slice(0, 200)
+        
+      } else {
+        throw Errors.BadRequest('Invalid template or repair status for this notification')
+      }
+
+      // Log the notification
+      await fastify.prisma.notificationLog.create({
+        data: {
+          type: body.template,
+          recipientPhone: client.phone,
+          sentById: user.sub,
+          messagePreview,
+          repairId: id
+        }
+      })
+
+      return reply.send({ data: { waUrl, messagePreview } })
+    },
+  )
 }
