@@ -1,6 +1,5 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify'
 import { authorize } from '../../../hooks/authorize'
-import { JwtPayload } from '../../../plugins/jwt'
 
 function getDateRange(period: string): { start: Date; end: Date } {
   const now = new Date()
@@ -26,34 +25,117 @@ function getDateRange(period: string): { start: Date; end: Date } {
 }
 
 export async function dashboardRoutes(fastify: FastifyInstance) {
-  // GET /summary?period=today|week|month
+  // GET /overview?period=today|week|month
   fastify.get(
-    '/summary',
+    '/overview',
     { preHandler: [authorize(['manager', 'overseer'])] },
     async (request: FastifyRequest, reply: FastifyReply) => {
-      const query = request.query as { period?: string }
+      const query = request.query as { period?: string; year?: string; month?: string }
       const { start, end } = getDateRange(query.period ?? 'today')
+      const now = new Date()
+      const year = parseInt(query.year ?? String(now.getFullYear()))
+      const month = parseInt(query.month ?? String(now.getMonth() + 1)) - 1
+      const monthStart = new Date(year, month, 1)
+      const monthEnd = new Date(year, month + 1, 1)
 
-      const revenueResult = await fastify.prisma.payment.aggregate({
-        _sum: { finalTotal: true },
-        where: { createdAt: { gte: start, lt: end } },
-      })
+      const [
+        revenueResult,
+        carsReceived,
+        deliveredRepairs,
+        delayedRepairs,
+        statusCounts,
+        overdueRepairs,
+        lowStockParts,
+        pendingAppointments,
+        urgentRepairs,
+        mechanics,
+        completedGroups,
+        delayGroups,
+        payments,
+      ] = await Promise.all([
+        fastify.prisma.payment.aggregate({
+          _sum: { finalTotal: true },
+          where: { createdAt: { gte: start, lt: end } },
+        }),
+        fastify.prisma.repairJob.count({
+          where: { createdAt: { gte: start, lt: end } },
+        }),
+        fastify.prisma.repairJob.findMany({
+          where: { status: 'delivered', actualCompletionDate: { gte: start, lt: end } },
+          select: { actualCompletionDate: true, targetCompletionDate: true, createdAt: true },
+        }),
+        fastify.prisma.delayReport.count({
+          where: { createdAt: { gte: start, lt: end } },
+        }),
+        fastify.prisma.repairJob.groupBy({
+          by: ['status'],
+          where: { status: { notIn: ['delivered', 'cancelled'] } },
+          _count: true,
+        }),
+        fastify.prisma.repairJob.findMany({
+          where: {
+            status: { notIn: ['complete', 'delivered', 'cancelled'] },
+            targetCompletionDate: { lt: now },
+            delayReports: { none: {} },
+          },
+          include: {
+            car: { select: { matricule: true, make: true, model: true } },
+            primaryMechanic: { select: { name: true } },
+          },
+          take: 10,
+        }),
+        fastify.prisma.$queryRaw<
+          Array<{ id: string; name: string; quantity: number; min_threshold: number }>
+        >`
+          SELECT id, name, quantity, min_threshold FROM parts
+          WHERE quantity <= min_threshold AND deleted_at IS NULL
+          LIMIT 10
+        `,
+        fastify.prisma.appointment.count({
+          where: { status: 'pending', deletedAt: null },
+        }),
+        fastify.prisma.repairJob.findMany({
+          where: {
+            priority: { in: ['high', 'emergency'] },
+            status: { notIn: ['complete', 'delivered', 'cancelled'] },
+          },
+          include: { car: { select: { matricule: true, make: true, model: true } } },
+          orderBy: [{ priority: 'desc' }, { createdAt: 'asc' }],
+          take: 10,
+        }),
+        fastify.prisma.user.findMany({
+          where: { role: 'mechanic', status: 'active' },
+          select: { id: true, name: true },
+        }),
+        fastify.prisma.repairMechanic.groupBy({
+          by: ['mechanicId'],
+          where: {
+            repair: {
+              status: 'delivered',
+              actualCompletionDate: { gte: monthStart, lt: monthEnd },
+            },
+          },
+          _count: { mechanicId: true },
+        }),
+        fastify.prisma.delayReport.groupBy({
+          by: ['reportedById'],
+          where: { createdAt: { gte: monthStart, lt: monthEnd } },
+          _count: { reportedById: true },
+        }),
+        fastify.prisma.payment.findMany({
+          where: {
+            createdAt: {
+              gte: new Date(year, month, 1),
+              lt: new Date(year, month + 1, 1),
+            },
+          },
+          select: { finalTotal: true, createdAt: true },
+        }),
+      ])
 
-      const carsReceived = await fastify.prisma.repairJob.count({
-        where: { createdAt: { gte: start, lt: end } },
-      })
-
-      const carsDelivered = await fastify.prisma.repairJob.count({
-        where: { status: 'delivered', actualCompletionDate: { gte: start, lt: end } },
-      })
-
-      const deliveredRepairs = await fastify.prisma.repairJob.findMany({
-        where: { status: 'delivered', actualCompletionDate: { gte: start, lt: end } },
-        select: { actualCompletionDate: true, targetCompletionDate: true },
-      })
-
+      const carsDelivered = deliveredRepairs.length
       const onTime = deliveredRepairs.filter(
-        r =>
+        (r) =>
           r.targetCompletionDate &&
           r.actualCompletionDate &&
           r.actualCompletionDate <= r.targetCompletionDate,
@@ -63,24 +145,115 @@ export async function dashboardRoutes(fastify: FastifyInstance) {
           ? Math.round((onTime / deliveredRepairs.length) * 100)
           : 100
 
-      const deliveredWithCreated = await fastify.prisma.repairJob.findMany({
-        where: { status: 'delivered', actualCompletionDate: { gte: start, lt: end } },
-        select: { createdAt: true, actualCompletionDate: true },
-      })
-
       const avgDuration =
-        deliveredWithCreated.length > 0
-          ? deliveredWithCreated.reduce((sum, r) => {
+        deliveredRepairs.length > 0
+          ? deliveredRepairs.reduce((sum, r) => {
               const days = r.actualCompletionDate
                 ? (r.actualCompletionDate.getTime() - r.createdAt.getTime()) / 86400000
                 : 0
               return sum + days
-            }, 0) / deliveredWithCreated.length
+            }, 0) / deliveredRepairs.length
           : 0
 
-      const delayedRepairs = await fastify.prisma.delayReport.count({
-        where: { createdAt: { gte: start, lt: end } },
+      const mechanicPerformance = mechanics.map((mechanic) => {
+        const completed = completedGroups.find(
+          (group) => group.mechanicId === mechanic.id,
+        )?._count.mechanicId ?? 0
+        const delays = delayGroups.find(
+          (group) => group.reportedById === mechanic.id,
+        )?._count.reportedById ?? 0
+        return { mechanic, carsCompleted: completed, delays }
       })
+
+      const dailyRevenue: Record<number, number> = {}
+      payments.forEach((p) => {
+        const day = p.createdAt.getDate()
+        dailyRevenue[day] = (dailyRevenue[day] ?? 0) + p.finalTotal.toNumber()
+      })
+      const daysInMonth = new Date(year, month + 1, 0).getDate()
+      const revenueChart = Array.from({ length: daysInMonth }, (_, i) => ({
+        day: i + 1,
+        revenue: Math.round((dailyRevenue[i + 1] ?? 0) * 100) / 100,
+      }))
+
+      return reply.send({
+        data: {
+          summary: {
+            totalRevenue: revenueResult._sum.finalTotal?.toNumber() ?? 0,
+            carsReceived,
+            carsDelivered,
+            avgRepairDurationDays: Math.round(avgDuration * 10) / 10,
+            onTimeRate,
+            delayedRepairs,
+            period: query.period ?? 'today',
+          },
+          live: {
+            activeByStatus: Object.fromEntries(
+              statusCounts.map((s) => [s.status, s._count]),
+            ),
+            overdueRepairs,
+            overdueCount: overdueRepairs.length,
+            lowStockParts: lowStockParts.map((p) => ({
+              ...p,
+              minThreshold: p.min_threshold,
+            })),
+            pendingAppointments,
+            urgentRepairs,
+          },
+          mechanicPerformance,
+          revenueChart,
+        },
+      })
+    },
+  )
+
+  // GET /summary?period=today|week|month
+  fastify.get(
+    '/summary',
+    { preHandler: [authorize(['manager', 'overseer'])] },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      const query = request.query as { period?: string }
+      const { start, end } = getDateRange(query.period ?? 'today')
+
+      const [revenueResult, carsReceived, deliveredRepairs, delayedRepairs] = await Promise.all([
+        fastify.prisma.payment.aggregate({
+          _sum: { finalTotal: true },
+          where: { createdAt: { gte: start, lt: end } },
+        }),
+        fastify.prisma.repairJob.count({
+          where: { createdAt: { gte: start, lt: end } },
+        }),
+        fastify.prisma.repairJob.findMany({
+          where: { status: 'delivered', actualCompletionDate: { gte: start, lt: end } },
+          select: { actualCompletionDate: true, targetCompletionDate: true, createdAt: true },
+        }),
+        fastify.prisma.delayReport.count({
+          where: { createdAt: { gte: start, lt: end } },
+        }),
+      ])
+
+      const carsDelivered = deliveredRepairs.length
+
+      const onTime = deliveredRepairs.filter(
+        (r) =>
+          r.targetCompletionDate &&
+          r.actualCompletionDate &&
+          r.actualCompletionDate <= r.targetCompletionDate,
+      ).length
+      const onTimeRate =
+        deliveredRepairs.length > 0
+          ? Math.round((onTime / deliveredRepairs.length) * 100)
+          : 100
+
+      const avgDuration =
+        deliveredRepairs.length > 0
+          ? deliveredRepairs.reduce((sum, r) => {
+              const days = r.actualCompletionDate
+                ? (r.actualCompletionDate.getTime() - r.createdAt.getTime()) / 86400000
+                : 0
+              return sum + days
+            }, 0) / deliveredRepairs.length
+          : 0
 
       return reply.send({
         data: {

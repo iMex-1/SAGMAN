@@ -32,7 +32,7 @@ const FEATURES = [
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -44,7 +44,7 @@ export default function LoginPage() {
 
     try {
       const res = await api.post<LoginResponse>("/auth/login", {
-        email,
+        identifier,
         password,
       });
       const { accessToken, refreshToken, user } = res.data;
@@ -188,17 +188,17 @@ export default function LoginPage() {
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-1.5">
-                <Label htmlFor="email" className="text-sm font-medium">
-                  Email
+                <Label htmlFor="identifier" className="text-sm font-medium">
+                  Email ou téléphone
                 </Label>
                 <Input
-                  id="email"
-                  type="email"
-                  placeholder="manager@sagman.garage"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  id="identifier"
+                  type="text"
+                  placeholder="manager@sagman.garage ou +212 6XX XXX XXX"
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
                   required
-                  autoComplete="email"
+                  autoComplete="username"
                   className="h-11"
                 />
               </div>

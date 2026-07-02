@@ -11,3 +11,4 @@ export * from './schemas/repair';
 export * from './schemas/part';
 export * from './schemas/payment';
 export * from './schemas/settings';
+export * from './schemas/photo';

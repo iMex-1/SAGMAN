@@ -1,6 +1,9 @@
-// Always use relative URLs so requests go through Next.js rewrites → Fastify.
-// This avoids all CORS issues in development.
-const API_BASE = "/api/v1";
+// In dev, requests go through Next.js rewrites → Fastify (relative URL = no CORS).
+// In production (Cloudflare Pages), the API is on a separate Worker domain.
+// Set NEXT_PUBLIC_API_URL to the Worker URL (e.g. https://sagman-api.workers.dev).
+const API_BASE = (typeof process !== "undefined"
+  ? process.env.NEXT_PUBLIC_API_URL ?? process.env.NEXT_PUBLIC_CF_PAGES_URL
+  : undefined) ?? "/api/v1";
 
 type RequestOptions = RequestInit & {
   token?: string;
@@ -48,7 +51,7 @@ async function request<T>(
   } catch (networkError) {
     throw new ApiError(
       "NETWORK_ERROR",
-      "Cannot reach the server. Make sure the API is running on port 4000.",
+      "Cannot reach the server. Make sure the API is reachable.",
       0,
     );
   }

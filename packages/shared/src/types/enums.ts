@@ -2,6 +2,7 @@ export enum Role {
   overseer = 'overseer',
   manager = 'manager',
   mechanic = 'mechanic',
+  client = 'client',
 }
 
 export enum UserStatus {

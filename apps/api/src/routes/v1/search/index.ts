@@ -27,8 +27,9 @@ export async function searchRoutes(fastify: FastifyInstance) {
         }),
 
         // Clients by name or phone
-        fastify.prisma.client.findMany({
+        fastify.prisma.user.findMany({
           where: {
+            phone: { not: null },
             OR: [
               { name: { contains: searchTerm, mode: 'insensitive' } },
               { phone: { contains: searchTerm } },

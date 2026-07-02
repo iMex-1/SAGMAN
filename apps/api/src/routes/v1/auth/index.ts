@@ -1,8 +1,21 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify'
 import bcrypt from 'bcryptjs'
-import { LoginSchema, RegisterSchema } from '@sagman/shared'
+import { RegisterSchema } from '@sagman/shared'
+import { z } from 'zod'
 import { Errors } from '../../../utils/errors'
 import { JwtPayload } from '../../../plugins/jwt'
+
+const ApiLoginSchema = z.object({
+  identifier: z.string().optional(),
+  email: z.string().email().optional(),
+  password: z.string().min(6),
+}).refine(
+  (data) => Boolean(data.identifier || data.email),
+  {
+    message: 'Identifier or email required',
+    path: ['identifier'],
+  },
+)
 
 export async function authRoutes(fastify: FastifyInstance) {
   // ─── EMPLOYEE/MANAGER AUTHENTICATION ──────────────────────────────────────
@@ -75,14 +88,15 @@ export async function authRoutes(fastify: FastifyInstance) {
       config: { rateLimit: { max: 5, timeWindow: '15 minutes' } },
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
-      const body = LoginSchema.parse(request.body)
+      const body = ApiLoginSchema.parse(request.body)
+      const identifier = body.identifier ?? body.email
 
       // Try to find user by phone or email
       const user = await fastify.prisma.user.findFirst({
         where: {
           OR: [
-            { phone: body.identifier },
-            { email: body.identifier },
+            { phone: identifier },
+            { email: identifier },
           ],
         },
       })
@@ -212,15 +226,13 @@ export async function authRoutes(fastify: FastifyInstance) {
 
       const passwordHash = await bcrypt.hash(body.password, 10)
 
-      // Create user with a client-friendly role (using 'overseer' as placeholder for client)
-      // This is a temporary approach; consider adding a dedicated Client model or role later
       const user = await fastify.prisma.user.create({
         data: {
           name: body.name,
           phone: body.phone,
-          email: `client_${body.phone}@sagman.local`, // Pseudo-email for compatibility
+          email: `client_${body.phone}@sagman.local`,
           passwordHash,
-          role: 'overseer', // or could create a dedicated role
+          role: 'client',
           status: 'active',
         },
         select: {
@@ -228,12 +240,23 @@ export async function authRoutes(fastify: FastifyInstance) {
           name: true,
           phone: true,
           createdAt: true,
+          role: true,
         },
       })
 
+      const accessToken = fastify.jwt.sign(
+        { sub: user.id, role: user.role, type: 'client' } as JwtPayload,
+        { expiresIn: process.env.JWT_ACCESS_EXPIRES_IN ?? '8h' },
+      )
+
       return reply.status(201).send({
         data: {
-          user,
+          accessToken,
+          client: {
+            id: user.id,
+            name: user.name,
+            phone: user.phone,
+          },
           message: 'Account created successfully',
         },
       })
@@ -260,9 +283,9 @@ export async function authRoutes(fastify: FastifyInstance) {
         throw Errors.ValidationError('Password required')
       }
 
-      // Find user by phone (clients)
-      const user = await fastify.prisma.user.findUnique({
-        where: { phone: body.phone },
+      // Find client user by phone
+      const user = await fastify.prisma.user.findFirst({
+        where: { phone: body.phone, role: 'client' },
       })
 
       if (!user) {

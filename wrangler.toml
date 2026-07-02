@@ -1,0 +1,21 @@
+name = "sagman-api"
+main = "apps/worker/src/index.ts"
+compatibility_date = "2024-11-01"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "sagman"
+database_id = ""
+
+[[r2_buckets]]
+binding = "UPLOADS"
+bucket_name = "sagman-uploads"
+
+[[kv_namespaces]]
+binding = "KV"
+id = ""
+
+[vars]
+JWT_ACCESS_EXPIRES_IN = "8h"
+JWT_REFRESH_EXPIRES_IN = "30d"

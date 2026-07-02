@@ -16,7 +16,7 @@ export async function portalRoutes(fastify: FastifyInstance) {
 
   // GET /me — current client profile
   fastify.get('/me', async (request: FastifyRequest, reply: FastifyReply) => {
-    const client = await fastify.prisma.client.findUnique({
+    const client = await fastify.prisma.user.findUnique({
       where: { id: request.user.sub },
       select: { id: true, name: true, phone: true, createdAt: true },
     })
@@ -140,7 +140,7 @@ export async function portalRoutes(fastify: FastifyInstance) {
       notes?: string
     }
 
-    const client = await fastify.prisma.client.findUnique({ where: { id: request.user.sub } })
+    const client = await fastify.prisma.user.findUnique({ where: { id: request.user.sub } })
     if (!client) throw Errors.NotFound('Client')
 
     if (!body.purpose || body.purpose.length < 5) {
@@ -157,7 +157,7 @@ export async function portalRoutes(fastify: FastifyInstance) {
       data: {
         clientId: request.user.sub,
         clientName: client.name,
-        clientPhone: client.phone,
+        clientPhone: client.phone ?? '',
         carId: body.carId ?? null,
         carMatricule: body.carMatricule ? body.carMatricule.toUpperCase() : null,
         purpose: body.purpose,

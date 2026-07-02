@@ -437,17 +437,19 @@ export default function DashboardPage() {
       setLoading(true);
       setError(null);
       try {
-        const [summaryRes, liveRes, perfRes, chartRes] = await Promise.all([
-          api.get<{ data: Summary }>(`/dashboard/summary?period=${period}`),
-          api.get<{ data: LiveData }>("/dashboard/live"),
-          api.get<{ data: MechanicPerf[] }>("/dashboard/mechanic-performance"),
-          api.get<{ data: RevenuePoint[] }>("/dashboard/revenue-chart"),
-        ]);
+        const overviewRes = await api.get<{
+          data: {
+            summary: Summary;
+            live: LiveData;
+            mechanicPerformance: MechanicPerf[];
+            revenueChart: RevenuePoint[];
+          };
+        }>(`/dashboard/overview?period=${period}`);
         if (cancelled) return;
-        setSummary(summaryRes.data);
-        setLive(liveRes.data);
-        setMechanicPerf(perfRes.data);
-        setRevenueData(chartRes.data);
+        setSummary(overviewRes.data.summary);
+        setLive(overviewRes.data.live);
+        setMechanicPerf(overviewRes.data.mechanicPerformance);
+        setRevenueData(overviewRes.data.revenueChart);
       } catch (err) {
         if (cancelled) return;
         setError(

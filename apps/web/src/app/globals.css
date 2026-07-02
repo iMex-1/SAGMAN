@@ -9,6 +9,12 @@
         --brand-red: 0 72% 51%; /* #dc2626 */
         --brand-white: 0 0% 100%;
 
+        /* ── Design Enhancements ──────────────────── */
+        --gradient-primary: 221 83% 40%;
+        --gradient-secondary: 0 72% 51%;
+        --accent-metallic: 210 20% 85%; /* Silver accent */
+        --texture-noise: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiIHZpZXdCb3g9IjAgMCA0IDQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSIyIiBjeT0iMiIgcj0iMSIgZmlsbD0iI2VlZSIvPjwvc3ZnPg==");
+
         /* ── Backgrounds ──────────────────────────────── */
         --background: 210 20% 98%; /* Very light blue-gray */
         --foreground: 215 28% 10%; /* Almost black */
@@ -113,6 +119,15 @@
         font-feature-settings:
             "rlig" 1,
             "calt" 1;
+    }
+
+    /* Font utilities */
+    .font-display {
+        font-family: var(--font-orbitron);
+    }
+
+    .font-serif {
+        font-family: var(--font-inter);
     }
 
     /* Arabic RTL font */
@@ -222,5 +237,71 @@
     }
     .gear-spin-slow {
         animation: gear-spin 8s linear infinite;
+    }
+
+    /* Design Enhancement Utilities */
+    .bg-gradient-primary {
+        background: linear-gradient(
+            135deg,
+            hsl(var(--gradient-primary)) 0%,
+            hsl(var(--gradient-secondary)) 100%
+        );
+    }
+
+    .bg-gradient-secondary {
+        background: linear-gradient(
+            135deg,
+            hsl(var(--gradient-secondary)) 0%,
+            hsl(var(--gradient-primary)) 100%
+        );
+    }
+
+    .bg-accent-metallic {
+        background-color: hsl(var(--accent-metallic));
+    }
+
+    .bg-texture-noise {
+        background-image: var(--texture-noise);
+        background-repeat: repeat;
+        background-size: 200px 200px;
+    }
+
+    .from-metallic {
+        --tw-gradient-from: hsl(var(--accent-metallic)) var(--tw-gradient-from-position);
+        --tw-gradient-to: rgb(255 255 255 / 0) var(--tw-gradient-to-position);
+        --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+    }
+
+    .to-metallic {
+        --tw-gradient-to: hsl(var(--accent-metallic)) var(--tw-gradient-to-position);
+    }
+
+    .animate-float {
+        animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0% {
+            transform: translatey(0px);
+        }
+        50% {
+            transform: translatey(-10px);
+        }
+        100% {
+            transform: translatey(0px);
+        }
+    }
+
+    .animate-pulse-slow {
+        animation: pulse-slow 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse-slow {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.8;
+        }
     }
 }
