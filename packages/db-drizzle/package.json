@@ -15,16 +15,23 @@
     "dev": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
+    "db:migrate": "wrangler d1 migrations apply sagman --remote",
+    "db:migrate:local": "wrangler d1 migrations apply sagman --local",
     "db:studio": "drizzle-kit studio",
     "db:seed": "tsx src/seed-runner.ts"
   },
   "dependencies": {
-    "drizzle-orm": "^0.33.0",
-    "@sagman/shared": "workspace:*"
+    "@sagman/shared": "workspace:*",
+    "drizzle-orm": "^0.33.0"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240901.0",
+    "@libsql/client": "^0.17.4",
+    "@sagman/config": "workspace:*",
+    "@types/better-sqlite3": "^7.6.13",
+    "better-sqlite3": "^12.11.1",
     "drizzle-kit": "^0.24.0",
+    "tsx": "^4.22.4",
     "typescript": "^5.5.0"
   }
 }

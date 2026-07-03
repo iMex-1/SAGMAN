@@ -109,10 +109,9 @@ export default function PortalLandingPage() {
 
   useEffect(() => {
     // Load garage settings from API
-    api.get('/settings/public')
+    api.get<{ data: GarageSettings }>('/settings/public')
       .then(res => {
-        const data = res.data as GarageSettings;
-        setSettings(data);
+        setSettings(res.data);
       })
       .catch(() => {
         // Fallback to defaults on error
@@ -236,7 +235,7 @@ export default function PortalLandingPage() {
           </h2>
 
           <div className="grid gap-8 md:grid-cols-3">
-            <div className="relative bg-white p-6 rounded-xl border border-[rgba(220,38,38,0.1)] hover:bg-[rgba(220,38,38,0.05)] hover:shadow-xl transition-all duration-400 bg-[url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiIHZpZXdCb3g9IjAgMCA0IDQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSIyIiBjeT0iMiIgcj0iMSIgZmlsbD0iI2VlZSIvPjwvc3ZnPg==") bg-[length:200px_200px]">
+            <div className="relative bg-white p-6 rounded-xl border border-[rgba(220,38,38,0.1)] hover:bg-[rgba(220,38,38,0.05)] hover:shadow-xl transition-all duration-400 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiIHZpZXdCb3g9IjAgMCA0IDQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSIyIiBjeT0iMiIgcj0iMSIgZmlsbD0iI2VlZSIvPjwvc3ZnPg==') bg-[length:200px_200px]">
               <div className="absolute inset-0 -z-10 bg-texture-noise opacity-5 pointer-events-none"></div>
               <div className="flex items-center justify-center w-12 h-12 mb-4 bg-[radial-gradient(circle_at_30%_30%,rgba(220,38,38,0.1),rgba(220,38,38,0)) rounded-full relative z-10">
                 <svg className="h-5 w-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -247,7 +246,7 @@ export default function PortalLandingPage() {
               <p className="text-gray-600">Nos mécaniciens sont formés aux dernières technologies et bénéficient de certifications constructeur.</p>
             </div>
 
-            <div className="relative bg-white p-6 rounded-xl border border-[rgba(30,64,175,0.1)] hover:bg-[rgba(30,64,175,0.05)] hover:shadow-xl transition-all duration-400 bg-[url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiIHZpZXdCb3g9IjAgMCA0IDQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSIyIiBjeT0iMiIgcj0iMSIgZmlsbD0iI2VlZSIvPjwvc3ZnPg==") bg-[length:200px_200px]">
+            <div className="relative bg-white p-6 rounded-xl border border-[rgba(30,64,175,0.1)] hover:bg-[rgba(30,64,175,0.05)] hover:shadow-xl transition-all duration-400 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiIHZpZXdCb3g9IjAgMCA0IDQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSIyIiBjeT0iMiIgcj0iMSIgZmlsbD0iI2VlZSIvPjwvc3ZnPg==') bg-[length:200px_200px]">
               <div className="absolute inset-0 -z-10 bg-texture-noise opacity-5 pointer-events-none"></div>
               <div className="flex items-center justify-center w-12 h-12 mb-4 bg-[radial-gradient(circle_at_30%_30%,rgba(30,64,175,0.1),rgba(30,64,175,0)) rounded-full relative z-10">
                 <svg className="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -258,7 +257,7 @@ export default function PortalLandingPage() {
               <p className="text-gray-600">Atelier équipé de valises diagnostiques, banc de géométrie et cabine de peinture conforme aux normes.</p>
             </div>
 
-            <div className="relative bg-white p-6 rounded-xl border border-[rgba(255,255,255,0.1)] hover:bg-[rgba(255,255,255,0.02)] hover:shadow-xl transition-all duration-400 bg-[url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiIHZpZXdCb3g9IjAgMCA0IDQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSIyIiBjeT0iMiIgcj0iMSIgZmlsbD0iI2VlZSIvPjwvc3ZnPg==") bg-[length:200px_200px]">
+            <div className="relative bg-white p-6 rounded-xl border border-[rgba(255,255,255,0.1)] hover:bg-[rgba(255,255,255,0.02)] hover:shadow-xl transition-all duration-400 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiIHZpZXdCb3g9IjAgMCA0IDQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSIyIiBjeT0iMiIgcj0iMSIgZmlsbD0iI2VlZSIvPjwvc3ZnPg==') bg-[length:200px_200px]">
               <div className="absolute inset-0 -z-10 bg-texture-noise opacity-5 pointer-events-none"></div>
               <div className="flex items-center justify-center w-12 h-12 mb-4 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.05),rgba(255,255,255,0)) rounded-full relative z-10">
                 <svg className="h-5 w-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -289,14 +288,14 @@ export default function PortalLandingPage() {
             {SERVICES.map((service, index) => (
               <div
                 key={service.name}
-                className="group relative overflow-hidden bg-white p-6 border border-[rgba(220,38,38,0.1)] rounded-xl hover:bg-[rgba(220,38,38,0.05)] hover:border-[rgba(220,38,38,0.2)] hover:shadow-xl transition-all duration-400 bg-[url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiIHZpZXdCb3g9IjAgMCA0IDQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSIyIiBjeT0iMiIgcj0iMSIgZmlsbD0iI2VlZSIvPjwvc3ZnPg")] bg-[length:200px_200px]"
+                className="group relative overflow-hidden bg-white p-6 border border-[rgba(220,38,38,0.1)] rounded-xl hover:bg-[rgba(220,38,38,0.05)] hover:border-[rgba(220,38,38,0.2)] hover:shadow-xl transition-all duration-400 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiIHZpZXdCb3g9IjAgMCA0IDQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSIyIiBjeT0iMiIgcj0iMSIgZmlsbD0iI2VlZSIvPjwvc3ZnPg')] bg-[length:200px_200px]"
               >
                 <div className="absolute inset-0 -z-10 bg-texture-noise opacity-3 pointer-events-none"></div>
                 {/* Icon with animated background */}
                 <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl relative z-10" style={{
                   '--bg-color': service.bg.replace('bg-[', '').replace(']', ''),
                   '--border-color': service.border.replace('border-[', '').replace(']', '')
-                }}>
+                } as React.CSSProperties}>
                   <div className={`absolute inset-0 rounded-xl ${service.bg} ${service.border} opacity-70`}></div>
                   <div className={`relative z-10 flex h-10 w-10 items-center justify-center`}>
                     <service.icon className={`h-5 w-5 ${service.text} transition-colors duration-400 group-hover:text-white`} />
@@ -395,7 +394,7 @@ export default function PortalLandingPage() {
 
           <div className="grid gap-8 md:grid-cols-2">
             <div className="space-y-6">
-              <div className="relative bg-white p-4 rounded-xl border border-[rgba(220,38,38,0.1)] hover:bg-[rgba(220,38,38,0.05)] hover:shadow-lg transition-all duration-400 bg-[url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiIHZpZXdCb3g9IjAgMCA0IDQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSIyIiBjeT0iMiIgcj0iMSIgZmlsbD0iI2VlZSIvPjwvc3ZnPg==") bg-[length:100px_100px]">
+              <div className="relative bg-white p-4 rounded-xl border border-[rgba(220,38,38,0.1)] hover:bg-[rgba(220,38,38,0.05)] hover:shadow-lg transition-all duration-400 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiIHZpZXdCb3g9IjAgMCA0IDQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSIyIiBjeT0iMiIgcj0iMSIgZmlsbD0iI2VlZSIvPjwvc3ZnPg==') bg-[length:100px_100px]">
                 <div className="absolute inset-0 -z-10 bg-texture-noise opacity-3 pointer-events-none"></div>
                 <div className="flex items-start space-x-4 relative z-10">
                   <div className="flex-shrink-0 h-10 w-10 items-center justify-center rounded-xl bg-[rgba(220,38,38,0.1)]">
@@ -408,7 +407,7 @@ export default function PortalLandingPage() {
                 </div>
               </div>
 
-              <div className="relative bg-white p-4 rounded-xl border border-[rgba(255,255,255,0.1)] hover:bg-[rgba(255,255,255,0.02)] hover:shadow-lg transition-all duration-400 bg-[url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiIHZpZXdCb3g9IjAgMCA0IDQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSIyIiBjeT0iMiIgcj0iMSIgZmlsbD0iI2VlZSIvPjwvc3ZnPg==") bg-[length:100px_100px]">
+              <div className="relative bg-white p-4 rounded-xl border border-[rgba(255,255,255,0.1)] hover:bg-[rgba(255,255,255,0.02)] hover:shadow-lg transition-all duration-400 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiIHZpZXdCb3g9IjAgMCA0IDQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSIyIiBjeT0iMiIgcj0iMSIgZmlsbD0iI2VlZSIvPjwvc3ZnPg==') bg-[length:100px_100px]">
                 <div className="absolute inset-0 -z-10 bg-texture-noise opacity-3 pointer-events-none"></div>
                 <div className="flex items-start space-x-4 relative z-10">
                   <div className="flex-shrink-0 h-10 w-10 items-center justify-center rounded-xl bg-[rgba(255,255,255,0.1)]">
@@ -421,7 +420,7 @@ export default function PortalLandingPage() {
                 </div>
               </div>
 
-              <div className="relative bg-white p-4 rounded-xl border border-[rgba(30,64,175,0.1)] hover:bg-[rgba(30,64,175,0.05)] hover:shadow-lg transition-all duration-400 bg-[url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiIHZpZXdCb3g9IjAgMCA0IDQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSIyIiBjeT0iMiIgcj0iMSIgZmlsbD0iI2VlZSIvPjwvc3ZnPg==") bg-[length:100px_100px]">
+              <div className="relative bg-white p-4 rounded-xl border border-[rgba(30,64,175,0.1)] hover:bg-[rgba(30,64,175,0.05)] hover:shadow-lg transition-all duration-400 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiIHZpZXdCb3g9IjAgMCA0IDQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSIyIiBjeT0iMiIgcj0iMSIgZmlsbD0iI2VlZSIvPjwvc3ZnPg==') bg-[length:100px_100px]">
                 <div className="absolute inset-0 -z-10 bg-texture-noise opacity-3 pointer-events-none"></div>
                 <div className="flex items-start space-x-4 relative z-10">
                   <div className="flex-shrink-0 h-10 w-10 items-center justify-center rounded-xl bg-[rgba(30,64,175,0.1)]">

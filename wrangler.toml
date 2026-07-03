@@ -4,18 +4,37 @@ compatibility_date = "2024-11-01"
 compatibility_flags = ["nodejs_compat"]
 
 [[d1_databases]]
-binding = "DB"
+binding = "sagman"
 database_name = "sagman"
-database_id = ""
+database_id = "c3b12369-5076-4eb3-929d-f0a9dbbfe115"
 
 [[r2_buckets]]
-binding = "UPLOADS"
+binding = "sagman_uploads"
 bucket_name = "sagman-uploads"
 
-[[kv_namespaces]]
-binding = "KV"
-id = ""
+# ⚠️ Create a KV namespace first, then uncomment:
+# [[kv_namespaces]]
+# binding = "sagman_kv"
+# id = "991c6195c4ce43668a5dbfa80ad8139d"
 
 [vars]
 JWT_ACCESS_EXPIRES_IN = "8h"
 JWT_REFRESH_EXPIRES_IN = "30d"
+
+# ─── Deploy the Worker ─────────────────────────────────────────────────────
+# 1. Create D1 database and copy its ID:
+#    wrangler d1 create sagman
+#    → paste database_id above
+#
+# 2. Create R2 bucket:
+#    wrangler r2 bucket create sagman-uploads
+#
+# 3. (Optional) Create KV namespace:
+#    wrangler kv namespace create sagman-kv
+#    → uncomment & paste id above
+#
+# 4. Set JWT secret:
+#    echo "your-jwt-secret" | wrangler secret put JWT_SECRET
+#
+# 5. Deploy:
+#    wrangler deploy

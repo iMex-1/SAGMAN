@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
+    "cf-deploy": "wrangler deploy",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .ts"
   },

@@ -8,6 +8,8 @@ dist/
 .turbo/
 out/
 build/
+.open-next/
+.wrangler/
 
 # Environment files
 .env

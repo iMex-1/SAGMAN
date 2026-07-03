@@ -2155,9 +2155,9 @@ function PaymentPanel({
               {money(repair.payment.changeDue)}
             </span>
           </div>
-          {repair.payment.paidByName && (
+          {(repair.payment as any).paidByName && (
             <p className="text-xs text-green-600 pt-2 italic">
-              Paid by: {repair.payment.paidByName}
+              Paid by: {(repair.payment as any).paidByName}
             </p>
           )}
           <Button
