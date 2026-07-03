@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --port 3000",
     "build": "next build",
-    "build:cf": "opennextjs-cloudflare build --skipWranglerConfigCheck && cp .open-next/worker.js .open-next/_worker.js && printf '%s\\n' 'compatibility_date = \"2024-11-01\"' 'compatibility_flags = [\"nodejs_compat\"]' > .open-next/wrangler.toml",
+    "build:cf": "opennextjs-cloudflare build --skipWranglerConfigCheck && cp .open-next/worker.js .open-next/_worker.js && printf '%s\\n' 'compatibility_date = \"2024-11-11\"' 'compatibility_flags = [\"nodejs_compat\"]' > .open-next/wrangler.toml",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit"
