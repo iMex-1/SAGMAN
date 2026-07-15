@@ -2,11 +2,12 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
-import { Plus, Eye, Loader2, AlertCircle, Search, X } from 'lucide-react'
+import { Icon } from '@/components/ui/icon'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { api, ApiError } from '@/lib/api-client'
+import { useTranslations } from 'next-intl'
 
 interface Car {
   id: string
@@ -27,6 +28,7 @@ interface CarsResponse {
 }
 
 export default function CarsPage() {
+  const t = useTranslations()
   const [cars, setCars] = useState<Car[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -45,7 +47,7 @@ export default function CarsPage() {
       if (err instanceof ApiError) {
         setError(err.message)
       } else {
-        setError('Failed to load cars.')
+        setError(t('car.errors.loadFailed'))
       }
     } finally {
       setIsLoading(false)
@@ -69,37 +71,32 @@ export default function CarsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-md">
         <div>
-          <h1 className="text-2xl font-bold">Cars</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Manage registered vehicles</p>
+          <h2 className="font-headline-xl text-headline-xl">{t('car.title')}</h2>
+          <p className="font-body-lg text-body-lg text-on-surface-variant">{t('car.subtitle')}</p>
         </div>
-        <Button asChild>
-          <Link href="/cars/new">
-            <Plus className="h-4 w-4" />
-            Register Car
-          </Link>
-        </Button>
+
       </div>
 
       {/* Search */}
       <form onSubmit={handleSearch} className="flex gap-2">
         <div className="relative max-w-sm flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Icon name="search" size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" />
           <Input
-            placeholder="Search by plate, make, or model..."
+            placeholder={t('car.searchPlaceholder')}
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             className="pl-9"
           />
         </div>
         <Button type="submit" variant="secondary">
-          Search
+          {t('common.search')}
         </Button>
         {activeSearch && (
           <Button type="button" variant="ghost" onClick={clearSearch}>
-            <X className="h-4 w-4" />
-            Clear
+            <Icon name="close" size={16} />
+            {t('common.clear')}
           </Button>
         )}
       </form>
@@ -107,66 +104,62 @@ export default function CarsPage() {
       {/* Content */}
       {isLoading ? (
         <div className="flex items-center justify-center py-16">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          <Icon name="progress_activity" size={32} className="animate-spin text-on-surface-variant" />
         </div>
       ) : error ? (
-        <div className="flex items-center gap-3 rounded-md border border-destructive/50 bg-destructive/10 p-4 text-destructive">
-          <AlertCircle className="h-5 w-5 shrink-0" />
-          <p className="text-sm">{error}</p>
+        <div className="flex items-center gap-3 rounded-lg border border-outline-variant bg-surface p-4">
+          <Icon name="error" size={20} className="shrink-0 text-primary" />
+          <p className="font-body-md text-body-md text-primary">{error}</p>
           <Button variant="outline" size="sm" onClick={fetchCars} className="ml-auto">
-            Retry
+            {t('common.retry')}
           </Button>
         </div>
       ) : cars.length === 0 ? (
-        <div className="rounded-lg border bg-card p-12 text-center">
-          <p className="text-muted-foreground">
-            {activeSearch ? `No cars found matching "${activeSearch}".` : 'No cars registered yet.'}
+        <div className="bg-white border border-outline-variant rounded-xl shadow-sm p-12 text-center">
+          <p className="font-body-lg text-body-lg text-on-surface-variant">
+            {activeSearch ? t('car.empty.noResults').replace('{search}', activeSearch) : t('car.empty.none')}
           </p>
-          {!activeSearch && (
-            <Button asChild className="mt-4">
-              <Link href="/cars/new">Register your first car</Link>
-            </Button>
-          )}
+
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-lg border bg-card">
-          <table className="w-full text-sm">
+        <div className="bg-white border border-outline-variant rounded-xl shadow-sm overflow-x-auto">
+          <table className="w-full border-collapse">
             <thead>
-              <tr className="border-b bg-muted/50">
-                <th className="px-4 py-3 text-left font-medium text-muted-foreground">Matricule</th>
-                <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                  Make / Model / Year
+              <tr className="bg-surface-container-low">
+                <th className="px-4 py-3 text-left font-label-sm text-label-sm text-on-surface-variant">{t('car.fields.matricule')}</th>
+                <th className="px-4 py-3 text-left font-label-sm text-label-sm text-on-surface-variant">
+                  {t('car.fields.make')} / {t('car.fields.model')} / {t('car.fields.year')}
                 </th>
-                <th className="hidden px-4 py-3 text-left font-medium text-muted-foreground md:table-cell">
-                  Color
+                <th className="hidden px-4 py-3 text-left font-label-sm text-label-sm text-on-surface-variant md:table-cell">
+                  {t('car.fields.color')}
                 </th>
-                <th className="hidden px-4 py-3 text-left font-medium text-muted-foreground lg:table-cell">
-                  Client
+                <th className="hidden px-4 py-3 text-left font-label-sm text-label-sm text-on-surface-variant lg:table-cell">
+                  {t('car.fields.client')}
                 </th>
-                <th className="hidden px-4 py-3 text-left font-medium text-muted-foreground lg:table-cell">
-                  Repairs
+                <th className="hidden px-4 py-3 text-left font-label-sm text-label-sm text-on-surface-variant lg:table-cell">
+                  {t('car.repairCount')}
                 </th>
-                <th className="px-4 py-3 text-right font-medium text-muted-foreground">Actions</th>
+                <th className="px-4 py-3 text-right font-label-sm text-label-sm text-on-surface-variant">{t('common.actions')}</th>
               </tr>
             </thead>
-            <tbody className="divide-y">
+            <tbody>
               {cars.map((car) => (
-                <tr key={car.id} className="transition-colors hover:bg-muted/30">
-                  <td className="px-4 py-3 font-mono font-medium">{car.matricule}</td>
-                  <td className="px-4 py-3">
+                <tr key={car.id} className="hover:bg-surface-container-low">
+                  <td className="px-4 py-3 font-mono font-title-md text-title-md">{car.matricule}</td>
+                  <td className="px-4 py-3 font-body-md text-body-md">
                     {car.make} {car.model}
                     {car.year && (
-                      <span className="ml-1 text-muted-foreground">({car.year})</span>
+                      <span className="ml-1 text-on-surface-variant">({car.year})</span>
                     )}
                   </td>
-                  <td className="hidden px-4 py-3 text-muted-foreground md:table-cell">
+                  <td className="hidden px-4 py-3 text-on-surface-variant font-body-md text-body-md md:table-cell">
                     {car.color || '—'}
                   </td>
-                  <td className="hidden px-4 py-3 lg:table-cell">
+                  <td className="hidden px-4 py-3 font-body-md text-body-md lg:table-cell">
                     {car.client ? (
-                      <span className="font-medium">{car.client.name}</span>
+                      <span className="font-title-md text-title-md">{car.client.name}</span>
                     ) : (
-                      <span className="text-muted-foreground">Walk-in</span>
+                      <span className="text-on-surface-variant">{t('car.walkin')}</span>
                     )}
                   </td>
                   <td className="hidden px-4 py-3 lg:table-cell">
@@ -176,8 +169,8 @@ export default function CarsPage() {
                     <div className="flex items-center justify-end gap-2">
                       <Button variant="ghost" size="sm" asChild>
                         <Link href={`/cars/${car.id}`}>
-                          <Eye className="h-4 w-4" />
-                          <span className="sr-only">View</span>
+                          <Icon name="visibility" size={16} />
+                          <span className="sr-only">{t('common.view')}</span>
                         </Link>
                       </Button>
                     </div>

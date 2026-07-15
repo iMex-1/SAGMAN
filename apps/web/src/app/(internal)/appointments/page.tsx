@@ -2,8 +2,10 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
-import { Plus, Eye, Loader2, AlertCircle } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { Icon } from '@/components/ui/icon'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { api, ApiError } from '@/lib/api-client'
 
@@ -41,16 +43,8 @@ const STATUS_VARIANTS: Record<
   converted: 'secondary',
 }
 
-const STATUS_LABELS: Record<AppointmentStatus, string> = {
-  pending: 'Pending',
-  confirmed: 'Confirmed',
-  rescheduled: 'Rescheduled',
-  cancelled: 'Cancelled',
-  converted: 'Converted',
-}
-
 function formatDate(iso: string) {
-  return new Date(iso).toLocaleString('en-GB', {
+  return new Date(iso).toLocaleString('fr-FR', {
     day: '2-digit',
     month: 'short',
     year: 'numeric',
@@ -59,20 +53,21 @@ function formatDate(iso: string) {
   })
 }
 
-const FILTER_TABS: { label: string; value: StatusFilter }[] = [
-  { label: 'All', value: 'all' },
-  { label: 'Pending', value: 'pending' },
-  { label: 'Confirmed', value: 'confirmed' },
-  { label: 'Rescheduled', value: 'rescheduled' },
-  { label: 'Cancelled', value: 'cancelled' },
-  { label: 'Converted', value: 'converted' },
-]
-
 export default function AppointmentsPage() {
+  const t = useTranslations()
+  const FILTER_TABS: { label: string; value: StatusFilter }[] = [
+    { label: t('common.all'), value: 'all' },
+    { label: t('appointment.status.pending'), value: 'pending' },
+    { label: t('appointment.status.confirmed'), value: 'confirmed' },
+    { label: t('appointment.status.rescheduled'), value: 'rescheduled' },
+    { label: t('appointment.status.cancelled'), value: 'cancelled' },
+    { label: t('appointment.status.converted'), value: 'converted' },
+  ]
   const [appointments, setAppointments] = useState<Appointment[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('pending')
+  const [dateFilter, setDateFilter] = useState('')
 
   const fetchAppointments = useCallback(async () => {
     setIsLoading(true)
@@ -80,18 +75,19 @@ export default function AppointmentsPage() {
     try {
       const params = new URLSearchParams({ page: '1', limit: '20' })
       if (statusFilter !== 'all') params.set('status', statusFilter)
+      if (dateFilter) params.set('date', dateFilter)
       const res = await api.get<AppointmentsResponse>(`/appointments?${params}`)
       setAppointments(res.data)
     } catch (err) {
       if (err instanceof ApiError) {
         setError(err.message)
       } else {
-        setError('Failed to load appointments.')
+        setError(t('appointment.errors.loadFailed'))
       }
     } finally {
       setIsLoading(false)
     }
-  }, [statusFilter])
+  }, [statusFilter, dateFilter])
 
   useEffect(() => {
     fetchAppointments()
@@ -100,19 +96,13 @@ export default function AppointmentsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-md">
         <div>
-          <h1 className="text-2xl font-bold">Appointments</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Manage client appointment requests
+          <h2 className="font-headline-xl text-headline-xl">{t('appointment.title')}</h2>
+          <p className="font-body-lg text-body-lg text-on-surface-variant">
+            {t('appointment.title')}
           </p>
         </div>
-        <Button asChild>
-          <Link href="/appointments/new">
-            <Plus className="h-4 w-4" />
-            New Appointment
-          </Link>
-        </Button>
       </div>
 
       {/* Status filter tabs */}
@@ -121,10 +111,10 @@ export default function AppointmentsPage() {
           <button
             key={tab.value}
             onClick={() => setStatusFilter(tab.value)}
-            className={`rounded-md px-4 py-1.5 text-sm font-medium transition-colors ${
+            className={`rounded-lg px-lg py-sm text-title-md font-title-md transition-colors ${
               statusFilter === tab.value
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                ? 'bg-primary text-on-primary'
+                : 'border border-outline-variant text-on-surface-variant hover:bg-surface-container-low'
             }`}
           >
             {tab.label}
@@ -132,85 +122,103 @@ export default function AppointmentsPage() {
         ))}
       </div>
 
+      {/* Date filter */}
+      <div className="flex items-center gap-2">
+        <Icon name="calendar_today" size={16} className="text-on-surface-variant" />
+        <Input
+          type="date"
+          value={dateFilter}
+          onChange={(e) => setDateFilter(e.target.value)}
+          className="max-w-[180px]"
+        />
+        {dateFilter && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => setDateFilter('')}
+          >
+            <Icon name="close" size={16} />
+          </Button>
+        )}
+      </div>
+
       {/* Content */}
       {isLoading ? (
         <div className="flex items-center justify-center py-16">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          <Icon name="progress_activity" size={32} className="animate-spin text-on-surface-variant" />
         </div>
       ) : error ? (
-        <div className="flex items-center gap-3 rounded-md border border-destructive/50 bg-destructive/10 p-4 text-destructive">
-          <AlertCircle className="h-5 w-5 shrink-0" />
-          <p className="text-sm">{error}</p>
+        <div className="flex items-center gap-3 rounded-lg border border-outline-variant bg-surface p-4">
+          <Icon name="error" size={20} className="shrink-0 text-primary" />
+          <p className="font-body-md text-body-md text-primary">{error}</p>
           <Button variant="outline" size="sm" onClick={fetchAppointments} className="ml-auto">
-            Retry
+            {t('common.retry')}
           </Button>
         </div>
       ) : appointments.length === 0 ? (
-        <div className="rounded-lg border bg-card p-12 text-center">
-          <p className="text-muted-foreground">
+        <div className="bg-white border border-outline-variant rounded-xl shadow-sm p-12 text-center">
+          <p className="font-body-lg text-body-lg text-on-surface-variant">
             {statusFilter !== 'all'
-              ? `No ${STATUS_LABELS[statusFilter as AppointmentStatus]?.toLowerCase()} appointments found.`
-              : 'No appointments yet.'}
+              ? `${t('common.noResults')} ${t('appointment.status.' + (statusFilter as AppointmentStatus)).toLowerCase()}`
+              : t('common.noResults')}
           </p>
-          <Button asChild className="mt-4">
-            <Link href="/appointments/new">Create an appointment</Link>
-          </Button>
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-lg border bg-card">
-          <table className="w-full text-sm">
+        <div className="bg-white border border-outline-variant rounded-xl shadow-sm overflow-x-auto">
+          <table className="w-full border-collapse">
             <thead>
-              <tr className="border-b bg-muted/50">
-                <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                  Client Name
+              <tr className="bg-surface-container-low">
+                <th className="px-4 py-3 text-left font-label-sm text-label-sm text-on-surface-variant">
+                  {t('appointment.fields.clientName')}
                 </th>
-                <th className="hidden px-4 py-3 text-left font-medium text-muted-foreground sm:table-cell">
-                  Phone
+                <th className="hidden px-4 py-3 text-left font-label-sm text-label-sm text-on-surface-variant sm:table-cell">
+                  {t('common.phone')}
                 </th>
-                <th className="hidden px-4 py-3 text-left font-medium text-muted-foreground md:table-cell">
-                  Vehicle
+                <th className="hidden px-4 py-3 text-left font-label-sm text-label-sm text-on-surface-variant md:table-cell">
+                  {t('appointment.fields.vehicleMatricule')}
                 </th>
-                <th className="hidden px-4 py-3 text-left font-medium text-muted-foreground lg:table-cell">
-                  Purpose
+                <th className="hidden px-4 py-3 text-left font-label-sm text-label-sm text-on-surface-variant lg:table-cell">
+                  {t('appointment.fields.purpose')}
                 </th>
-                <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                  Requested Date
+                <th className="px-4 py-3 text-left font-label-sm text-label-sm text-on-surface-variant">
+                  {t('appointment.fields.requestedDate')}
                 </th>
-                <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                  Status
+                <th className="px-4 py-3 text-left font-label-sm text-label-sm text-on-surface-variant">
+                  {t('common.status')}
                 </th>
-                <th className="px-4 py-3 text-right font-medium text-muted-foreground">
-                  Actions
+                <th className="px-4 py-3 text-right font-label-sm text-label-sm text-on-surface-variant">
+                  {t('common.actions')}
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y">
+            <tbody>
               {appointments.map((appt) => (
-                <tr key={appt.id} className="transition-colors hover:bg-muted/30">
-                  <td className="px-4 py-3 font-medium">{appt.clientName}</td>
-                  <td className="hidden px-4 py-3 text-muted-foreground sm:table-cell">
+                <tr key={appt.id} className="hover:bg-surface-container-low">
+                  <td className="px-4 py-3 font-title-md text-title-md">{appt.clientName}</td>
+                  <td className="hidden px-4 py-3 text-on-surface-variant font-body-md text-body-md sm:table-cell">
                     {appt.clientPhone}
                   </td>
-                  <td className="hidden px-4 py-3 font-mono text-xs text-muted-foreground md:table-cell">
+                  <td className="hidden px-4 py-3 font-mono text-xs text-on-surface-variant md:table-cell">
                     {appt.car?.matricule || appt.carMatricule || '—'}
                   </td>
-                  <td className="hidden max-w-[200px] px-4 py-3 text-muted-foreground lg:table-cell">
+                  <td className="hidden max-w-[200px] px-4 py-3 text-on-surface-variant font-body-md text-body-md lg:table-cell">
                     <span className="block truncate">{appt.purpose}</span>
                   </td>
-                  <td className="whitespace-nowrap px-4 py-3 text-muted-foreground">
+                  <td className="whitespace-nowrap px-4 py-3 text-on-surface-variant font-body-md text-body-md">
                     {formatDate(appt.requestedAt)}
                   </td>
                   <td className="px-4 py-3">
                     <Badge variant={STATUS_VARIANTS[appt.status]}>
-                      {STATUS_LABELS[appt.status]}
+                      {t('appointment.status.' + appt.status)}
                     </Badge>
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end">
                       <Button variant="ghost" size="sm" asChild>
                         <Link href={`/appointments/${appt.id}`}>
-                          <Eye className="h-4 w-4" />
-                          <span className="sr-only">View</span>
+                          <Icon name="visibility" size={16} />
+                          <span className="sr-only">{t('common.view')}</span>
                         </Link>
                       </Button>
                     </div>

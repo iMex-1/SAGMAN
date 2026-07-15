@@ -5,6 +5,7 @@ import type { Env } from '../../bindings';
 import type { AppBindings } from '../../types';
 import { Errors, AppError } from '../../utils/errors';
 import { signToken, verifyToken, authenticate } from '../../middleware/auth';
+import { normalizePhone } from '../../utils/phone';
 
 const auth = new Hono<AppBindings>();
 
@@ -67,12 +68,13 @@ auth.post('/register', async (c) => {
     name: string; phone: string; password: string; role?: string; specialty?: string;
   };
 
+  const normalizedPhone = normalizePhone(phone);
   if (!name || name.length < 2) throw Errors.ValidationError('Name must be at least 2 characters');
-  if (!phone || !/^\+?[1-9]\d{7,14}$/.test(phone)) throw Errors.ValidationError('Invalid phone number format');
+  if (!normalizedPhone || !/^\+?[1-9]\d{7,14}$/.test(normalizedPhone)) throw Errors.ValidationError('Invalid phone number format');
 
   const existingUser = await c.env.DB.prepare(
     `SELECT id FROM users WHERE phone = ?`,
-  ).bind(phone).first();
+  ).bind(normalizedPhone).first();
   if (existingUser) throw Errors.BadRequest('A user with this phone number already exists');
 
   const passwordHash = await bcrypt.hash(password, 10);
@@ -81,12 +83,12 @@ auth.post('/register', async (c) => {
   await c.env.DB.prepare(
     `INSERT INTO users (id, name, email, password_hash, role, specialty, status) VALUES (?, ?, ?, ?, ?, ?, 'active')`,
   )
-    .bind(id, name, phone, passwordHash, role ?? 'manager', specialty ?? null)
+    .bind(id, name, normalizedPhone, passwordHash, role ?? 'manager', specialty ?? null)
     .run();
 
   return c.json({
     data: {
-      user: { id, name, phone, email: phone, role: role ?? 'manager', specialty, status: 'active' },
+      user: { id, name, phone: normalizedPhone, email: normalizedPhone, role: role ?? 'manager', specialty, status: 'active' },
       message: 'Account created successfully',
     },
   }, 201);
@@ -132,6 +134,7 @@ auth.post('/portal/register', async (c) => {
     name: string; phone: string; password: string;
   };
 
+  body.phone = normalizePhone(body.phone);
   if (!body.name || body.name.length < 2) throw Errors.ValidationError('Name must be at least 2 characters');
   if (!body.phone || !/^\+?[1-9]\d{7,14}$/.test(body.phone)) throw Errors.ValidationError('Invalid phone number format');
   if (!body.password || body.password.length < 6) throw Errors.ValidationError('Password must be at least 6 characters');
@@ -145,9 +148,9 @@ auth.post('/portal/register', async (c) => {
   const id = crypto.randomUUID();
 
   await c.env.DB.prepare(
-    `INSERT INTO users (id, name, email, password_hash, role, status) VALUES (?, ?, ?, ?, 'client', 'active')`,
+    `INSERT INTO users (id, name, email, password_hash, phone, role, status) VALUES (?, ?, ?, ?, ?, 'client', 'active')`,
   )
-    .bind(id, body.name, `client_${body.phone}@sagman.local`, passwordHash)
+    .bind(id, body.name, `client_${body.phone}@sagman.local`, passwordHash, body.phone)
     .run();
 
   const accessToken = await signToken(

@@ -3,11 +3,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Loader2, AlertCircle, Download, Share2 } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { api, ApiError } from "@/lib/api-client";
-import { useToast } from "@/components/ui/use-toast";
+import { useTranslations, useLocale } from "next-intl";
+
 
 interface InvoiceData {
   invoice: {
@@ -75,11 +76,12 @@ interface InvoiceData {
 }
 
 function money(value: number, currency: string) {
-  return `${Number(value).toFixed(2)} ${currency}`;
+  const n = Number(value);
+  return `${isNaN(n) ? "0.00" : n.toFixed(2)} ${currency}`;
 }
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString("en-GB", {
+function formatDate(iso: string, locale: string) {
+  return new Date(iso).toLocaleDateString(locale, {
     day: "2-digit",
     month: "long",
     year: "numeric",
@@ -90,8 +92,8 @@ function formatDate(iso: string) {
 
 export default function InvoicePage() {
   const { id } = useParams() as { id: string };
-  const { toast } = useToast();
-
+  const t = useTranslations();
+  const locale = useLocale();
   const [data, setData] = useState<InvoiceData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -108,12 +110,12 @@ export default function InvoicePage() {
       if (err instanceof ApiError) {
         setError(err.message);
       } else {
-        setError("Failed to load invoice.");
+        setError(t("repair.invoice.loadFailed"));
       }
     } finally {
       setIsLoading(false);
     }
-  }, [id]);
+  }, [id, t]);
 
   useEffect(() => {
     fetchInvoice();
@@ -123,26 +125,10 @@ export default function InvoicePage() {
     window.print();
   };
 
-  const handleShare = () => {
-    if (!data?.client) {
-      toast({
-        title: "No client phone",
-        description: "Client phone number is required to share.",
-        variant: "error",
-      });
-      return;
-    }
-
-    const phone = data.client.phone.replace(/\D/g, "");
-    const message = `Invoice #${data.invoice.invoiceNumber} - Total: ${money(data.invoice.finalTotal, data.settings.currencyLabel)} - For: ${data.car.matricule}`;
-    const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-    window.open(url, "_blank");
-  };
-
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-16">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <Icon name="sync" size={32} className="animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -152,20 +138,20 @@ export default function InvoicePage() {
       <div className="space-y-4">
         <Button variant="ghost" size="sm" asChild>
           <Link href={`/repairs/${id}`}>
-            <ArrowLeft className="h-4 w-4" />
-            Back to Repair
+            <Icon name="arrow_back" size={16} />
+            {t("repair.invoice.backLink")}
           </Link>
         </Button>
         <div className="flex items-center gap-3 rounded-md border border-destructive/50 bg-destructive/10 p-4 text-destructive">
-          <AlertCircle className="h-5 w-5 shrink-0" />
-          <p className="text-sm">{error ?? "Invoice not found."}</p>
+          <Icon name="info" size={20} className="shrink-0" />
+          <p className="text-sm">{error ?? t("repair.invoice.notFound")}</p>
           <Button
             variant="outline"
             size="sm"
             onClick={fetchInvoice}
             className="ml-auto"
           >
-            Retry
+            {t("repair.invoice.retry")}
           </Button>
         </div>
       </div>
@@ -178,37 +164,33 @@ export default function InvoicePage() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between gap-4">
-        <Button variant="ghost" size="sm" asChild>
+        <Button variant="ghost" size="sm" asChild className="text-on-surface-variant">
           <Link href={`/repairs/${id}`}>
-            <ArrowLeft className="h-4 w-4" />
-            Back
+            <Icon name="arrow_back" size={16} />
+            {t("common.back")}
           </Link>
         </Button>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={handlePrint}>
-            <Download className="h-4 w-4 mr-1" />
-            Print / PDF
-          </Button>
-          <Button size="sm" onClick={handleShare}>
-            <Share2 className="h-4 w-4 mr-1" />
-            Share via WhatsApp
+          <Button variant="outline" size="sm" onClick={handlePrint} className="border border-outline-variant text-on-surface-variant">
+            <Icon name="download" size={16} className="mr-1" />
+            {t("repair.invoice.print")}
           </Button>
         </div>
       </div>
 
       {/* Invoice Card */}
-      <Card className="p-8 print:p-0 print:border-0 print:shadow-none max-w-4xl mx-auto">
+      <Card className="bg-white border border-outline-variant rounded-xl shadow-sm p-8 print:p-0 print:border-0 print:shadow-none max-w-4xl mx-auto">
         {/* Garage Header */}
         <div className="mb-8 pb-6 border-b">
-          <h1 className="text-3xl font-bold text-primary">{settings.garageName}</h1>
+          <h1 className="font-headline-xl text-headline-xl text-primary">{settings.garageName}</h1>
           {settings.garageAddress && (
             <p className="text-sm text-muted-foreground mt-1">
-              📍 {settings.garageAddress}
+              {settings.garageAddress}
             </p>
           )}
           {settings.garagePhone && (
             <p className="text-sm text-muted-foreground">
-              📞 {settings.garagePhone}
+              {t("repair.invoice.phone", { phone: settings.garagePhone })}
             </p>
           )}
         </div>
@@ -216,22 +198,22 @@ export default function InvoicePage() {
         {/* Invoice Title & Number */}
         <div className="grid grid-cols-2 gap-8 mb-8">
           <div>
-            <h2 className="text-2xl font-bold mb-4">INVOICE</h2>
+            <h2 className="text-2xl font-bold mb-4">{t("repair.invoice.header")}</h2>
             <div className="space-y-2 text-sm">
               <div>
-                <span className="text-muted-foreground">Invoice #</span>
+                <span className="text-muted-foreground">{t("repair.invoice.invoiceNum")}</span>
                 <p className="font-mono font-bold text-lg">{invoice.invoiceNumber}</p>
               </div>
               <div>
-                <span className="text-muted-foreground">Date</span>
-                <p className="font-medium">{formatDate(invoice.createdAt)}</p>
+                <span className="text-muted-foreground">{t("repair.invoice.date")}</span>
+                <p className="font-medium">{formatDate(invoice.createdAt, locale)}</p>
               </div>
             </div>
           </div>
 
           <div className="text-right space-y-2 text-sm">
             <div>
-              <p className="text-muted-foreground mb-1">Repair ID</p>
+              <p className="text-muted-foreground mb-1">{t("repair.invoice.repairId")}</p>
               <p className="font-mono">{repair.id}</p>
             </div>
           </div>
@@ -242,7 +224,7 @@ export default function InvoicePage() {
           {/* Client */}
           <div>
             <p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold mb-2">
-              Bill To
+              {t("repair.invoice.billedTo")}
             </p>
             {client ? (
               <div className="space-y-1">
@@ -250,14 +232,14 @@ export default function InvoicePage() {
                 <p className="text-sm text-muted-foreground">{client.phone}</p>
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground italic">Walk-in Customer</p>
+              <p className="text-sm text-muted-foreground italic">{t("repair.invoice.noClient")}</p>
             )}
           </div>
 
           {/* Vehicle */}
           <div>
             <p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold mb-2">
-              Vehicle
+              {t("repair.invoice.vehicle")}
             </p>
             <div className="space-y-1">
               <p className="font-semibold text-lg font-mono">{car.matricule}</p>
@@ -267,7 +249,7 @@ export default function InvoicePage() {
               </p>
               {car.color && (
                 <p className="text-sm text-muted-foreground capitalize">
-                  Color: {car.color}
+                  {t("repair.invoice.color", { color: car.color })}
                 </p>
               )}
             </div>
@@ -277,7 +259,7 @@ export default function InvoicePage() {
         {/* Repair Description */}
         <div className="mb-8 pb-8 border-b">
           <p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold mb-2">
-            Repair Description
+            {t("repair.invoice.descriptionHeading")}
           </p>
           <p className="text-base">{repair.description}</p>
         </div>
@@ -286,15 +268,15 @@ export default function InvoicePage() {
         {parts.length > 0 && (
           <div className="mb-8">
             <p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold mb-3">
-              Parts Used
+              {t("repair.invoice.partsHeading")}
             </p>
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b-2 border-primary/20">
-                  <th className="text-left pb-2 font-semibold">Part Name</th>
-                  <th className="text-center pb-2 font-semibold">Qty</th>
-                  <th className="text-right pb-2 font-semibold">Unit Cost</th>
-                  <th className="text-right pb-2 font-semibold">Subtotal</th>
+                  <th className="text-left pb-2 font-semibold">{t("repair.invoice.partName")}</th>
+                  <th className="text-center pb-2 font-semibold">{t("repair.invoice.qty")}</th>
+                  <th className="text-right pb-2 font-semibold">{t("repair.invoice.unitPrice")}</th>
+                  <th className="text-right pb-2 font-semibold">{t("repair.invoice.subtotal")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y">
@@ -304,7 +286,7 @@ export default function InvoicePage() {
                       <p className="font-medium">{p.part.name}</p>
                       {p.part.reference && (
                         <p className="text-xs text-muted-foreground">
-                          Ref: {p.part.reference}
+                          {t("repair.invoice.ref", { reference: p.part.reference })}
                         </p>
                       )}
                     </td>
@@ -329,13 +311,13 @@ export default function InvoicePage() {
         {laborItems.length > 0 && (
           <div className="mb-8">
             <p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold mb-3">
-              Labor Services
+              {t("repair.invoice.laborHeading")}
             </p>
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b-2 border-primary/20">
-                  <th className="text-left pb-2 font-semibold">Description</th>
-                  <th className="text-right pb-2 font-semibold">Cost</th>
+                  <th className="text-left pb-2 font-semibold">{t("repair.invoice.desc")}</th>
+                  <th className="text-right pb-2 font-semibold">{t("repair.invoice.cost")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y">
@@ -354,52 +336,66 @@ export default function InvoicePage() {
 
         {/* Totals */}
         <div className="mb-8 pb-8 border-b-2 border-primary/20">
-          <div className="flex justify-end max-w-xs">
-            <div className="w-full space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Parts Total:</span>
-                <span className="font-mono">
-                  {money(invoice.partsTotal, settings.currencyLabel)}
-                </span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Labor Total:</span>
-                <span className="font-mono">
-                  {money(invoice.laborTotal, settings.currencyLabel)}
-                </span>
-              </div>
-              {invoice.discountAmount > 0 && (
-                <div className="flex justify-between text-sm text-green-600">
-                  <span>Discount:</span>
-                  <span className="font-mono">
-                    − {money(invoice.discountAmount, settings.currencyLabel)}
-                  </span>
+          {(() => {
+            const subtotal = invoice.partsTotal + invoice.laborTotal - invoice.discountAmount;
+            const garageFees = Math.max(0, invoice.finalTotal - subtotal);
+            return (
+              <div className="flex justify-end max-w-xs">
+                <div className="w-full space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">{t("repair.invoice.partsTotal")}</span>
+                    <span className="font-mono">
+                      {money(invoice.partsTotal, settings.currencyLabel)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">{t("repair.invoice.laborTotal")}</span>
+                    <span className="font-mono">
+                      {money(invoice.laborTotal, settings.currencyLabel)}
+                    </span>
+                  </div>
+                  {invoice.discountAmount > 0 && (
+                    <div className="flex justify-between text-sm text-green-600">
+                      <span>{t("repair.invoice.discount")}</span>
+                      <span className="font-mono">
+                        − {money(invoice.discountAmount, settings.currencyLabel)}
+                      </span>
+                    </div>
+                  )}
+                  {garageFees > 0 && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">{t("repair.invoice.garageFees")}</span>
+                      <span className="font-mono">
+                        {money(garageFees, settings.currencyLabel)}
+                      </span>
+                    </div>
+                  )}
+                  <div className="border-t pt-2 flex justify-between font-bold text-base">
+                    <span>{t("repair.invoice.total")}</span>
+                    <span className="font-mono text-primary">
+                      {money(invoice.finalTotal, settings.currencyLabel)}
+                    </span>
+                  </div>
                 </div>
-              )}
-              <div className="border-t pt-2 flex justify-between font-bold text-base">
-                <span>Total:</span>
-                <span className="font-mono text-primary">
-                  {money(invoice.finalTotal, settings.currencyLabel)}
-                </span>
               </div>
-            </div>
-          </div>
+            );
+          })()}
         </div>
 
         {/* Payment Details */}
         <div className="mb-8 pb-8 border-b">
           <p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold mb-3">
-            Payment Details
+            {t("repair.invoice.paymentDetails")}
           </p>
           <div className="grid grid-cols-2 gap-4 text-sm max-w-xs">
             <div>
-              <span className="text-muted-foreground">Amount Received:</span>
+              <span className="text-muted-foreground">{t("repair.invoice.amountReceived")}</span>
               <p className="font-mono font-semibold">
                 {money(invoice.amountReceived, settings.currencyLabel)}
               </p>
             </div>
             <div>
-              <span className="text-muted-foreground">Change Due:</span>
+              <span className="text-muted-foreground">{t("repair.invoice.changeDue")}</span>
               <p className="font-mono font-semibold">
                 {money(invoice.changeDue, settings.currencyLabel)}
               </p>
@@ -407,12 +403,12 @@ export default function InvoicePage() {
           </div>
           {invoice.paidByName && (
             <p className="text-xs text-muted-foreground mt-2">
-              Paid by: <span className="font-medium">{invoice.paidByName}</span>
+              {t("repair.invoice.paidBy", { name: invoice.paidByName })}
             </p>
           )}
           {invoice.notes && (
             <p className="text-xs text-muted-foreground mt-2 italic">
-              Notes: {invoice.notes}
+              {t("repair.invoice.notes", { notes: invoice.notes })}
             </p>
           )}
         </div>
@@ -421,18 +417,18 @@ export default function InvoicePage() {
         <div className="text-center text-xs text-muted-foreground space-y-2">
           <div className="flex justify-center gap-6 text-xs">
             <div>
-              <p className="text-muted-foreground">Prepared by</p>
+              <p className="text-muted-foreground">{t("repair.invoice.preparedBy")}</p>
               <p className="font-medium">{createdBy.name}</p>
             </div>
             <div>
-              <p className="text-muted-foreground">Primary Mechanic</p>
+              <p className="text-muted-foreground">{t("repair.invoice.mechanic")}</p>
               <p className="font-medium">
                 {mechanics[0]?.name || "—"}
               </p>
             </div>
           </div>
           <p className="pt-4 border-t text-muted-foreground">
-            Thank you for your business!
+            {t("repair.invoice.footer", { garage: settings.garageName })}
           </p>
         </div>
       </Card>

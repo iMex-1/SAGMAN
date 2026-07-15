@@ -6,7 +6,7 @@ import { authenticate } from '../../middleware/auth';
 import { getPaginationParams, paginate } from '../../utils/pagination';
 
 const notifications = new Hono<AppBindings>();
-notifications.use('/*', authenticate, authorize(['manager']));
+notifications.use('/*', authenticate, authorize(['manager', 'overseer']));
 
 // GET /notifications
 notifications.get('/', async (c) => {

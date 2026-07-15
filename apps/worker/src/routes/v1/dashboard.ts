@@ -37,23 +37,25 @@ dashboard.get('/overview', authorize(['manager', 'overseer']), async (c) => {
   const monthEnd = new Date(year, month + 1, 1).toISOString();
 
   const [revenueRow, carsReceived, deliveredRows, delayedCount, statusRows, overdueRows, lowStockRows,
-    pendingCount, urgentRows, mechRows, completedGroups, delayGroups, paymentRows] = await Promise.all([
+    pendingCount, urgentRows, mechRows, completedGroups, delayGroups, paymentRows, expensesRow] = await Promise.all([
     c.env.DB.prepare(`SELECT COALESCE(SUM(CAST(final_total AS REAL)), 0) as total FROM payments WHERE created_at >= ? AND created_at < ?`).bind(start, end).first<{ total: number }>(),
     c.env.DB.prepare(`SELECT COUNT(*) as cnt FROM repair_jobs WHERE created_at >= ? AND created_at < ?`).bind(start, end).first<{ cnt: number }>(),
     c.env.DB.prepare(`SELECT actual_completion_date, target_completion_date, created_at FROM repair_jobs WHERE status = 'delivered' AND actual_completion_date >= ? AND actual_completion_date < ?`).bind(start, end).all<any>(),
-    c.env.DB.prepare(`SELECT COUNT(*) as cnt FROM delay_reports WHERE created_at >= ? AND created_at < ?`).bind(start, end).first<{ cnt: number }>(),
+    c.env.DB.prepare(`SELECT COUNT(*) as cnt FROM repair_jobs WHERE status NOT IN ('complete', 'delivered', 'cancelled') AND target_completion_date IS NOT NULL AND target_completion_date < ?`).bind(now).first<{ cnt: number }>(),
     c.env.DB.prepare(`SELECT status, COUNT(*) as cnt FROM repair_jobs WHERE status NOT IN ('delivered', 'cancelled') GROUP BY status`).all<{ status: string; cnt: number }>(),
     c.env.DB.prepare(`SELECT rj.id, rj.target_completion_date, c.matricule, c.make, c.model, u.name as mech_name FROM repair_jobs rj LEFT JOIN cars c ON c.id = rj.car_id LEFT JOIN users u ON u.id = rj.primary_mechanic_id WHERE rj.status NOT IN ('complete', 'delivered', 'cancelled') AND rj.target_completion_date IS NOT NULL AND rj.target_completion_date < ? AND rj.id NOT IN (SELECT repair_id FROM delay_reports) LIMIT 10`).bind(now).all<any>(),
     c.env.DB.prepare(`SELECT id, name, quantity, min_threshold FROM parts WHERE CAST(quantity AS INTEGER) <= CAST(min_threshold AS INTEGER) AND deleted_at IS NULL LIMIT 10`).all<any>(),
     c.env.DB.prepare(`SELECT COUNT(*) as cnt FROM appointments WHERE status = 'pending' AND deleted_at IS NULL`).first<{ cnt: number }>(),
     c.env.DB.prepare(`SELECT rj.id, rj.priority, rj.status, c.matricule, c.make, c.model FROM repair_jobs rj LEFT JOIN cars c ON c.id = rj.car_id WHERE rj.priority IN ('high', 'emergency') AND rj.status NOT IN ('complete', 'delivered', 'cancelled') ORDER BY CASE rj.priority WHEN 'emergency' THEN 0 WHEN 'high' THEN 1 END, rj.created_at ASC LIMIT 10`).all<any>(),
     c.env.DB.prepare(`SELECT id, name FROM users WHERE role = 'mechanic' AND status = 'active'`).all<any>(),
-    c.env.DB.prepare(`SELECT rm.mechanic_id, COUNT(*) as cnt FROM repair_mechanics rm LEFT JOIN repair_jobs rj ON rj.id = rm.repair_id WHERE rj.status = 'delivered' AND rj.actual_completion_date >= ? AND rj.actual_completion_date < ? GROUP BY rm.mechanic_id`).bind(monthStart, monthEnd).all<any>(),
-    c.env.DB.prepare(`SELECT reported_by, COUNT(*) as cnt FROM delay_reports WHERE created_at >= ? AND created_at < ? GROUP BY reported_by`).bind(monthStart, monthEnd).all<any>(),
-    c.env.DB.prepare(`SELECT CAST(created_at AS TEXT) as created_at, final_total FROM payments WHERE created_at >= ? AND created_at < ?`).bind(monthStart, monthEnd).all<any>(),
+    c.env.DB.prepare(`SELECT rm.mechanic_id, COUNT(*) as cnt FROM repair_mechanics rm LEFT JOIN repair_jobs rj ON rj.id = rm.repair_id WHERE rj.status = 'delivered' AND rj.actual_completion_date >= ? AND rj.actual_completion_date < ? GROUP BY rm.mechanic_id`).bind(start, end).all<any>(),
+    c.env.DB.prepare(`SELECT reported_by, COUNT(*) as cnt FROM delay_reports WHERE created_at >= ? AND created_at < ? GROUP BY reported_by`).bind(start, end).all<any>(),
+    c.env.DB.prepare(`SELECT CAST(created_at AS TEXT) as created_at, final_total FROM payments WHERE created_at >= ? AND created_at < ?`).bind(start, end).all<any>(),
+    c.env.DB.prepare(`SELECT COALESCE(SUM(CAST(p.unit_cost AS REAL) * CAST(st.quantity_change AS REAL)), 0) as total FROM stock_transactions st JOIN parts p ON p.id = st.part_id WHERE st.type = 'received' AND st.created_at >= ? AND st.created_at < ?`).bind(start, end).first<{ total: number }>(),
   ]);
 
   const totalRevenue = parseFloat(String(revenueRow?.total ?? '0'));
+  const totalExpenses = parseFloat(String(expensesRow?.total ?? '0'));
   const carsDelivered = deliveredRows.results ?? [];
   const onTime = carsDelivered.filter((r: any) => r.target_completion_date && r.actual_completion_date && r.actual_completion_date <= r.target_completion_date).length;
   const onTimeRate = carsDelivered.length > 0 ? Math.round((onTime / carsDelivered.length) * 100) : 100;
@@ -67,14 +69,16 @@ dashboard.get('/overview', authorize(['manager', 'overseer']), async (c) => {
     delays: (delayGroups.results ?? []).find((g: any) => g.reported_by === m.id)?.cnt ?? 0,
   }));
 
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const dailyRevenue: Record<number, number> = {};
+  const queryPeriod = query.period ?? 'today';
+  const numDays = queryPeriod === 'today' ? 24 : queryPeriod === 'week' ? 7 : new Date(year, month + 1, 0).getDate();
+  const bucketMap: Record<number, number> = {};
   for (const p of (paymentRows.results ?? [])) {
-    const day = new Date(p.created_at).getDate();
-    dailyRevenue[day] = (dailyRevenue[day] ?? 0) + parseFloat(p.final_total ?? '0');
+    const d = new Date(p.created_at);
+    const bucket = queryPeriod === 'today' ? d.getHours() : queryPeriod === 'week' ? (d.getDay() || 7) : d.getDate();
+    bucketMap[bucket] = (bucketMap[bucket] ?? 0) + parseFloat(p.final_total ?? '0');
   }
-  const revenueChart = Array.from({ length: daysInMonth }, (_, i) => ({
-    day: i + 1, revenue: Math.round((dailyRevenue[i + 1] ?? 0) * 100) / 100,
+  const revenueChart = Array.from({ length: numDays }, (_, i) => ({
+    day: i + 1, revenue: Math.round((bucketMap[queryPeriod === 'today' ? i : i + 1] ?? 0) * 100) / 100,
   }));
 
   const statusMap: Record<string, number> = {};
@@ -84,20 +88,30 @@ dashboard.get('/overview', authorize(['manager', 'overseer']), async (c) => {
     data: {
       summary: {
         totalRevenue,
+        totalExpenses,
+        netProfit: Math.round((totalRevenue - totalExpenses) * 100) / 100,
         carsReceived: carsReceived?.cnt ?? 0,
         carsDelivered: carsDelivered.length,
         avgRepairDurationDays: Math.round(avgDuration * 10) / 10,
         onTimeRate,
         delayedRepairs: delayedCount?.cnt ?? 0,
-        period: query.period ?? 'today',
+        period: queryPeriod,
       },
       live: {
         activeByStatus: statusMap,
-        overdueRepairs: overdueRows.results ?? [],
+        overdueRepairs: (overdueRows.results ?? []).map((r: any) => ({
+          id: r.id,
+          primaryMechanic: r.mech_name ? { name: r.mech_name } : null,
+          car: { matricule: r.matricule, make: r.make, model: r.model },
+        })),
         overdueCount: (overdueRows.results ?? []).length,
         lowStockParts: (lowStockRows.results ?? []).map((p: any) => ({ ...p, minThreshold: p.min_threshold })),
         pendingAppointments: pendingCount?.cnt ?? 0,
-        urgentRepairs: urgentRows.results ?? [],
+        urgentRepairs: (urgentRows.results ?? []).map((r: any) => ({
+          id: r.id,
+          priority: r.priority,
+          car: { matricule: r.matricule, make: r.make, model: r.model },
+        })),
       },
       mechanicPerformance: mechanics,
       revenueChart,
@@ -138,7 +152,7 @@ dashboard.get('/summary', authorize(['manager', 'overseer']), async (c) => {
 });
 
 // GET /dashboard/live
-dashboard.get('/live', authorize(['manager']), async (c) => {
+dashboard.get('/live', authorize(['manager', 'overseer']), async (c) => {
   const now = new Date().toISOString();
 
   const [statusRows, overdueRows, lowStockRows, pendingRow, urgentRows] = await Promise.all([
@@ -155,11 +169,19 @@ dashboard.get('/live', authorize(['manager']), async (c) => {
   return c.json({
     data: {
       activeByStatus: statusMap,
-      overdueRepairs: overdueRows.results ?? [],
+      overdueRepairs: (overdueRows.results ?? []).map((r: any) => ({
+        id: r.id,
+        primaryMechanic: r.mech_name ? { name: r.mech_name } : null,
+        car: { matricule: r.matricule, make: r.make, model: r.model },
+      })),
       overdueCount: (overdueRows.results ?? []).length,
       lowStockParts: (lowStockRows.results ?? []).map((p: any) => ({ ...p, minThreshold: p.min_threshold })),
       pendingAppointments: pendingRow?.cnt ?? 0,
-      urgentRepairs: urgentRows.results ?? [],
+      urgentRepairs: (urgentRows.results ?? []).map((r: any) => ({
+        id: r.id,
+        priority: r.priority,
+        car: { matricule: r.matricule, make: r.make, model: r.model },
+      })),
     },
   });
 });

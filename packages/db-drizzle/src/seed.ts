@@ -8,6 +8,8 @@ const DEFAULT_SETTINGS: Record<string, string> = {
   max_concurrent_cars: '5',
   working_hours: 'Mon-Sat 08:00-18:00',
   overseer_whatsapp_number: '',
+  whatsapp_number: '',
+  depannage_number: '',
   require_diagnosis_approval: 'true',
   require_client_approval: 'true',
   currency_label: 'DH',
@@ -78,6 +80,45 @@ export async function seed(db: D1Database): Promise<void> {
   } else {
     console.log(`  ✓ Mechanic already exists (id: ${existingMechanic.id})`);
   }
+
+  // Overseer Account
+  console.log('  → Seeding overseer account...');
+  const overseerPasswordHash = await bcrypt.hash('Overseer@2024', 12);
+  const existingOverseer = await db.prepare(
+    `SELECT id FROM users WHERE email = ?`,
+  ).bind('overseer@sagman.garage').first<{ id: string }>();
+  if (!existingOverseer) {
+    await db.prepare(
+      `INSERT INTO users (id, name, email, password_hash, role, specialty, status)
+       VALUES (?, ?, ?, ?, 'overseer', ?, 'active')`,
+    ).bind(crypto.randomUUID(), 'Overseer Manager', 'overseer@sagman.garage', overseerPasswordHash, 'Supervision').run();
+    console.log('  ✓ Overseer created');
+  } else {
+    console.log('  ✓ Overseer already exists');
+  }
+
+  // Sample Parts
+  console.log('  → Seeding sample parts...');
+  const parts = [
+    { name: 'Plaquettes de frein avant', ref: 'BRK-TOY-001', cat: 'brakes', cost: 350, qty: 10, min: 3, sup: 'AutoPièces Maroc' },
+    { name: 'Filtre à huile', ref: 'FIL-OIL-001', cat: 'filters', cost: 80, qty: 25, min: 5, sup: 'MecaDistrib' },
+    { name: 'Filtre à air moteur', ref: 'FIL-AIR-001', cat: 'filters', cost: 120, qty: 15, min: 5, sup: 'MecaDistrib' },
+    { name: 'Huile moteur 5W30 (1L)', ref: 'OIL-5W30-001', cat: 'fluids', cost: 65, qty: 40, min: 10, sup: 'Total Maroc' },
+    { name: 'Bougies d\'allumage (x4)', ref: 'SPK-TOY-001', cat: 'engine', cost: 280, qty: 8, min: 4, sup: 'NGK Distribution' },
+    { name: 'Courroie de distribution', ref: 'TIM-002', cat: 'engine', cost: 450, qty: 3, min: 2, sup: 'Gates France' },
+    { name: 'Batterie 12V 60Ah', ref: 'BAT-60-001', cat: 'electrical', cost: 650, qty: 5, min: 2, sup: 'BatteriePro' },
+    { name: 'Pneu été 195/65R15', ref: 'TRE-SUM-001', cat: 'tires', cost: 550, qty: 8, min: 2, sup: 'PneuStop' },
+    { name: 'Disques de frein avant', ref: 'BRK-DSK-001', cat: 'brakes', cost: 420, qty: 6, min: 2, sup: 'AutoPièces Maroc' },
+    { name: 'Liquide de refroidissement (5L)', ref: 'COL-5L-001', cat: 'fluids', cost: 150, qty: 10, min: 3, sup: 'Total Maroc' },
+  ];
+  const partStmts = parts.map((p) =>
+    db.prepare(
+      `INSERT OR IGNORE INTO parts (id, name, reference, category, compatible_models, unit_cost, quantity, min_threshold, supplier)
+       VALUES (?, ?, ?, ?, 'Universel', ?, ?, ?, ?)`,
+    ).bind(crypto.randomUUID(), p.name, p.ref, p.cat, p.cost, p.qty, p.min, p.sup),
+  );
+  await db.batch(partStmts);
+  console.log(`  ✓ ${parts.length} parts seeded`);
 
   // Invoice Counter
   console.log('  → Seeding invoice counter...');

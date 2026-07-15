@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GarageMaster - Mechanic Productivity</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error-container": "#93000a",
+                    "background": "#f7f9fb",
+                    "on-primary-container": "#90a8ff",
+                    "secondary-container": "#e02928",
+                    "primary-container": "#1e3a8a",
+                    "surface-variant": "#e0e3e5",
+                    "secondary-fixed": "#ffdad6",
+                    "primary-fixed-dim": "#b6c4ff",
+                    "on-primary-fixed": "#00164e",
+                    "outline-variant": "#c5c5d3",
+                    "surface": "#f7f9fb",
+                    "on-surface-variant": "#444651",
+                    "surface-container-low": "#f2f4f6",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed-variant": "#3f465c",
+                    "error-container": "#ffdad6",
+                    "on-secondary-fixed-variant": "#93000b",
+                    "on-primary": "#ffffff",
+                    "outline": "#757682",
+                    "on-secondary": "#ffffff",
+                    "inverse-on-surface": "#eff1f3",
+                    "inverse-surface": "#2d3133",
+                    "on-background": "#191c1e",
+                    "surface-bright": "#f7f9fb",
+                    "primary": "#00236f",
+                    "secondary": "#bb0112",
+                    "on-secondary-fixed": "#410002",
+                    "tertiary-fixed": "#dae2fd",
+                    "on-error": "#ffffff",
+                    "surface-container": "#eceef0",
+                    "primary-fixed": "#dce1ff",
+                    "surface-dim": "#d8dadc",
+                    "on-tertiary": "#ffffff",
+                    "on-surface": "#191c1e",
+                    "on-primary-fixed-variant": "#264191",
+                    "tertiary": "#222a3e",
+                    "surface-tint": "#4059aa",
+                    "inverse-primary": "#b6c4ff",
+                    "surface-container-high": "#e6e8ea",
+                    "on-tertiary-container": "#a4acc5",
+                    "tertiary-container": "#384055",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed-dim": "#ffb4ab",
+                    "tertiary-fixed-dim": "#bec6e0",
+                    "on-tertiary-fixed": "#131b2e",
+                    "on-secondary-container": "#fffbff",
+                    "surface-container-highest": "#e0e3e5"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "sm": "8px",
+                    "xs": "4px",
+                    "gutter": "16px",
+                    "xl": "32px",
+                    "md": "16px",
+                    "lg": "24px",
+                    "container-margin": "24px",
+                    "base": "4px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "title-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "title-md": ["18px", {"lineHeight": "26px", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-xl": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .chart-bar {
+            transition: height 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .bento-card {
+            background-color: #ffffff;
+            border: 1px solid #c5c5d3;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface pb-32">
+<!-- Top App Bar -->
+<header class="w-full top-0 sticky z-50 bg-surface border-b border-outline-variant flex justify-between items-center px-gutter py-sm transition-colors duration-200 ease-in-out">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a middle-aged automotive technician in a clean blue workshop uniform, looking confident and smiling slightly. The background is a blurred, high-end modern automotive garage with soft professional lighting. The aesthetic is clean, corporate, and trustworthy, using a cool blue and neutral gray palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPXZakKXTTuUyR6AKf2PEYJ2IJ5WWuUj02-RoyHBzcp1779ntzkLIMFKYuwXEskA3QMNua_3QU4q_tcH0j92U5BrnouM-C6MEFyIx1yezsAbMDKe-SlwOysMxAFyvlQpIl4037oHEycVbOW6jaaqm0dD-TsPFWkfX58jRLl7qhwKfhBLQA924m0VMsBSwADYSXt-TpIhwbbrrJScR42TfcltbNZFgETOHkZRBPwS7-XWmxQUo0LnotDw"/>
+</div>
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">GarageMaster</span>
+</div>
+<button class="text-primary hover:bg-surface-container transition-colors p-xs rounded-full">
+<span class="material-symbols-outlined">toggle_on</span>
+</button>
+</header>
+<main class="px-gutter pt-lg flex flex-col gap-lg max-w-lg mx-auto">
+<!-- Header Section -->
+<section>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary">Today's Summary</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Tuesday, Oct 24 • Shift: 08:00 - 17:00</p>
+</section>
+<!-- KPI Bento Grid -->
+<section class="grid grid-cols-2 gap-sm">
+<div class="bento-card p-md rounded-xl flex flex-col justify-between">
+<div>
+<span class="material-symbols-outlined text-primary text-[20px]">schedule</span>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-xs">Time Logged</p>
+</div>
+<p class="font-headline-lg-mobile text-headline-lg-mobile text-primary mt-sm">6h 45m</p>
+</div>
+<div class="bento-card p-md rounded-xl flex flex-col justify-between border-l-4 border-l-primary">
+<div>
+<span class="material-symbols-outlined text-primary text-[20px]">task_alt</span>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-xs">Jobs Done</p>
+</div>
+<p class="font-headline-lg-mobile text-headline-lg-mobile text-primary mt-sm">5</p>
+</div>
+<div class="col-span-2 bento-card p-md rounded-xl flex items-center justify-between">
+<div class="flex flex-col">
+<p class="font-label-sm text-label-sm text-on-surface-variant">Efficiency Score</p>
+<p class="font-headline-lg-mobile text-headline-lg-mobile text-secondary font-bold">94%</p>
+</div>
+<div class="h-12 w-12 rounded-full border-4 border-surface-container-high flex items-center justify-center relative">
+<svg class="absolute inset-0 w-full h-full -rotate-90">
+<circle cx="24" cy="24" fill="transparent" r="20" stroke="#bb0112" stroke-dasharray="125.6" stroke-dashoffset="7.5" stroke-width="4"></circle>
+</svg>
+<span class="material-symbols-outlined text-secondary text-[18px]" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+</div>
+</section>
+<!-- Performance Chart -->
+<section class="bento-card p-lg rounded-xl">
+<div class="flex justify-between items-center mb-lg">
+<h2 class="font-title-md text-title-md text-primary">Hours vs Target</h2>
+<span class="font-label-sm text-label-sm text-outline">Goal: 8.0h</span>
+</div>
+<div class="flex items-end justify-between h-32 gap-sm px-xs">
+<!-- Chart Data -->
+<div class="flex-1 flex flex-col items-center gap-xs">
+<div class="w-full bg-primary-fixed-dim rounded-t-sm h-[60%]" title="Mon: 5.2h"></div>
+<span class="font-label-sm text-label-sm text-outline">M</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-xs">
+<div class="w-full bg-primary rounded-t-sm h-[85%]" title="Tue: 6.8h"></div>
+<span class="font-label-sm text-label-sm text-primary font-bold">T</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-xs">
+<div class="w-full bg-surface-container-highest rounded-t-sm h-[0%]" title="Wed: -"></div>
+<span class="font-label-sm text-label-sm text-outline">W</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-xs">
+<div class="w-full bg-surface-container-highest rounded-t-sm h-[0%]" title="Thu: -"></div>
+<span class="font-label-sm text-label-sm text-outline">T</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-xs">
+<div class="w-full bg-surface-container-highest rounded-t-sm h-[0%]" title="Fri: -"></div>
+<span class="font-label-sm text-label-sm text-outline">F</span>
+</div>
+</div>
+<div class="mt-lg pt-md border-t border-outline-variant flex justify-around">
+<div class="flex items-center gap-xs">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<span class="font-label-sm text-label-sm">Actual</span>
+</div>
+<div class="flex items-center gap-xs">
+<div class="w-2 h-2 rounded-full bg-primary-fixed-dim"></div>
+<span class="font-label-sm text-label-sm">Previous</span>
+</div>
+</div>
+</section>
+<!-- Recent Activity -->
+<section class="flex flex-col gap-sm">
+<div class="flex justify-between items-center px-xs">
+<h2 class="font-title-md text-title-md text-primary">Recent Activity</h2>
+<button class="text-primary font-label-sm text-label-sm">See All</button>
+</div>
+<div class="flex flex-col gap-xs">
+<!-- Activity Item 1 -->
+<div class="bento-card p-md rounded-xl flex gap-md items-center transition-transform active:scale-[0.98]">
+<div class="w-10 h-10 rounded-lg bg-primary-container/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">build</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md text-body-md font-bold">Brake Service</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Mercedes C220 • <span class="text-primary">Completed</span></p>
+</div>
+<p class="font-label-sm text-label-sm text-outline">14:20</p>
+</div>
+<!-- Activity Item 2 -->
+<div class="bento-card p-md rounded-xl flex gap-md items-center transition-transform active:scale-[0.98]">
+<div class="w-10 h-10 rounded-lg bg-primary-container/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">oil_barrel</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md text-body-md font-bold">Oil &amp; Filter Change</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Audi A4 • <span class="text-primary">Completed</span></p>
+</div>
+<p class="font-label-sm text-label-sm text-outline">11:45</p>
+</div>
+<!-- Activity Item 3 -->
+<div class="bento-card p-md rounded-xl flex gap-md items-center opacity-60">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-outline">
+<span class="material-symbols-outlined">inventory_2</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md text-body-md font-bold">Inventory Request</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Brake Pads (Rear) • <span class="text-secondary">Pending</span></p>
+</div>
+<p class="font-label-sm text-label-sm text-outline">09:15</p>
+</div>
+</div>
+</section>
+<!-- Promotion / Insight Card -->
+<section class="bg-primary-container rounded-xl p-lg text-on-primary-container relative overflow-hidden">
+<div class="relative z-10">
+<h3 class="font-title-md text-title-md font-bold mb-xs">Daily Tip</h3>
+<p class="font-body-md text-body-md opacity-90 leading-relaxed">Logging parts immediately after use increases invoicing accuracy by 15%.</p>
+</div>
+<span class="material-symbols-outlined absolute -right-4 -bottom-4 text-[120px] opacity-10 pointer-events-none">lightbulb</span>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 w-full flex justify-around items-center py-xs bg-surface border-t border-outline-variant z-50">
+<!-- Jobs Tab (Active) -->
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 active:scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">build</span>
+<span class="font-label-sm text-label-sm">Jobs</span>
+</a>
+<!-- Inventory Tab -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-low active:scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-label-sm text-label-sm">Inventory</span>
+</a>
+<!-- Profile Tab -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-low active:scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</a>
+</nav>
+<!-- Floating Action Button (FAB) - For New Job/Log -->
+<button class="fixed right-gutter bottom-24 w-14 h-14 bg-primary text-white rounded-full shadow-lg flex items-center justify-center active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[28px]">add</span>
+</button>
+<script>
+        // Simple interaction for tab selection
+        document.querySelectorAll('nav a').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                // In a real app, this would navigate. Here we just toggle UI.
+                document.querySelectorAll('nav a').forEach(t => {
+                    t.className = "flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-low active:scale-95 transition-transform duration-150";
+                    const icon = t.querySelector('.material-symbols-outlined');
+                    if (icon) icon.style.fontVariationSettings = "'FILL' 0";
+                });
+                tab.className = "flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 active:scale-95 transition-transform duration-150";
+                const activeIcon = tab.querySelector('.material-symbols-outlined');
+                if (activeIcon) activeIcon.style.fontVariationSettings = "'FILL' 1";
+            });
+        });
+
+        // Chart Bar Animation on Load
+        window.addEventListener('DOMContentLoaded', () => {
+            const bars = document.querySelectorAll('.chart-bar');
+            bars.forEach(bar => {
+                const finalHeight = bar.style.height;
+                bar.style.height = '0';
+                setTimeout(() => {
+                    bar.style.height = finalHeight;
+                }, 100);
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Repair Details | Sagman Garage</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#264191",
+                        "primary-container": "#1e3a8a",
+                        "primary": "#00236f",
+                        "on-surface": "#191c1e",
+                        "on-tertiary-container": "#a4acc5",
+                        "on-tertiary-fixed": "#131b2e",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#90a8ff",
+                        "surface": "#f7f9fb",
+                        "primary-fixed": "#dce1ff",
+                        "on-secondary-fixed": "#410002",
+                        "surface-dim": "#d8dadc",
+                        "inverse-surface": "#2d3133",
+                        "on-tertiary-fixed-variant": "#3f465c",
+                        "on-primary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-variant": "#e0e3e5",
+                        "primary-fixed-dim": "#b6c4ff",
+                        "error": "#ba1a1a",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-container": "#fffbff",
+                        "inverse-on-surface": "#eff1f3",
+                        "on-error": "#ffffff",
+                        "secondary-fixed-dim": "#ffb4ab",
+                        "background": "#f7f9fb",
+                        "inverse-primary": "#b6c4ff",
+                        "surface-tint": "#4059aa",
+                        "on-surface-variant": "#444651",
+                        "on-background": "#191c1e",
+                        "tertiary-fixed-dim": "#bec6e0",
+                        "on-primary-fixed": "#00164e",
+                        "tertiary-fixed": "#dae2fd",
+                        "secondary": "#bb0112",
+                        "outline": "#757682",
+                        "secondary-container": "#e02928",
+                        "tertiary": "#222a3e",
+                        "tertiary-container": "#384055",
+                        "outline-variant": "#c5c5d3",
+                        "surface-container": "#eceef0",
+                        "secondary-fixed": "#ffdad6",
+                        "surface-container-highest": "#e0e3e5",
+                        "surface-bright": "#f7f9fb",
+                        "surface-container-low": "#f2f4f6",
+                        "surface-container-high": "#e6e8ea",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#93000b",
+                        "on-error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "base": "4px",
+                        "xs": "4px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "container-margin": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "title-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-xl": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "title-md": ["18px", {"lineHeight": "26px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-xl": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f7f9fb; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid #e0e3e5; }
+        .sidebar-active { border-right: 4px solid #00236f; background-color: rgba(30, 58, 138, 0.1); color: #00236f; font-weight: 700; }
+        .status-badge { padding: 2px 10px; border-radius: 9999px; font-size: 12px; font-weight: 600; text-transform: uppercase; }
+        .zebra-row:hover { background-color: #f2f4f6; transition: background-color 0.2s; }
+    </style>
+</head>
+<body class="text-on-surface">
+<div class="flex min-h-screen">
+<!-- Sidebar Navigation -->
+<aside class="w-64 h-screen sticky top-0 left-0 bg-surface border-r border-outline-variant flex flex-col py-lg z-40">
+<div class="px-md mb-xl">
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary">Sagman Garage</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Management Hub</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center px-lg py-sm text-on-surface-variant font-medium hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+<a class="sidebar-active flex items-center px-lg py-sm transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">build</span>
+<span class="font-body-md">Repairs</span>
+</a>
+<a class="flex items-center px-lg py-sm text-on-surface-variant font-medium hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">event</span>
+<span class="font-body-md">Appointments</span>
+</a>
+<a class="flex items-center px-lg py-sm text-on-surface-variant font-medium hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">inventory_2</span>
+<span class="font-body-md">Inventory</span>
+</a>
+<a class="flex items-center px-lg py-sm text-on-surface-variant font-medium hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">badge</span>
+<span class="font-body-md">Employees</span>
+</a>
+<a class="flex items-center px-lg py-sm text-on-surface-variant font-medium hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">calendar_month</span>
+<span class="font-body-md">Calendar</span>
+</a>
+<a class="flex items-center px-lg py-sm text-on-surface-variant font-medium hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">bar_chart</span>
+<span class="font-body-md">Reports</span>
+</a>
+<a class="flex items-center px-lg py-sm text-on-surface-variant font-medium hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">notifications</span>
+<span class="font-body-md">Notifications</span>
+</a>
+<a class="flex items-center px-lg py-sm text-on-surface-variant font-medium hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">settings</span>
+<span class="font-body-md">Settings</span>
+</a>
+</nav>
+<div class="mt-auto px-md">
+<button class="w-full bg-primary text-white py-sm rounded-lg font-bold flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined">add</span>
+<span>New Repair Order</span>
+</button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col">
+<!-- Top App Bar -->
+<header class="flex justify-between items-center px-lg py-md w-full sticky top-0 z-50 bg-white border-b border-outline-variant">
+<div class="flex items-center gap-md">
+<button class="md:hidden p-sm">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h2 class="font-headline-lg text-headline-lg font-black text-primary">Repair Order #RO-8821</h2>
+</div>
+<div class="flex items-center gap-lg">
+<div class="hidden md:flex bg-surface-container rounded-full px-md py-xs items-center border border-outline-variant">
+<span class="material-symbols-outlined text-outline mr-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md w-64" placeholder="Search orders, plates..." type="text"/>
+</div>
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-colors">notifications</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-colors">help</span>
+<div class="w-10 h-10 rounded-full bg-primary-fixed border border-primary overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a garage owner in a clean workshop office setting. The man is middle-aged, wearing a subtle blue polo shirt with a garage logo, looking reliable and focused. The background is brightly lit with high-key lighting, maintaining a modern and trustworthy light-mode aesthetic for a professional management dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxcyg8garkeYxBU9QLFoSiAapaB4HhKB9uFCun-Vs9P1wB9teVevZY1Mz_5gfU0Chlp5qGUca7NDAvpTPQNdGXtrEVHh2lzdbzsnqDbd4fZDehVJXY-7MNWVZ9PJbUrrSv3d6FIV9OxpGYyHXywubhZzlbVm7G2CRynIUomClWhBtScxMHw5k4d3Ufzd99k3m_CG68X1fPBM9OrNoSje6lCxi8sTmY6sa4uvp1XHCn8shs6YJiqEPh_g"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="p-lg space-y-lg">
+<!-- Car Header Section -->
+<div class="bg-white border border-outline-variant rounded-xl p-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-lg">
+<div class="flex items-center gap-lg">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A clean, white Dacia Duster SUV parked in a modern, bright automotive service center. The vehicle is positioned professionally under crisp fluorescent lighting. The background shows a high-end garage interior with blue and white color accents, emphasizing efficiency and professional maintenance standards in a light-mode layout." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPuaaRZUNRqUIYHSrhkO6SAnIaLL-3oz_vLEtahpQ5_aiJaB-CeP6oZctuO_XcuA6v4xmEvFxyczQm4Hk9S_ZhmuKvjYackh_M2s87DMSqIS9nYDilV98ketG77Jq2lo9sxNeQ150o7NQPkPJcJX_sCAodTSML5szEXo23Yvi9xdGADd6VoLpEALpeeqO8FeBEsU1_OQd9Ns1SlU5KP5ioElLuQ0QwsXPl1aAt2VLojbHRS8lQgn1szA"/>
+</div>
+<div>
+<h3 class="font-headline-xl text-headline-xl text-primary leading-tight">Dacia Duster - 1234-A-15</h3>
+<div class="flex items-center gap-md mt-base">
+<span class="font-title-md text-on-surface-variant">Owner: Mohammed El Alami</span>
+<span class="text-outline">•</span>
+<span class="font-title-md text-on-surface-variant">Model Year: 2022</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end gap-sm">
+<div class="bg-primary-container/20 text-primary px-lg py-xs rounded-full font-bold flex items-center gap-sm">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                            In Progress
+                        </div>
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-widest">Est. Completion: Oct 25, 14:30</span>
+</div>
+</div>
+<!-- Main Layout Columns -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+<!-- Left Column (Diagnosis & Work Log) -->
+<div class="lg:col-span-2 space-y-lg">
+<!-- Diagnosis Section -->
+<div class="bg-white border border-outline-variant rounded-xl overflow-hidden">
+<div class="px-lg py-md border-b border-outline-variant bg-surface-container-low flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">analytics</span>
+<h4 class="font-title-md text-title-md">Diagnosis Details</h4>
+</div>
+<div class="p-lg">
+<p class="font-body-lg text-body-lg text-on-surface leading-relaxed">
+                                    Customer reports knocking sound from the front-left suspension when traversing speed bumps. Initial inspection reveals worn ball joints and potential leak in the shock absorber. Diagnostics also flagged a minor oil leak from the gasket cover.
+                                </p>
+<div class="mt-md flex flex-wrap gap-sm">
+<span class="bg-error-container text-on-error-container px-sm py-xs rounded text-label-sm font-bold uppercase">Critical: Suspension</span>
+<span class="bg-tertiary-container text-on-tertiary-container px-sm py-xs rounded text-label-sm font-bold uppercase">Monitor: Gasket</span>
+</div>
+</div>
+</div>
+<!-- Work Log Table -->
+<div class="bg-white border border-outline-variant rounded-xl overflow-hidden">
+<div class="px-lg py-md border-b border-outline-variant bg-surface-container-low flex justify-between items-center">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">assignment</span>
+<h4 class="font-title-md text-title-md">Work Log</h4>
+</div>
+<button class="text-primary font-bold hover:underline text-body-md">+ Add Task</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-highest border-b border-outline-variant">
+<tr>
+<th class="px-lg py-sm font-label-sm text-label-sm text-on-surface-variant uppercase">Task Description</th>
+<th class="px-lg py-sm font-label-sm text-label-sm text-on-surface-variant uppercase">Time</th>
+<th class="px-lg py-sm font-label-sm text-label-sm text-on-surface-variant uppercase">Cost (DH)</th>
+<th class="px-lg py-sm font-label-sm text-label-sm text-on-surface-variant uppercase">Status</th>
+</tr>
+</thead>
+<tbody class="text-body-md">
+<tr class="zebra-row border-b border-outline-variant">
+<td class="px-lg py-md font-medium">Front Suspension Inspection</td>
+<td class="px-lg py-md">1.5h</td>
+<td class="px-lg py-md">250.00</td>
+<td class="px-lg py-md"><span class="text-secondary font-bold">Completed</span></td>
+</tr>
+<tr class="zebra-row border-b border-outline-variant">
+<td class="px-lg py-md font-medium">Shock Absorber Replacement</td>
+<td class="px-lg py-md">3.0h</td>
+<td class="px-lg py-md">600.00</td>
+<td class="px-lg py-md"><span class="text-primary font-bold">In Progress</span></td>
+</tr>
+<tr class="zebra-row">
+<td class="px-lg py-md font-medium">Wheel Alignment &amp; Balancing</td>
+<td class="px-lg py-md">1.0h</td>
+<td class="px-lg py-md">350.00</td>
+<td class="px-lg py-md"><span class="text-outline font-bold">Pending</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Parts Consumed -->
+<div class="bg-white border border-outline-variant rounded-xl overflow-hidden">
+<div class="px-lg py-md border-b border-outline-variant bg-surface-container-low flex justify-between items-center">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">shopping_cart</span>
+<h4 class="font-title-md text-title-md">Parts Consumed</h4>
+</div>
+<span class="font-body-md text-on-surface-variant">Inventory Synced</span>
+</div>
+<div class="p-lg grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="flex items-center gap-md border border-outline-variant p-md rounded-lg">
+<div class="w-12 h-12 bg-surface-container flex items-center justify-center rounded">
+<span class="material-symbols-outlined text-outline">settings_suggest</span>
+</div>
+<div class="flex-1">
+<p class="font-bold text-body-md">Shock Absorber Front (Set)</p>
+<p class="text-label-sm text-on-surface-variant">Part #DAC-4421-S</p>
+</div>
+<div class="text-right">
+<p class="font-bold text-primary">1,450 DH</p>
+<p class="text-label-sm text-on-surface-variant">Qty: 1</p>
+</div>
+</div>
+<div class="flex items-center gap-md border border-outline-variant p-md rounded-lg">
+<div class="w-12 h-12 bg-surface-container flex items-center justify-center rounded">
+<span class="material-symbols-outlined text-outline">build_circle</span>
+</div>
+<div class="flex-1">
+<p class="font-bold text-body-md">Suspension Ball Joint</p>
+<p class="text-label-sm text-on-surface-variant">Part #DAC-8812-B</p>
+</div>
+<div class="text-right">
+<p class="font-bold text-primary">420 DH</p>
+<p class="text-label-sm text-on-surface-variant">Qty: 2</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column (Assignment, History, Actions) -->
+<div class="space-y-lg">
+<!-- Mechanic Assignment -->
+<div class="bg-white border border-outline-variant rounded-xl overflow-hidden">
+<div class="px-lg py-md border-b border-outline-variant bg-surface-container-low">
+<h4 class="font-title-md text-title-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">engineering</span>
+                                    Lead Mechanic
+                                </h4>
+</div>
+<div class="p-lg flex items-center gap-md">
+<div class="w-12 h-12 rounded-full overflow-hidden bg-tertiary-fixed">
+<img class="w-full h-full object-cover" data-alt="A focused Moroccan mechanic with short dark hair, wearing a navy blue garage uniform with 'Sagman' embroidered. He is standing in a brightly lit professional workshop environment. The portrait is crisp, conveying skill and expertise, aligned with a modern light-mode business dashboard style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBi1_eYUCshJew3ZMLeIxJnYDsJhT9yHEab1voubVRTCff3jvo9IiKhtw53KFPvrtxb4FTxsLwDqQ57a12Xgcg_3F8-Rx2FP5wvYEncFzRjLTBZ9x_KsBlIoTUTDayNoW9Xj0jXJe-P4mX9f5bZSoEIlBU1ShnL4RxY1LLH-5Pq0Ube5q24XXiRiFCx-S0EUD4kvVTmwjh8BYyhKRoRxJyUe50c9DZfX625q8VXP3o3i2C8ZkoL-oL4GA"/>
+</div>
+<div>
+<p class="font-headline-lg text-headline-lg-mobile text-on-surface">Yassine Mansouri</p>
+<p class="text-body-md text-on-surface-variant">Senior Specialist</p>
+</div>
+</div>
+</div>
+<!-- Quick Actions -->
+<div class="bg-white border border-outline-variant rounded-xl p-lg space-y-md">
+<h4 class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant mb-base">Command Center</h4>
+<button class="w-full border border-outline-variant text-on-surface py-md rounded-lg font-bold flex items-center justify-center gap-md hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-primary">published_with_changes</span>
+                                Update Status
+                            </button>
+<button class="w-full border border-outline-variant text-on-surface py-md rounded-lg font-bold flex items-center justify-center gap-md hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-primary">add_box</span>
+                                Add Part
+                            </button>
+<div class="pt-md border-t border-outline-variant">
+<button class="w-full bg-secondary text-white py-md rounded-lg font-bold flex items-center justify-center gap-md hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-secondary/20">
+<span class="material-symbols-outlined">receipt_long</span>
+                                    Generate Invoice
+                                </button>
+</div>
+</div>
+<!-- Repair Timeline -->
+<div class="bg-white border border-outline-variant rounded-xl overflow-hidden">
+<div class="px-lg py-md border-b border-outline-variant bg-surface-container-low">
+<h4 class="font-title-md text-title-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">history</span>
+                                    Activity History
+                                </h4>
+</div>
+<div class="p-lg">
+<ul class="space-y-lg relative before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-outline-variant">
+<li class="relative pl-xl">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-secondary flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-[14px] text-white" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<p class="font-bold text-body-md text-on-surface">Vehicle Received</p>
+<p class="text-label-sm text-on-surface-variant">Oct 23, 09:15 AM • Front Desk</p>
+</li>
+<li class="relative pl-xl">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-secondary flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-[14px] text-white" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<p class="font-bold text-body-md text-on-surface">Diagnosis Completed</p>
+<p class="text-label-sm text-on-surface-variant">Oct 23, 11:30 AM • Y. Mansouri</p>
+</li>
+<li class="relative pl-xl">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-primary flex items-center justify-center z-10 animate-pulse">
+<span class="material-symbols-outlined text-[14px] text-white">pending</span>
+</div>
+<p class="font-bold text-body-md text-primary">Repairs in Progress</p>
+<p class="text-label-sm text-on-surface-variant">Oct 24, 08:00 AM • Suspension Lab</p>
+</li>
+<li class="relative pl-xl opacity-50">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-outline-variant flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-[14px] text-white">upcoming</span>
+</div>
+<p class="font-bold text-body-md text-on-surface">Quality Control</p>
+<p class="text-label-sm text-on-surface-variant">Scheduled</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Global Footer -->
+<footer class="flex flex-col md:flex-row justify-between items-center px-lg py-md w-full mt-auto border-t border-outline-variant bg-surface-container-lowest text-on-surface-variant">
+<div class="mb-sm md:mb-0">
+<p class="font-label-sm text-label-sm">© 2024 Sagman Garage Management System. All rights reserved.</p>
+</div>
+<div class="flex gap-lg">
+<a class="font-label-sm text-label-sm hover:underline decoration-primary" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm hover:underline decoration-primary" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm hover:underline decoration-primary" href="#">Support</a>
+<a class="font-label-sm text-label-sm hover:underline decoration-primary" href="#">Contact</a>
+</div>
+</footer>
+</main>
+</div>
+<!-- Interaction Script -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Hover effect on work log rows
+            const rows = document.querySelectorAll('.zebra-row');
+            rows.forEach(row => {
+                row.addEventListener('mouseenter', () => {
+                    row.style.transform = 'translateX(4px)';
+                    row.style.transition = 'transform 0.2s ease-out';
+                });
+                row.addEventListener('mouseleave', () => {
+                    row.style.transform = 'translateX(0)';
+                });
+            });
+
+            // Smooth scaling on buttons
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(btn => {
+                btn.addEventListener('mousedown', () => {
+                    btn.classList.add('scale-95');
+                });
+                btn.addEventListener('mouseup', () => {
+                    btn.classList.remove('scale-95');
+                });
+                btn.addEventListener('mouseleave', () => {
+                    btn.classList.remove('scale-95');
+                });
+            });
+        });
+    </script>
+</body></html>

@@ -19,5 +19,9 @@ VALUES ('00000000-0000-0000-0000-000000000001', 'Admin Manager', 'admin@sagman.g
 INSERT OR IGNORE INTO users (id, name, email, password_hash, role, specialty, status)
 VALUES ('00000000-0000-0000-0000-000000000002', 'Ahmed Mechanic', 'ahmed@sagman.garage', '$2a$12$cV4P5xmIOQbMpprYeSaD9OY8oAK5Hi/Mv67qb6.6fXvM6FOvg4tw6', 'mechanic', 'Engine, Suspension', 'active');
 
+-- WhatsApp & Dépannage numbers
+INSERT OR IGNORE INTO system_settings (key, value) VALUES ('whatsapp_number', '+212694722954');
+INSERT OR IGNORE INTO system_settings (key, value) VALUES ('depannage_number', '+212694722954');
+
 -- Invoice Counter
 INSERT OR IGNORE INTO invoice_counters (year, last_seq) VALUES ('2026', 0);

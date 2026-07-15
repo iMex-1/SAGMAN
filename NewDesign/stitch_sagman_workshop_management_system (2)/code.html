@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Repair Report - Sagman Garage</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .bento-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .bento-card:active {
+            transform: scale(0.98);
+        }
+        .status-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .7; }
+        }
+    </style>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed-variant": "#3f465c",
+                    "tertiary-container": "#384055",
+                    "on-error": "#ffffff",
+                    "primary-fixed": "#dce1ff",
+                    "primary": "#00236f",
+                    "surface-variant": "#e0e3e5",
+                    "on-primary-fixed-variant": "#264191",
+                    "on-surface": "#191c1e",
+                    "on-secondary": "#ffffff",
+                    "outline": "#757682",
+                    "on-secondary-fixed-variant": "#93000b",
+                    "surface-tint": "#4059aa",
+                    "primary-fixed-dim": "#b6c4ff",
+                    "on-secondary-container": "#fffbff",
+                    "secondary-fixed": "#ffdad6",
+                    "background": "#f7f9fb",
+                    "on-primary-container": "#90a8ff",
+                    "tertiary-fixed-dim": "#bec6e0",
+                    "surface-container": "#eceef0",
+                    "tertiary": "#222a3e",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-primary": "#b6c4ff",
+                    "inverse-surface": "#2d3133",
+                    "surface-dim": "#d8dadc",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-primary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "secondary-container": "#e02928",
+                    "on-primary-fixed": "#00164e",
+                    "outline-variant": "#c5c5d3",
+                    "on-tertiary-container": "#a4acc5",
+                    "secondary": "#bb0112",
+                    "on-tertiary": "#ffffff",
+                    "on-background": "#191c1e",
+                    "tertiary-fixed": "#dae2fd",
+                    "secondary-fixed-dim": "#ffb4ab",
+                    "error": "#ba1a1a",
+                    "error-container": "#ffdad6",
+                    "surface": "#f7f9fb",
+                    "primary-container": "#1e3a8a",
+                    "on-secondary-fixed": "#410002",
+                    "surface-bright": "#f7f9fb",
+                    "surface-container-high": "#e6e8ea",
+                    "on-tertiary-fixed": "#131b2e",
+                    "surface-container-low": "#f2f4f6",
+                    "on-surface-variant": "#444651",
+                    "inverse-on-surface": "#eff1f3"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "sm": "8px",
+                    "xs": "4px",
+                    "xl": "32px",
+                    "md": "16px",
+                    "base": "4px",
+                    "lg": "24px",
+                    "container-margin": "24px",
+                    "gutter": "16px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-md": ["Inter"],
+                    "title-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "headline-lg-mobile": ["Inter"]
+            },
+            "fontSize": {
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "title-md": ["18px", {"lineHeight": "26px", "fontWeight": "600"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "headline-xl": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface antialiased pb-24">
+<!-- Top Navigation Anchor -->
+<header class="fixed top-0 left-0 w-full z-50 flex items-center px-md h-16 bg-surface border-b border-outline-variant shadow-sm">
+<div class="flex items-center justify-between w-full">
+<div class="flex items-center gap-md">
+<button class="active:scale-95 transition-transform duration-100 hover:bg-surface-container p-2 rounded-full">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">Repair Report</h1>
+</div>
+<button class="active:scale-95 transition-transform duration-100 hover:bg-surface-container p-2 rounded-full">
+<span class="material-symbols-outlined text-primary">share</span>
+</button>
+</div>
+</header>
+<main class="mt-16 px-container-margin py-lg space-y-lg max-w-2xl mx-auto">
+<!-- Vehicle Profile Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex items-center gap-md">
+<div class="w-16 h-16 rounded-lg bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-primary-container" style="font-variation-settings: 'FILL' 1;">directions_car</span>
+</div>
+<div>
+<h2 class="font-title-md text-title-md text-primary">BMW X5 xDrive40i</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">VIN: 5UXKR0C56G0XXXXXX</p>
+<div class="mt-xs inline-flex items-center gap-xs px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container font-label-sm text-label-sm">
+<span class="status-pulse w-2 h-2 rounded-full bg-on-primary-container"></span>
+                    Ready for Pickup
+                </div>
+</div>
+</div>
+<!-- Diagnostic Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<!-- Diagnostic Note -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-sm mb-sm">
+<span class="material-symbols-outlined text-secondary">handyman</span>
+<h3 class="font-title-md text-title-md">Technician's Note</h3>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant italic">
+                        "Observed significant wear on the front inner brake pads. Vibration during braking was caused by warped rotors. Replacement and surfacing completed to OEM specs."
+                    </p>
+</div>
+<div class="mt-md flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-outline-variant"></div>
+<div>
+<p class="font-label-sm text-label-sm font-bold">Ahmed M.</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Senior Specialist</p>
+</div>
+</div>
+</div>
+<!-- Visual Evidence -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden relative group">
+<img class="w-full h-full object-cover min-h-[160px]" data-alt="A professional close-up macro photograph of a worn-out automotive brake pad against a sterile, high-contrast workshop background. The scene is lit with bright, cool-toned professional garage lighting that highlights the metallic textures and wear patterns. The aesthetic is clean, technical, and professional, utilizing the deep blue and light gray palette of the Sagman Garage brand. The focus is sharp on the damaged friction material to show evidence of repair necessity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFrPf3ghs_5yPMu5Lya9u322GIsq9rQSudrvlxYQ7YcrD9MHoy2j-8IB1S5gWo4fWD9IDZwzuNHR8GnRLfU1XabF-9J6LxMjb9XPR06fPEjgyOlu1x1y-DxiNRjDHMjCMHz7MsUV7dDJzgBRVR-S3ZHmJvhAAswNwPN0iE22tvRzEveubvpDbMmXRrf-T8LNSekxv_ZY73KIJsOJ-o98kFKNgeXjw7Lc-4b77so5-o1hFAoHB9_UQTyQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-md">
+<span class="text-white font-label-sm text-label-sm">Part Replaced: Front Brake Pad (Left)</span>
+</div>
+</div>
+</div>
+<!-- Work Summary Table -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden">
+<div class="px-md py-sm bg-surface-container-low border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-title-md text-title-md">Work Summary</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Job #RE-4092</span>
+</div>
+<div class="divide-y divide-outline-variant">
+<div class="p-md flex justify-between items-start hover:bg-surface-container transition-colors">
+<div>
+<p class="font-body-lg text-body-lg font-semibold">Front Brake Pads</p>
+<p class="font-body-md text-body-md text-on-surface-variant">OEM Performance Ceramic</p>
+</div>
+<p class="font-body-lg text-body-lg">1,250 MAD</p>
+</div>
+<div class="p-md flex justify-between items-start hover:bg-surface-container transition-colors">
+<div>
+<p class="font-body-lg text-body-lg font-semibold">Rotor Surfacing</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Precision Grinding (Pair)</p>
+</div>
+<p class="font-body-lg text-body-lg">600 MAD</p>
+</div>
+<div class="p-md flex justify-between items-start hover:bg-surface-container transition-colors">
+<div>
+<p class="font-body-lg text-body-lg font-semibold">Labor</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Brake System Overhaul (2.5 hrs)</p>
+</div>
+<p class="font-body-lg text-body-lg">750 MAD</p>
+</div>
+</div>
+<!-- Totals -->
+<div class="p-md bg-surface-container-high space-y-xs">
+<div class="flex justify-between text-on-surface-variant">
+<span class="font-body-md text-body-md">Subtotal</span>
+<span class="font-body-md text-body-md">2,600 MAD</span>
+</div>
+<div class="flex justify-between text-on-surface-variant">
+<span class="font-body-md text-body-md">VAT (20%)</span>
+<span class="font-body-md text-body-md">520 MAD</span>
+</div>
+<div class="flex justify-between pt-sm border-t border-outline-variant">
+<span class="font-title-md text-title-md text-primary">Total Amount Due</span>
+<span class="font-title-md text-title-md text-primary">3,120 MAD</span>
+</div>
+</div>
+</section>
+<!-- Next Service Recommendation -->
+<div class="bg-tertiary-fixed border border-tertiary text-on-tertiary-fixed rounded-xl p-md flex items-center gap-md">
+<div class="w-12 h-12 rounded-full bg-tertiary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-white">event_upcoming</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm uppercase tracking-wider font-bold">Next Recommended Service</p>
+<p class="font-body-lg text-body-lg">Synthetic Oil Change</p>
+<p class="font-body-md text-body-md opacity-80">Due in 3,000km or by Sep 2024</p>
+</div>
+</div>
+<!-- Action Area -->
+<div class="flex flex-col gap-sm">
+<button class="w-full bg-primary text-on-primary py-4 rounded-xl font-title-md text-title-md flex items-center justify-center gap-sm active:scale-[0.98] transition-transform shadow-lg">
+<span class="material-symbols-outlined">payments</span>
+                Approve &amp; Pay
+            </button>
+<button class="w-full bg-surface-container-highest text-primary py-4 rounded-xl font-title-md text-title-md flex items-center justify-center gap-sm active:scale-[0.98] transition-transform border border-outline-variant">
+<span class="material-symbols-outlined">description</span>
+                View Full Invoice
+            </button>
+</div>
+</main>
+<!-- Bottom Navigation Shell -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-sm py-xs pb-safe bg-surface shadow-[0_-1px_3px_rgba(0,0,0,0.1)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">description</span>
+<span class="font-label-sm text-label-sm">Summary</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined">build</span>
+<span class="font-label-sm text-label-sm">Details</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined">check_circle</span>
+<span class="font-label-sm text-label-sm">Approve</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction: Update active state for nav (demo only)
+        const navItems = document.querySelectorAll('nav a');
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                navItems.forEach(nav => {
+                    nav.className = "flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-high transition-colors";
+                });
+                item.className = "flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 transition-colors";
+            });
+        });
+    </script>
+</body></html>

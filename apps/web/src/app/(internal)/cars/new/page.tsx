@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Loader2, Info } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { Icon } from '@/components/ui/icon'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -34,6 +35,7 @@ interface CreateCarResponse {
 
 export default function NewCarPage() {
   const router = useRouter()
+  const t = useTranslations()
   const { success, error: toastError } = useToast()
 
   const [form, setForm] = useState({
@@ -57,17 +59,17 @@ export default function NewCarPage() {
 
   function validate(): boolean {
     const errors: FieldErrors = {}
-    if (!form.matricule.trim()) errors.matricule = 'Plate number is required.'
-    if (!form.make.trim()) errors.make = 'Make is required.'
-    if (!form.model.trim()) errors.model = 'Model is required.'
+    if (!form.matricule.trim()) errors.matricule = t('car.validation.plateRequired')
+    if (!form.make.trim()) errors.make = t('car.validation.makeRequired')
+    if (!form.model.trim()) errors.model = t('car.validation.modelRequired')
     if (form.year) {
       const y = Number(form.year)
       if (isNaN(y) || y < 1900 || y > new Date().getFullYear() + 1) {
-        errors.year = 'Enter a valid year.'
+        errors.year = t('car.validation.invalidYear')
       }
     }
     if (form.mileage && isNaN(Number(form.mileage))) {
-      errors.mileage = 'Mileage must be a number.'
+      errors.mileage = t('car.validation.invalidMileage')
     }
     setFieldErrors(errors)
     return Object.keys(errors).length === 0
@@ -90,7 +92,7 @@ export default function NewCarPage() {
         mileage: form.mileage ? Number(form.mileage) : undefined,
         notes: form.notes.trim() || undefined,
       })
-      success('Car registered', `${res.data.matricule} has been added to the system.`)
+      success(t('car.toasts.created'), t('car.toasts.createdDesc', { matricule: res.data.matricule }))
       router.push(`/cars/${res.data.id}`)
     } catch (err) {
       if (err instanceof ApiError) {
@@ -100,7 +102,7 @@ export default function NewCarPage() {
           setFormError(err.message)
         }
       } else {
-        setFormError('An unexpected error occurred. Please try again.')
+        setFormError(t('car.toasts.error'))
       }
     } finally {
       setIsLoading(false)
@@ -109,43 +111,40 @@ export default function NewCarPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      {/* Back */}
       <div>
         <Button variant="ghost" size="sm" asChild>
           <Link href="/cars">
-            <ArrowLeft className="h-4 w-4" />
-            Back to Cars
+            <Icon name="arrow_back" size={16} />
+            {t('car.backLink')}
           </Link>
         </Button>
       </div>
 
-      <Card>
+      <Card className="bg-white border border-outline-variant rounded-xl shadow-sm">
         <CardHeader>
-          <CardTitle>Register Car</CardTitle>
-          <CardDescription>Add a vehicle to the garage system.</CardDescription>
+          <CardTitle className="font-headline-lg text-headline-lg">{t('car.newTitle')}</CardTitle>
+          <CardDescription className="font-body-md text-body-md text-on-surface-variant">{t('car.newDescription')}</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-            {/* Form-level error */}
             {formError && (
               <div className="rounded-md border border-destructive/50 bg-destructive/10 px-4 py-3 text-sm text-destructive">
                 {formError}
               </div>
             )}
 
-            {/* Vehicle Identity */}
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                Vehicle Identity
+              <h3 className="font-label-sm text-label-sm uppercase tracking-wide text-on-surface-variant">
+                {t('car.sections.identity')}
               </h3>
 
               <div className="space-y-2">
                 <Label htmlFor="matricule">
-                  Plate Number / Matricule <span className="text-destructive">*</span>
+                  {t('car.fields.plate')} <span className="text-destructive">*</span>
                 </Label>
                 <Input
                   id="matricule"
-                  placeholder="e.g. 123456-A-50"
+                  placeholder={t('car.placeholders.plate')}
                   value={form.matricule}
                   onChange={(e) => setField('matricule', e.target.value.toUpperCase())}
                   error={fieldErrors.matricule}
@@ -156,11 +155,11 @@ export default function NewCarPage() {
               <div className="grid gap-4 sm:grid-cols-3">
                 <div className="space-y-2">
                   <Label htmlFor="make">
-                    Make <span className="text-destructive">*</span>
+                    {t('car.fields.make')} <span className="text-destructive">*</span>
                   </Label>
                   <Input
                     id="make"
-                    placeholder="Toyota"
+                    placeholder={t('car.placeholders.make')}
                     value={form.make}
                     onChange={(e) => setField('make', e.target.value)}
                     error={fieldErrors.make}
@@ -169,11 +168,11 @@ export default function NewCarPage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="model">
-                    Model <span className="text-destructive">*</span>
+                    {t('car.fields.model')} <span className="text-destructive">*</span>
                   </Label>
                   <Input
                     id="model"
-                    placeholder="Corolla"
+                    placeholder={t('car.placeholders.model')}
                     value={form.model}
                     onChange={(e) => setField('model', e.target.value)}
                     error={fieldErrors.model}
@@ -181,11 +180,11 @@ export default function NewCarPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="year">Year</Label>
+                  <Label htmlFor="year">{t('car.fields.year')}</Label>
                   <Input
                     id="year"
                     type="number"
-                    placeholder="2020"
+                    placeholder={t('car.placeholders.year')}
                     value={form.year}
                     onChange={(e) => setField('year', e.target.value)}
                     error={fieldErrors.year}
@@ -195,20 +194,20 @@ export default function NewCarPage() {
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="color">Color</Label>
+                  <Label htmlFor="color">{t('car.fields.color')}</Label>
                   <Input
                     id="color"
-                    placeholder="White"
+                    placeholder={t('car.placeholders.color')}
                     value={form.color}
                     onChange={(e) => setField('color', e.target.value)}
                     error={fieldErrors.color}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="vin">VIN</Label>
+                  <Label htmlFor="vin">{t('car.fields.vin')}</Label>
                   <Input
                     id="vin"
-                    placeholder="Vehicle identification number"
+                    placeholder={t('car.placeholders.vin')}
                     value={form.vin}
                     onChange={(e) => setField('vin', e.target.value)}
                     error={fieldErrors.vin}
@@ -217,18 +216,17 @@ export default function NewCarPage() {
               </div>
             </div>
 
-            {/* Intake */}
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                Intake
+              <h3 className="font-label-sm text-label-sm uppercase tracking-wide text-on-surface-variant">
+                {t('car.sections.reception')}
               </h3>
 
               <div className="space-y-2">
-                <Label htmlFor="mileage">Mileage (km)</Label>
+                <Label htmlFor="mileage">{t('car.fields.mileage')}</Label>
                 <Input
                   id="mileage"
                   type="number"
-                  placeholder="e.g. 45000"
+                  placeholder={t('car.placeholders.mileage')}
                   value={form.mileage}
                   onChange={(e) => setField('mileage', e.target.value)}
                   error={fieldErrors.mileage}
@@ -236,10 +234,10 @@ export default function NewCarPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="notes">Notes</Label>
+                <Label htmlFor="notes">{t('car.fields.notes')}</Label>
                 <textarea
                   id="notes"
-                  placeholder="Any initial observations about the vehicle..."
+                  placeholder={t('car.placeholders.notes')}
                   value={form.notes}
                   onChange={(e) => setField('notes', e.target.value)}
                   rows={3}
@@ -248,29 +246,24 @@ export default function NewCarPage() {
               </div>
             </div>
 
-            {/* Client note */}
-            <div className="flex items-start gap-2 rounded-md border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">
-              <Info className="mt-0.5 h-4 w-4 shrink-0" />
-              <p>
-                Client linking is done from the car detail page after registration. Leave the
-                vehicle unlinked for walk-in customers.
-              </p>
+            <div className="flex items-start gap-2 rounded-md border border-outline-variant bg-surface-container px-lg py-sm text-sm text-on-surface-variant">
+              <Icon name="info" size={16} className="mt-0.5 shrink-0" />
+              <p>{t('car.create.clientNote')}</p>
             </div>
 
-            {/* Actions */}
             <div className="flex items-center gap-3 pt-2">
-              <Button type="submit" isLoading={isLoading} className="min-w-[140px]">
+              <Button type="submit" isLoading={isLoading} className="bg-primary text-on-primary rounded-lg px-lg py-sm font-title-md text-title-md min-w-[140px]">
                 {isLoading ? (
                   <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Registering...
+                    <Icon name="sync" size={16} className="animate-spin" />
+                    {t('car.create.submitting')}
                   </>
                 ) : (
-                  'Register Car'
+                  t('car.create.submit')
                 )}
               </Button>
-              <Button variant="outline" type="button" asChild>
-                <Link href="/cars">Cancel</Link>
+              <Button variant="outline" type="button" asChild className="border border-outline-variant text-on-surface-variant">
+                <Link href="/cars">{t('common.cancel')}</Link>
               </Button>
             </div>
           </form>

@@ -5,10 +5,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { api, ApiError } from '@/lib/api-client'
 import { authStorage } from '@/lib/auth'
-import {
-  Car, PlusCircle, ChevronRight, Clock, AlertCircle,
-  CheckCircle2, Loader2,
-} from 'lucide-react'
+import { Icon } from '@/components/ui/icon'
+import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -22,6 +20,15 @@ interface ActiveRepair {
   description: string
 }
 
+interface PastRepair {
+  id: string
+  status: string
+  priority: string
+  targetCompletionDate?: string
+  description: string
+  createdAt: string
+}
+
 interface ClientCar {
   id: string
   matricule: string
@@ -29,42 +36,44 @@ interface ClientCar {
   model: string
   year?: number
   activeRepair?: ActiveRepair
+  pastRepairs?: PastRepair[]
 }
 
 // ─── Status config ────────────────────────────────────────────────────────────
 
 const STATUS_CONFIG: Record<
   string,
-  { label: string; color: string; step: number; icon: typeof CheckCircle2 }
+  { color: string; step: number; icon: string }
 > = {
-  received:          { label: 'Reçu',              color: 'bg-slate-400',   step: 1, icon: CheckCircle2 },
-  diagnosing:        { label: 'Diagnostic',         color: 'bg-blue-500',    step: 2, icon: AlertCircle  },
-  awaiting_approval: { label: 'En attente',         color: 'bg-amber-500',   step: 2, icon: AlertCircle  },
-  in_progress:       { label: 'En cours',           color: 'bg-purple-500',  step: 3, icon: Clock        },
-  waiting_for_parts: { label: 'Pièces manquantes',  color: 'bg-orange-500',  step: 3, icon: Clock        },
-  complete:          { label: 'Prêt !',             color: 'bg-emerald-500', step: 4, icon: CheckCircle2 },
-  delivered:         { label: 'Livré',              color: 'bg-slate-400',   step: 5, icon: CheckCircle2 },
-  cancelled:         { label: 'Annulé',             color: 'bg-red-400',     step: 0, icon: AlertCircle  },
+  received:          { color: 'bg-surface-variant', step: 1, icon: 'check_circle' },
+  diagnosing:        { color: 'bg-blue-500',       step: 2, icon: 'warning'       },
+  awaiting_approval: { color: 'bg-amber-500',      step: 2, icon: 'warning'       },
+  in_progress:       { color: 'bg-purple-500',     step: 3, icon: 'schedule'      },
+  waiting_for_parts: { color: 'bg-orange-500',     step: 3, icon: 'schedule'      },
+  complete:          { color: 'bg-emerald-500',    step: 4, icon: 'check_circle'  },
+  delivered:         { color: 'bg-surface-variant', step: 5, icon: 'check_circle'  },
+  cancelled:         { color: 'bg-red-400',        step: 0, icon: 'warning'       },
 }
 
-const PROGRESS_STEPS = ['Reçu', 'Diagnostic', 'Réparation', 'Terminé', 'Livré']
+const PROGRESS_STEP_KEYS = ['received', 'diagnosing', 'in_progress', 'complete', 'delivered']
 
 // ─── Progress bar ─────────────────────────────────────────────────────────────
 
 function RepairProgressBar({ status }: { status: string }) {
+  const t = useTranslations()
   const config = STATUS_CONFIG[status]
   if (!config || config.step === 0) return null
 
   return (
     <div className="mt-4">
-      <div className="mb-1.5 flex justify-between text-[10px] font-medium text-muted-foreground">
-        {PROGRESS_STEPS.map((s, i) => (
-          <span key={s} className={cn(i + 1 <= config.step ? 'text-primary font-semibold' : '')}>
-            {s}
+      <div className="mb-1.5 flex justify-between text-[10px] font-medium text-on-surface-variant">
+        {PROGRESS_STEP_KEYS.map((key, i) => (
+          <span key={key} className={cn(i + 1 <= config.step ? 'text-primary font-semibold' : '')}>
+            {t('repair.status.' + key)}
           </span>
         ))}
       </div>
-      <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+      <div className="h-2 w-full overflow-hidden rounded-full bg-surface-container-low">
         <div
           className={cn('h-full rounded-full transition-all duration-700', config.color)}
           style={{ width: `${(config.step / 5) * 100}%` }}
@@ -77,85 +86,125 @@ function RepairProgressBar({ status }: { status: string }) {
 // ─── Car repair card ─────────────────────────────────────────────────────────
 
 function CarRepairCard({ car }: { car: ClientCar }) {
+  const t = useTranslations()
   const repair = car.activeRepair
   const statusConfig = repair ? (STATUS_CONFIG[repair.status] ?? null) : null
+  const [showHistory, setShowHistory] = useState(false)
+  const hasPast = (car.pastRepairs?.length ?? 0) > 0
 
   return (
-    <Link
-      href={repair ? `/portal/repairs/${repair.id}` : '#'}
-      className={cn(
-        'block rounded-2xl border bg-white p-5 shadow-card transition-all hover:shadow-card-hover',
-        repair ? 'hover:-translate-y-0.5 cursor-pointer' : 'cursor-default',
-      )}
-    >
-      <div className="flex items-start justify-between gap-3">
-        {/* Car info */}
-        <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-            <Car className="h-5 w-5 text-primary" />
-          </div>
-          <div>
-            <p className="font-bold text-foreground">
-              {car.make} {car.model}
-            </p>
-            <p className="font-mono text-sm text-muted-foreground">{car.matricule}</p>
-            {car.year && <p className="text-xs text-muted-foreground">{car.year}</p>}
-          </div>
-        </div>
-
-        {/* Status badge */}
-        {statusConfig && (
-          <div
-            className={cn(
-              'flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold text-white',
-              statusConfig.color,
-            )}
-          >
-            <statusConfig.icon className="h-3 w-3" />
-            {statusConfig.label}
-          </div>
+    <div className="bg-white border border-outline-variant rounded-xl shadow-sm overflow-hidden">
+      <Link
+        href={`/portal/cars/${car.id}`}
+        className={cn(
+          'block p-5 transition-all hover:shadow-md hover:-translate-y-0.5',
         )}
-      </div>
-
-      {repair ? (
-        <>
-          <RepairProgressBar status={repair.status} />
-
-          <div className="mt-3 flex items-center justify-between">
-            <p className="max-w-[70%] truncate text-xs text-muted-foreground">
-              {repair.description}
-            </p>
-            <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+      >
+        <div className="flex items-start justify-between gap-3">
+          {/* Car info */}
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary">
+              <Icon name="directions_car" size={20} className="text-white" />
+            </div>
+            <div>
+              <p className="font-title-md text-title-md text-primary">
+                {car.make} {car.model}
+              </p>
+              <p className="font-mono text-sm text-on-surface-variant">{car.matricule}</p>
+              {car.year && <p className="text-label-sm font-label-sm text-on-surface-variant">{car.year}</p>}
+            </div>
           </div>
 
-          {repair.isOverdue && (
-            <div className="overdue-pulse mt-2 flex items-center gap-1.5 text-xs font-medium text-destructive">
-              <AlertCircle className="h-3.5 w-3.5" />
-              Réparation en retard
+          {/* Status badge */}
+          {statusConfig && (
+            <div
+              className={cn(
+                'flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold text-white',
+                statusConfig.color,
+              )}
+            >
+              <Icon name={statusConfig.icon} size={12} />
+              {t('repair.status.' + repair!.status)}
             </div>
           )}
+        </div>
 
-          {repair.targetCompletionDate && (
-            <p className="mt-1 text-xs text-muted-foreground">
-              Date prévue :{' '}
-              {new Date(repair.targetCompletionDate).toLocaleDateString('fr-FR', {
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric',
-              })}
-            </p>
+        {repair ? (
+          <>
+            <RepairProgressBar status={repair.status} />
+
+            <div className="mt-3 flex items-center justify-between">
+              <p className="max-w-[70%] truncate text-xs text-on-surface-variant">
+                {repair.description}
+              </p>
+              <Icon name="chevron_right" size={16} className="shrink-0 text-on-surface-variant" />
+            </div>
+
+            {repair.isOverdue && (
+              <div className="overdue-pulse mt-2 flex items-center gap-1.5 text-xs font-medium text-error">
+                <Icon name="warning" size={14} />
+                {t('portal.myCars.repairOverdue')}
+              </div>
+            )}
+
+            {repair.targetCompletionDate && (
+              <p className="mt-1 text-xs text-on-surface-variant">
+                {t('portal.myCars.estimatedDate')}{' '}
+                {new Date(repair.targetCompletionDate).toLocaleDateString('fr-FR', {
+                  day: '2-digit',
+                  month: 'short',
+                  year: 'numeric',
+                })}
+              </p>
+            )}
+          </>
+        ) : (
+          <p className="mt-3 text-sm text-on-surface-variant">{t('portal.myCars.noActiveRepair')}</p>
+        )}
+      </Link>
+
+      {/* Past repairs */}
+      {hasPast && (
+        <div className="border-t border-outline-variant">
+          <button
+            onClick={() => setShowHistory(!showHistory)}
+            className="flex w-full items-center justify-between px-5 py-3 text-sm font-medium text-on-surface-variant hover:text-primary transition-colors"
+          >
+            <span>{t('portal.myCars.repairHistory', { count: car.pastRepairs!.length })}</span>
+            <Icon name={showHistory ? 'expand_less' : 'expand_more'} size={18} />
+          </button>
+
+          {showHistory && (
+            <div className="space-y-1 px-5 pb-4">
+              {car.pastRepairs!.map((pr) => (
+                <Link
+                  key={pr.id}
+                  href={`/portal/repairs/${pr.id}`}
+                  className="flex items-center justify-between rounded-lg px-3 py-2 text-sm hover:bg-surface-container-low transition-colors"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium text-on-surface">{pr.description}</span>
+                    <span className="text-xs text-on-surface-variant">
+                      {new Date(pr.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}
+                    </span>
+                  </div>
+                  <span className="text-xs font-medium text-on-surface-variant">
+                    {t('repair.status.' + pr.status) ?? pr.status}
+                  </span>
+                </Link>
+              ))}
+            </div>
           )}
-        </>
-      ) : (
-        <p className="mt-3 text-sm text-muted-foreground">Aucune réparation active</p>
+        </div>
       )}
-    </Link>
+    </div>
   )
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function PortalCarsPage() {
+  const t = useTranslations()
   const router = useRouter()
   const [cars, setCars] = useState<ClientCar[]>([])
   const [clientName, setClientName] = useState<string>('')
@@ -181,7 +230,7 @@ export default function PortalCarsPage() {
           authStorage.clear()
           router.push('/portal/login')
         } else {
-          setError('Impossible de charger vos véhicules')
+          setError(t('portal.myCars.loadError'))
         }
       })
       .finally(() => setLoading(false))
@@ -190,7 +239,7 @@ export default function PortalCarsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <Icon name="sync" size={32} className="animate-spin text-primary" />
       </div>
     )
   }
@@ -201,46 +250,48 @@ export default function PortalCarsPage() {
       <div className="flex items-center justify-between">
         <div>
           {clientName && (
-            <p className="text-sm text-muted-foreground">Bonjour, {clientName} 👋</p>
+            <p className="text-sm text-on-surface-variant">{t('portal.myCars.greeting', { name: clientName })}</p>
           )}
-          <h1 className="text-xl font-bold text-foreground">Mes véhicules</h1>
-          <p className="text-sm text-muted-foreground">
-            {cars.length} véhicule{cars.length !== 1 ? 's' : ''} enregistré
-            {cars.length !== 1 ? 's' : ''}
+          <h1 className="font-headline-lg text-headline-lg text-primary">{t('portal.myCars.title')}</h1>
+          <p className="text-body-md font-body-md text-on-surface-variant">
+            {cars.length === 1
+              ? t('portal.myCars.carsRegistered', { count: cars.length })
+              : t('portal.myCars.carsRegisteredPlural', { count: cars.length })
+            }
           </p>
         </div>
         <Link
           href="/portal/book"
-          className="flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-primary/90"
+          className="flex items-center gap-1.5 bg-primary text-white rounded-lg px-xl py-md font-title-md text-title-md shadow-sm"
         >
-          <PlusCircle className="h-4 w-4" />
-          <span className="hidden sm:inline">Rendez-vous</span>
+          <Icon name="add_circle" size={16} />
+          <span className="hidden sm:inline">{t('portal.myCars.bookAppointment')}</span>
         </Link>
       </div>
 
       {/* Error state */}
       {error && (
-        <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
+        <div className="rounded-xl border border-error/30 bg-error-container p-4 text-sm text-on-error-container">
           {error}
         </div>
       )}
 
       {/* Empty state */}
       {cars.length === 0 && !error && (
-        <div className="rounded-2xl border bg-white py-16 text-center shadow-card">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-            <Car className="h-8 w-8 text-muted-foreground/40" />
+        <div className="bg-white border border-outline-variant rounded-xl shadow-sm py-16 text-center">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-surface-container-low">
+            <Icon name="directions_car" size={32} className="text-on-surface-variant/40" />
           </div>
-          <p className="font-semibold text-foreground">Aucun véhicule enregistré</p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Prenez rendez-vous pour enregistrer votre véhicule
+          <p className="font-title-md text-title-md text-primary">{t('portal.myCars.emptyTitle')}</p>
+          <p className="mt-1 text-body-md font-body-md text-on-surface-variant">
+            {t('portal.myCars.emptyDesc')}
           </p>
           <Link
             href="/portal/book"
-            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-primary/90"
+            className="mt-4 inline-flex items-center gap-2 bg-primary text-white rounded-lg px-xl py-md font-title-md text-title-md"
           >
-            <PlusCircle className="h-4 w-4" />
-            Prendre rendez-vous
+            <Icon name="add_circle" size={16} />
+            {t('portal.landing.bookAppointment')}
           </Link>
         </div>
       )}

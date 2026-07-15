@@ -20,8 +20,8 @@ async function recalculateTotals(db: D1Database, repairId: string) {
   ).bind(repairId).all<{ cost: string }>();
 
   const repair = await db.prepare(
-    `SELECT discount_amount FROM repair_jobs WHERE id = ?`,
-  ).bind(repairId).first<{ discount_amount: string }>();
+    `SELECT discount_amount, status FROM repair_jobs WHERE id = ?`,
+  ).bind(repairId).first<{ discount_amount: string; status: string }>();
 
   if (!repair) return;
 
@@ -33,12 +33,22 @@ async function recalculateTotals(db: D1Database, repairId: string) {
   const discount = parseFloat(repair.discount_amount ?? '0');
 
   const totals = computeTotals(partsData, laborData, discount);
-  await db.prepare(
-    `UPDATE repair_jobs SET parts_total = ?, labor_total = ?, final_total = ?, estimated_cost = ? WHERE id = ?`,
-  ).bind(
-    String(totals.partsTotal), String(totals.laborTotal),
-    String(totals.finalTotal), String(totals.finalTotal), repairId,
-  ).run();
+
+  if (TERMINAL_STATUSES.includes(repair.status)) {
+    await db.prepare(
+      `UPDATE repair_jobs SET parts_total = ?, labor_total = ?, estimated_cost = ? WHERE id = ?`,
+    ).bind(
+      String(totals.partsTotal), String(totals.laborTotal),
+      String(totals.finalTotal), repairId,
+    ).run();
+  } else {
+    await db.prepare(
+      `UPDATE repair_jobs SET parts_total = ?, labor_total = ?, final_total = ?, estimated_cost = ? WHERE id = ?`,
+    ).bind(
+      String(totals.partsTotal), String(totals.laborTotal),
+      String(totals.finalTotal), String(totals.finalTotal), repairId,
+    ).run();
+  }
 }
 
 interface D1Database {
@@ -127,7 +137,7 @@ repairs.get('/', authorize(['manager', 'mechanic']), async (c) => {
 });
 
 // POST /repairs
-repairs.post('/', authorize(['manager']), async (c) => {
+repairs.post('/', authorize(['manager', 'overseer']), async (c) => {
   const user = c.get('user');
   const body = await c.req.json() as any;
 
@@ -202,7 +212,7 @@ repairs.get('/:id', authorize(['manager', 'mechanic']), async (c) => {
   ).bind(row.car_id).first<any>();
 
   const appointment = await c.env.DB.prepare(
-    `SELECT id, status, purpose FROM appointments WHERE id = ?`,
+    `SELECT id, status, purpose, car_image_url FROM appointments WHERE id = ?`,
   ).bind(row.appointment_id).first<any>();
 
   const createdBy = await c.env.DB.prepare(
@@ -297,7 +307,7 @@ repairs.get('/:id', authorize(['manager', 'mechanic']), async (c) => {
         year: car.year, color: car.color,
         client: car.cl_id ? { id: car.cl_id, name: car.cl_name, phone: car.cl_phone } : null,
       } : null,
-      appointment: appointment ? { id: appointment.id, status: appointment.status, purpose: appointment.purpose } : null,
+      appointment: appointment ? { id: appointment.id, status: appointment.status, purpose: appointment.purpose, carImageUrl: appointment.car_image_url } : null,
       createdBy: createdBy ? { id: createdBy.id, name: createdBy.name } : null,
       primaryMechanic: primaryMechanic ? { id: primaryMechanic.id, name: primaryMechanic.name, specialty: primaryMechanic.specialty } : null,
       mechanics: (mechanics.results ?? []).map((m: any) => ({
@@ -330,15 +340,22 @@ repairs.get('/:id', authorize(['manager', 'mechanic']), async (c) => {
         cost: parseFloat(l.cost), addedAt: l.added_at,
       })),
       payment: payment ? {
-        id: payment.id, invoiceNumber: payment.invoice_number, finalTotal: parseFloat(payment.final_total),
-        amountReceived: parseFloat(payment.amount_received), createdAt: payment.created_at,
+        id: payment.id, invoiceNumber: payment.invoice_number,
+        finalTotal: parseFloat(payment.final_total ?? '0'),
+        amountBilled: parseFloat(payment.amount_billed ?? '0'),
+        amountReceived: parseFloat(payment.amount_received ?? '0'),
+        changeDue: parseFloat(payment.change_due ?? '0'),
+        paymentType: payment.payment_type || payment.method || 'cash',
+        checkImageUrl: payment.check_image_url ?? null,
+        paidByName: payment.paid_by_name,
+        createdAt: payment.created_at,
       } : null,
     },
   });
 });
 
 // PATCH /repairs/:id
-repairs.patch('/:id', authorize(['manager']), async (c) => {
+repairs.patch('/:id', authorize(['manager', 'overseer']), async (c) => {
   const { id } = c.req.param();
   const body = await c.req.json() as any;
 
@@ -374,7 +391,7 @@ repairs.patch('/:id/status', authorize(['manager', 'mechanic']), async (c) => {
   const { id } = c.req.param();
   const user = c.get('user');
   const body = await c.req.json() as {
-    status: string; note?: string; reopenedReason?: string; cancellationReason?: string;
+    status: string; note?: string; reopenedReason?: string; cancellationReason?: string; finalTotal?: number;
   };
 
   const repair = await c.env.DB.prepare(
@@ -432,7 +449,10 @@ repairs.patch('/:id/status', authorize(['manager', 'mechanic']), async (c) => {
   }
 
   const updateData: Record<string, string | null> = { status: body.status };
-  if (body.status === 'complete') updateData.actual_completion_date = new Date().toISOString();
+  if (body.status === 'complete') {
+    updateData.actual_completion_date = new Date().toISOString();
+    if (body.finalTotal != null) updateData.final_total = String(body.finalTotal);
+  }
   if (body.status === 'cancelled') updateData.cancellation_reason = body.cancellationReason ?? null;
   if (body.status === 'in_progress' && repair.status === 'complete') updateData.reopened_reason = body.reopenedReason ?? null;
 
@@ -457,7 +477,7 @@ repairs.patch('/:id/status', authorize(['manager', 'mechanic']), async (c) => {
 });
 
 // PATCH /repairs/:id/assign
-repairs.patch('/:id/assign', authorize(['manager']), async (c) => {
+repairs.patch('/:id/assign', authorize(['manager', 'overseer']), async (c) => {
   const { id } = c.req.param();
   const body = await c.req.json() as { primaryMechanicId: string; secondaryMechanicIds?: string[] };
 
@@ -507,14 +527,14 @@ repairs.post('/:id/diagnosis', authorize(['manager', 'mechanic']), async (c) => 
   }
 
   await c.env.DB.prepare(
-    `UPDATE repair_jobs SET diagnosis_report = ?, estimated_duration_hours = COALESCE(?, estimated_duration_hours) WHERE id = ?`,
+    `UPDATE repair_jobs SET diagnosis_report = ?, estimated_duration_hours = COALESCE(?, estimated_duration_hours), diagnosis_shared = '1' WHERE id = ?`,
   ).bind(JSON.stringify(body), body.estimatedDurationHours != null ? String(body.estimatedDurationHours) : null, id).run();
 
-  return c.json({ data: { id, diagnosisReport: body } });
+  return c.json({ data: { id, diagnosisReport: body, diagnosisShared: true } });
 });
 
 // PATCH /repairs/:id/share-diagnosis
-repairs.patch('/:id/share-diagnosis', authorize(['manager']), async (c) => {
+repairs.patch('/:id/share-diagnosis', authorize(['manager', 'overseer']), async (c) => {
   const { id } = c.req.param();
   const user = c.get('user');
 
@@ -539,7 +559,7 @@ repairs.patch('/:id/share-diagnosis', authorize(['manager']), async (c) => {
 });
 
 // PATCH /repairs/:id/client-approval
-repairs.patch('/:id/client-approval', authorize(['manager']), async (c) => {
+repairs.patch('/:id/client-approval', authorize(['manager', 'overseer']), async (c) => {
   const { id } = c.req.param();
   const user = c.get('user');
   const body = await c.req.json() as {
@@ -666,7 +686,7 @@ repairs.get('/:id/status-logs', authorize(['manager', 'mechanic']), async (c) =>
 });
 
 // POST /repairs/:id/delay-report
-repairs.post('/:id/delay-report', authorize(['manager']), async (c) => {
+repairs.post('/:id/delay-report', authorize(['manager', 'overseer']), async (c) => {
   const { id } = c.req.param();
   const user = c.get('user');
   const body = await c.req.json() as { reason: string; evidenceNote?: string };
@@ -739,7 +759,7 @@ repairs.post('/:id/parts', authorize(['manager', 'mechanic']), async (c) => {
 });
 
 // DELETE /repairs/:id/parts/:repairPartId
-repairs.delete('/:id/parts/:repairPartId', authorize(['manager']), async (c) => {
+repairs.delete('/:id/parts/:repairPartId', authorize(['manager', 'overseer']), async (c) => {
   const { id, repairPartId } = c.req.param();
   const user = c.get('user');
 
@@ -796,7 +816,7 @@ repairs.post('/:id/labor', authorize(['manager', 'mechanic']), async (c) => {
 });
 
 // PATCH /repairs/:id/labor/:itemId
-repairs.patch('/:id/labor/:itemId', authorize(['manager']), async (c) => {
+repairs.patch('/:id/labor/:itemId', authorize(['manager', 'overseer']), async (c) => {
   const { id, itemId } = c.req.param();
   const body = await c.req.json() as { description?: string; cost?: number };
 
@@ -823,7 +843,7 @@ repairs.patch('/:id/labor/:itemId', authorize(['manager']), async (c) => {
 });
 
 // DELETE /repairs/:id/labor/:itemId
-repairs.delete('/:id/labor/:itemId', authorize(['manager']), async (c) => {
+repairs.delete('/:id/labor/:itemId', authorize(['manager', 'overseer']), async (c) => {
   const { id, itemId } = c.req.param();
 
   const existing = await c.env.DB.prepare(`SELECT id FROM repair_jobs WHERE id = ?`).bind(id).first();
@@ -854,58 +874,6 @@ repairs.get('/:id/mechanics', authorize(['manager', 'mechanic']), async (c) => {
   return c.json({ data: rows.results ?? [] });
 });
 
-// POST /repairs/:id/notify
-repairs.post('/:id/notify', authorize(['manager']), async (c) => {
-  const { id } = c.req.param();
-  const user = c.get('user');
-  const body = await c.req.json() as { template: 'T-03' | 'T-04'; notes?: string };
-
-  const repair = await c.env.DB.prepare(
-    `SELECT rj.*, c.make, c.model, c.matricule, c.client_id,
-            u.name as client_name, u.phone as client_phone
-     FROM repair_jobs rj
-     LEFT JOIN cars c ON c.id = rj.car_id
-     LEFT JOIN users u ON u.id = c.client_id
-     WHERE rj.id = ?`,
-  ).bind(id).first<any>();
-
-  if (!repair) throw Errors.NotFound('Repair', id);
-  if (!repair.client_phone) throw Errors.BadRequest('No client associated with this repair');
-
-  let waUrl = '';
-  let messagePreview = '';
-
-  if (body.template === 'T-03') {
-    const issues = repair.diagnosis_report ? (JSON.parse(repair.diagnosis_report)?.issues || []) : [];
-    const recommendations = repair.diagnosis_report
-      ? (JSON.parse(repair.diagnosis_report)?.recommendedRepairs || 'Aucune recommandation')
-      : 'Aucune recommandation';
-
-    const issuesText = issues.length > 0
-      ? issues.map((issue: any) => `• ${issue.description} (${issue.severity})`).join('\n')
-      : 'Diagnostic en cours';
-
-    const message = `Bonjour ${repair.client_name},\n\nLe diagnostic de votre véhicule est terminé.\n\n🚗 Véhicule : ${repair.make} ${repair.model} — ${repair.matricule}\n\n🔍 DIAGNOSTIC :\n${issuesText}\n\n💡 RECOMMANDATIONS :\n${recommendations}\n\n${body.notes ? `📝 NOTES :\n${body.notes}\n\n` : ''}Pour toute question, contactez-nous.\n\nGarage Sagman`;
-
-    waUrl = `https://wa.me/${repair.client_phone.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
-    messagePreview = message.slice(0, 200);
-  } else if (body.template === 'T-04' && repair.status === 'complete') {
-    const message = `Bonjour ${repair.client_name},\n\nBonne nouvelle ! Votre véhicule est prêt pour la récupération.\n\n🚗 Véhicule : ${repair.make} ${repair.model} — ${repair.matricule}\n✅ Réparation terminée\n📅 Disponible dès maintenant\n\n${body.notes ? `📝 INFORMATIONS :\n${body.notes}\n\n` : ''}Nos horaires : Lun-Sam 8h-18h\nContact : +212 5XX XXX XXX\n\nGarage Sagman`;
-
-    waUrl = `https://wa.me/${repair.client_phone.replace(/\s+/g, '')}?text=${encodeURIComponent(message)}`;
-    messagePreview = message.slice(0, 200);
-  } else {
-    throw Errors.BadRequest('Invalid template or repair status for this notification');
-  }
-
-  await c.env.DB.prepare(
-    `INSERT INTO notification_logs (id, type, recipient_phone, sent_by, message_preview, repair_id)
-     VALUES (?, ?, ?, ?, ?, ?)`,
-  ).bind(crypto.randomUUID(), body.template, repair.client_phone, user.sub, messagePreview, id).run();
-
-  return c.json({ data: { waUrl, messagePreview } });
-});
-
 // ── Photo Routes ──────────────────────────────────────────────────────────────
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'];
 
@@ -913,7 +881,7 @@ const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic
 repairs.post('/:id/photos/presign', authorize(['manager', 'mechanic']), async (c) => {
   const { id } = c.req.param();
   const user = c.get('user');
-  const body = await c.req.json() as { fileName: string; mimeType: string; type: 'before' | 'during' | 'after' };
+  const body = await c.req.json() as { fileName: string; mimeType: string; type: 'before' | 'during' | 'after'; image?: string };
 
   if (!ALLOWED_MIME_TYPES.includes(body.mimeType)) {
     throw Errors.BadRequest(`Unsupported file type: ${body.mimeType}`);
@@ -924,12 +892,17 @@ repairs.post('/:id/photos/presign', authorize(['manager', 'mechanic']), async (c
 
   const key = `repairs/${id}/${crypto.randomUUID()}-${body.fileName}`;
 
-  const uploadUrl = await c.env.UPLOADS.createSignedUrl(key, {
-    method: 'PUT', expiresIn: 3600,
-    httpMetadata: { contentType: body.mimeType },
-  });
+  if (body.image) {
+    const base64 = body.image.replace(/^data:[^;]+;base64,/, '').replace(/\s/g, '');
+    const buffer = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
+    await c.env.UPLOADS.put(key, buffer, {
+      httpMetadata: { contentType: body.mimeType },
+    });
+    const url = `${new URL(c.req.url).origin}/api/v1/uploads/serve/${key}`;
+    return c.json({ data: { uploadUrl: url, key, repairId: id } });
+  }
 
-  return c.json({ data: { uploadUrl, key, repairId: id } });
+  return c.json({ data: { uploadUrl: null, key, repairId: id } });
 });
 
 // POST /repairs/:id/photos — Save metadata after upload
@@ -978,12 +951,12 @@ repairs.get('/:id/photos/:photoId/url', authorize(['manager', 'mechanic']), asyn
   const photo = await c.env.DB.prepare(`SELECT * FROM repair_photos WHERE id = ? AND repair_id = ?`).bind(photoId, id).first<any>();
   if (!photo) throw Errors.NotFound('Photo', photoId);
 
-  const readUrl = await c.env.UPLOADS.createSignedUrl(photo.r2_key ?? photo.file_path, { method: 'GET', expiresIn: 3600 });
-  return c.json({ data: { url: readUrl, key: photo.r2_key ?? photo.file_path } });
+  const url = `${new URL(c.req.url).origin}/api/v1/uploads/serve/${photo.r2_key ?? photo.file_path}`;
+  return c.json({ data: { url, key: photo.r2_key ?? photo.file_path } });
 });
 
 // DELETE /repairs/:id/photos/:photoId
-repairs.delete('/:id/photos/:photoId', authorize(['manager']), async (c) => {
+repairs.delete('/:id/photos/:photoId', authorize(['manager', 'overseer']), async (c) => {
   const { id, photoId } = c.req.param();
   const photo = await c.env.DB.prepare(`SELECT * FROM repair_photos WHERE id = ? AND repair_id = ?`).bind(photoId, id).first<any>();
   if (!photo) throw Errors.NotFound('Photo', photoId);

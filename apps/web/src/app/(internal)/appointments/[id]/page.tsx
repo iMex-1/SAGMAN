@@ -4,15 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  Loader2,
-  AlertCircle,
-  CheckCircle,
-  XCircle,
-  Calendar,
-  Wrench,
-} from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -35,6 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { api, ApiError } from "@/lib/api-client";
+import { useTranslations } from "next-intl";
 import { useToast } from "@/components/ui/use-toast";
 
 type AppointmentStatus =
@@ -74,16 +67,8 @@ const STATUS_VARIANTS: Record<
   converted: "secondary",
 };
 
-const STATUS_LABELS: Record<AppointmentStatus, string> = {
-  pending: "Pending",
-  confirmed: "Confirmed",
-  rescheduled: "Rescheduled",
-  cancelled: "Cancelled",
-  converted: "Converted",
-};
-
 function formatDate(iso: string) {
-  return new Date(iso).toLocaleString("en-GB", {
+  return new Date(iso).toLocaleString("fr-FR", {
     day: "2-digit",
     month: "short",
     year: "numeric",
@@ -97,6 +82,7 @@ export default function AppointmentDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const t = useTranslations();
   const { id } = use(params);
   const router = useRouter();
   const { success, error: toastError } = useToast();
@@ -154,7 +140,7 @@ export default function AppointmentDetailPage({
       if (err instanceof ApiError) {
         setError(err.message);
       } else {
-        setError("Failed to load appointment.");
+        setError(t('appointment.errors.loadFailed'));
       }
     } finally {
       setIsLoading(false);
@@ -173,7 +159,7 @@ export default function AppointmentDetailPage({
         ? `/appointments/${id}/confirm?force=true`
         : `/appointments/${id}/confirm`;
       await api.patch(path);
-      success("Appointment confirmed");
+      success(t('appointment.toasts.confirmed'));
       setShowConfirmDialog(false);
       setCapacityWarning(null);
       fetchAppointment();
@@ -186,12 +172,12 @@ export default function AppointmentDetailPage({
             max: details.max as number,
           });
         } else {
-          toastError("Confirm failed", err.message);
+          toastError(t('appointment.errors.confirmFailed'), err.message);
           setShowConfirmDialog(false);
           setCapacityWarning(null);
         }
       } else {
-        toastError("Confirm failed", "An unexpected error occurred.");
+        toastError(t('appointment.errors.confirmFailed'), t('common.unexpectedError'));
         setShowConfirmDialog(false);
         setCapacityWarning(null);
       }
@@ -208,7 +194,7 @@ export default function AppointmentDetailPage({
   // ── Reschedule handler ──
   async function handleReschedule() {
     if (!rescheduleDate || !rescheduleTime) {
-      setRescheduleError("Please select a date and time.");
+      setRescheduleError(t('appointment.detail.dateTimeRequired'));
       return;
     }
     setRescheduleLoading(true);
@@ -218,7 +204,7 @@ export default function AppointmentDetailPage({
         `${rescheduleDate}T${rescheduleTime}:00`,
       ).toISOString();
       await api.patch(`/appointments/${id}/reschedule`, { rescheduledTo });
-      success("Appointment rescheduled");
+      success(t('appointment.toasts.rescheduled'));
       setShowRescheduleDialog(false);
       setRescheduleDate("");
       setRescheduleTime("09:00");
@@ -227,7 +213,7 @@ export default function AppointmentDetailPage({
       if (err instanceof ApiError) {
         setRescheduleError(err.message);
       } else {
-        setRescheduleError("An unexpected error occurred.");
+        setRescheduleError(t('common.unexpectedError'));
       }
     } finally {
       setRescheduleLoading(false);
@@ -237,7 +223,7 @@ export default function AppointmentDetailPage({
   // ── Cancel handler ──
   async function handleCancel() {
     if (!cancelReason.trim()) {
-      setCancelError("A cancellation reason is required.");
+      setCancelError(t('appointment.detail.cancelReasonRequired'));
       return;
     }
     setCancelLoading(true);
@@ -246,7 +232,7 @@ export default function AppointmentDetailPage({
       await api.patch(`/appointments/${id}/cancel`, {
         cancellationReason: cancelReason.trim(),
       });
-      success("Appointment cancelled");
+      success(t('appointment.toasts.cancelled'));
       setShowCancelDialog(false);
       setCancelReason("");
       fetchAppointment();
@@ -254,7 +240,7 @@ export default function AppointmentDetailPage({
       if (err instanceof ApiError) {
         setCancelError(err.message);
       } else {
-        setCancelError("An unexpected error occurred.");
+        setCancelError(t('common.unexpectedError'));
       }
     } finally {
       setCancelLoading(false);
@@ -272,7 +258,7 @@ export default function AppointmentDetailPage({
       );
       setMechanics(res.data);
     } catch {
-      setConvertError("Failed to load mechanics. Please close and try again.");
+      setConvertError(t('appointment.errors.loadMechanicsFailed'));
     } finally {
       setMechanicsLoading(false);
     }
@@ -281,7 +267,7 @@ export default function AppointmentDetailPage({
   // ── Convert handler ──
   async function handleConvert() {
     if (!convertForm.mechanicId) {
-      setConvertError("Please select a primary mechanic.");
+      setConvertError(t('appointment.detail.selectMechanicRequired'));
       return;
     }
     setConvertLoading(true);
@@ -300,13 +286,13 @@ export default function AppointmentDetailPage({
       const res = await api.post<{
         data: { repairId: string; appointmentId: string };
       }>(`/appointments/${id}/convert`, body);
-      success("Converted to repair");
+      success(t('appointment.toasts.converted'));
       router.push(`/repairs/${res.data.repairId}`);
     } catch (err) {
       if (err instanceof ApiError) {
         setConvertError(err.message);
       } else {
-        setConvertError("An unexpected error occurred.");
+        setConvertError(t('common.unexpectedError'));
       }
     } finally {
       setConvertLoading(false);
@@ -317,7 +303,7 @@ export default function AppointmentDetailPage({
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-16">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <Icon name="sync" size={32} className="animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -327,20 +313,20 @@ export default function AppointmentDetailPage({
       <div className="space-y-4">
         <Button variant="ghost" size="sm" asChild>
           <Link href="/appointments">
-            <ArrowLeft className="h-4 w-4" />
-            Back to Appointments
+            <Icon name="arrow_back" size={16} />
+            {t('appointment.backLink')}
           </Link>
         </Button>
         <div className="flex items-center gap-3 rounded-md border border-destructive/50 bg-destructive/10 p-4 text-destructive">
-          <AlertCircle className="h-5 w-5 shrink-0" />
-          <p className="text-sm">{error ?? "Appointment not found."}</p>
+          <Icon name="info" size={20} className="shrink-0" />
+          <p className="text-sm">{error ?? t('appointment.detail.notFound')}</p>
           <Button
             variant="outline"
             size="sm"
             onClick={fetchAppointment}
             className="ml-auto"
           >
-            Retry
+            {t('common.retry')}
           </Button>
         </div>
       </div>
@@ -360,70 +346,70 @@ export default function AppointmentDetailPage({
     <div className="mx-auto max-w-3xl space-y-6">
       {/* Back + Title */}
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="sm" asChild>
+        <Button variant="ghost" size="sm" asChild className="text-on-surface-variant">
           <Link href="/appointments">
-            <ArrowLeft className="h-4 w-4" />
-            Back
+            <Icon name="arrow_back" size={16} />
+            {t('common.back')}
           </Link>
         </Button>
-        <h1 className="text-xl font-bold">Appointment Details</h1>
+        <h1 className="font-headline-lg text-headline-lg">{t('appointment.detail.title')}</h1>
       </div>
 
       {/* Info card */}
-      <Card>
+      <Card className="bg-white border border-outline-variant rounded-xl shadow-sm">
         <CardHeader>
           <div className="flex items-start justify-between">
-            <CardTitle className="text-base">Appointment Info</CardTitle>
+            <CardTitle className="font-title-md text-title-md">{t('appointment.detail.infoCard')}</CardTitle>
             <Badge variant={STATUS_VARIANTS[status]}>
-              {STATUS_LABELS[status]}
+              {t('appointment.status.' + status)}
             </Badge>
           </div>
         </CardHeader>
         <CardContent className="space-y-4 text-sm">
           <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-3">
-            <dt className="text-muted-foreground">Client Name</dt>
+            <dt className="text-muted-foreground">{t('appointment.detail.clientName')}</dt>
             <dd className="font-medium">{appointment.clientName}</dd>
 
-            <dt className="text-muted-foreground">Phone</dt>
+            <dt className="text-muted-foreground">{t('appointment.detail.phone')}</dt>
             <dd>{appointment.clientPhone}</dd>
 
-            <dt className="text-muted-foreground">Vehicle</dt>
+            <dt className="text-muted-foreground">{t('appointment.detail.vehicle')}</dt>
             <dd className="font-mono text-xs">
               {appointment.car
                 ? `${appointment.car.matricule} — ${appointment.car.make} ${appointment.car.model}`
                 : appointment.carMatricule || "—"}
             </dd>
 
-            <dt className="text-muted-foreground">Purpose</dt>
+            <dt className="text-muted-foreground">{t('appointment.detail.purpose')}</dt>
             <dd>{appointment.purpose}</dd>
 
-            <dt className="text-muted-foreground">Requested Date</dt>
+            <dt className="text-muted-foreground">{t('appointment.detail.requestedDate')}</dt>
             <dd>{formatDate(appointment.requestedAt)}</dd>
 
             {appointment.rescheduledTo && (
               <>
-                <dt className="text-muted-foreground">Rescheduled To</dt>
+                <dt className="text-muted-foreground">{t('appointment.detail.rescheduledTo')}</dt>
                 <dd>{formatDate(appointment.rescheduledTo)}</dd>
               </>
             )}
 
             {appointment.notes && (
               <>
-                <dt className="text-muted-foreground">Notes</dt>
+                <dt className="text-muted-foreground">{t('appointment.detail.notes')}</dt>
                 <dd className="text-muted-foreground">{appointment.notes}</dd>
               </>
             )}
 
             {appointment.cancellationReason && (
               <>
-                <dt className="text-muted-foreground">Cancellation Reason</dt>
+                <dt className="text-muted-foreground">{t('appointment.detail.cancellationReason')}</dt>
                 <dd className="text-destructive">
                   {appointment.cancellationReason}
                 </dd>
               </>
             )}
 
-            <dt className="text-muted-foreground">Created</dt>
+            <dt className="text-muted-foreground">{t('appointment.detail.createdOn')}</dt>
             <dd className="text-muted-foreground">
               {formatDate(appointment.createdAt)}
             </dd>
@@ -434,11 +420,11 @@ export default function AppointmentDetailPage({
               <Separator />
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">
-                  Linked Repair Job
+                  {t('appointment.detail.relatedRepair')}
                 </span>
-                <Button variant="outline" size="sm" asChild>
+                <Button variant="outline" size="sm" asChild className="border border-outline-variant text-on-surface-variant">
                   <Link href={`/repairs/${appointment.repairJob.id}`}>
-                    View Repair
+                    {t('appointment.detail.viewRepair')}
                   </Link>
                 </Button>
               </div>
@@ -449,31 +435,32 @@ export default function AppointmentDetailPage({
 
       {/* Actions card — hidden for terminal states */}
       {!isTerminal && (
-        <Card>
+        <Card className="bg-white border border-outline-variant rounded-xl shadow-sm">
           <CardHeader>
-            <CardTitle className="text-base">Actions</CardTitle>
+            <CardTitle className="font-title-md text-title-md">{t('common.actions')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-3">
               {canConfirm && (
-                <Button onClick={() => setShowConfirmDialog(true)}>
-                  <CheckCircle className="h-4 w-4" />
-                  Confirm
+                <Button onClick={() => setShowConfirmDialog(true)} className="bg-primary text-on-primary rounded-lg px-lg py-sm font-title-md text-title-md">
+                  <Icon name="check_circle" size={16} />
+                  {t('common.confirm')}
                 </Button>
               )}
               {canReschedule && (
                 <Button
                   variant="outline"
                   onClick={() => setShowRescheduleDialog(true)}
+                  className="border border-outline-variant text-on-surface-variant"
                 >
-                  <Calendar className="h-4 w-4" />
-                  Reschedule
+                  <Icon name="calendar_month" size={16} />
+                  {t('appointment.detail.rescheduleButton')}
                 </Button>
               )}
               {canConvert && (
-                <Button variant="outline" onClick={openConvertDialog}>
-                  <Wrench className="h-4 w-4" />
-                  Convert to Repair
+                <Button variant="outline" onClick={openConvertDialog} className="border border-outline-variant text-on-surface-variant">
+                  <Icon name="build" size={16} />
+                  {t('appointment.detail.convertToRepair')}
                 </Button>
               )}
               {canCancel && (
@@ -481,8 +468,8 @@ export default function AppointmentDetailPage({
                   variant="destructive"
                   onClick={() => setShowCancelDialog(true)}
                 >
-                  <XCircle className="h-4 w-4" />
-                  Cancel
+                  <Icon name="cancel" size={16} />
+                  {t('common.cancel')}
                 </Button>
               )}
             </div>
@@ -503,38 +490,41 @@ export default function AppointmentDetailPage({
           <DialogHeader>
             <DialogTitle>
               {capacityWarning
-                ? "Capacity Limit Reached"
-                : "Confirm Appointment"}
+                ? t('appointment.detail.maxCapacity')
+                : t('appointment.detail.confirmDialogTitle')}
             </DialogTitle>
             <DialogDescription>
               {capacityWarning
-                ? `The garage is at capacity (${capacityWarning.current}/${capacityWarning.max} confirmed appointments). Do you want to confirm anyway?`
-                : "Are you sure you want to confirm this appointment?"}
+                ? t('appointment.detail.capacityWarningText', { current: capacityWarning.current, max: capacityWarning.max })
+                : t('appointment.detail.confirmDialogDescription')}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button
               variant="outline"
-              onClick={closeConfirmDialog}
-              disabled={confirmLoading}
+              onClick={() => setShowRescheduleDialog(false)}
+              disabled={rescheduleLoading}
+              className="border border-outline-variant text-on-surface-variant"
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
             {capacityWarning ? (
               <Button
                 onClick={() => handleConfirm(true)}
                 disabled={confirmLoading}
+                className="bg-primary text-on-primary rounded-lg px-lg py-sm font-title-md text-title-md"
               >
-                {confirmLoading && <Loader2 className="h-4 w-4 animate-spin" />}
-                Confirm Anyway
+                {confirmLoading && <Icon name="sync" size={16} className="animate-spin" />}
+                {t('appointment.detail.confirmAnyway')}
               </Button>
             ) : (
               <Button
                 onClick={() => handleConfirm(false)}
                 disabled={confirmLoading}
+                className="bg-primary text-on-primary rounded-lg px-lg py-sm font-title-md text-title-md"
               >
-                {confirmLoading && <Loader2 className="h-4 w-4 animate-spin" />}
-                Confirm
+                {confirmLoading && <Icon name="sync" size={16} className="animate-spin" />}
+                {t('common.confirm')}
               </Button>
             )}
           </DialogFooter>
@@ -550,9 +540,9 @@ export default function AppointmentDetailPage({
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Reschedule Appointment</DialogTitle>
+            <DialogTitle>{t('appointment.detail.rescheduleDialogTitle')}</DialogTitle>
             <DialogDescription>
-              Pick a new date and time for this appointment.
+              {t('appointment.detail.rescheduleDialogDescription')}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-2">
@@ -561,7 +551,7 @@ export default function AppointmentDetailPage({
             )}
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="reschDate">New Date</Label>
+                <Label htmlFor="reschDate">{t('appointment.detail.newDate')}</Label>
                 <Input
                   id="reschDate"
                   type="date"
@@ -573,7 +563,7 @@ export default function AppointmentDetailPage({
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="reschTime">New Time</Label>
+                <Label htmlFor="reschTime">{t('appointment.detail.newTime')}</Label>
                 <Input
                   id="reschTime"
                   type="time"
@@ -591,14 +581,15 @@ export default function AppointmentDetailPage({
               variant="outline"
               onClick={() => setShowRescheduleDialog(false)}
               disabled={rescheduleLoading}
+              className="border border-outline-variant text-on-surface-variant"
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
-            <Button onClick={handleReschedule} disabled={rescheduleLoading}>
+            <Button onClick={handleReschedule} disabled={rescheduleLoading} className="bg-primary text-on-primary rounded-lg px-lg py-sm font-title-md text-title-md">
               {rescheduleLoading && (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Icon name="sync" size={16} className="animate-spin" />
               )}
-              Reschedule
+              {t('appointment.detail.rescheduleButton')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -619,9 +610,9 @@ export default function AppointmentDetailPage({
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Cancel Appointment</DialogTitle>
+            <DialogTitle>{t('appointment.detail.cancelDialogTitle')}</DialogTitle>
             <DialogDescription>
-              Provide a reason for cancelling this appointment.
+              {t('appointment.detail.cancelDialogDescription')}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-2">
@@ -630,7 +621,7 @@ export default function AppointmentDetailPage({
             )}
             <div className="space-y-2">
               <Label htmlFor="cancelReason">
-                Reason <span className="text-destructive">*</span>
+                {t('appointment.detail.cancelReasonLabel')} <span className="text-destructive">*</span>
               </Label>
               <textarea
                 id="cancelReason"
@@ -640,7 +631,7 @@ export default function AppointmentDetailPage({
                   setCancelError(null);
                 }}
                 rows={3}
-                placeholder="Explain why this appointment is being cancelled..."
+                placeholder={t('appointment.detail.cancelReasonPlaceholder')}
                 className="w-full resize-none rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
               />
             </div>
@@ -654,16 +645,18 @@ export default function AppointmentDetailPage({
                 setCancelError(null);
               }}
               disabled={cancelLoading}
+              className="border border-outline-variant text-on-surface-variant"
             >
-              Back
+            {t('common.back')}
             </Button>
             <Button
               variant="destructive"
               onClick={handleCancel}
               disabled={cancelLoading}
+              className="bg-destructive text-destructive-foreground rounded-lg px-lg py-sm font-title-md text-title-md"
             >
-              {cancelLoading && <Loader2 className="h-4 w-4 animate-spin" />}
-              Cancel Appointment
+              {cancelLoading && <Icon name="sync" size={16} className="animate-spin" />}
+              {t('appointment.detail.cancelButton')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -675,9 +668,9 @@ export default function AppointmentDetailPage({
       <Dialog open={showConvertDialog} onOpenChange={setShowConvertDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Convert to Repair</DialogTitle>
+            <DialogTitle>{t('appointment.convertDialog.title')}</DialogTitle>
             <DialogDescription>
-              Create a repair job from this appointment.
+              {t('appointment.detail.convertDialogTitle')}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-2">
@@ -688,12 +681,12 @@ export default function AppointmentDetailPage({
             {/* Mechanic */}
             <div className="space-y-2">
               <Label htmlFor="mechanic">
-                Primary Mechanic <span className="text-destructive">*</span>
+                {t('appointment.detail.convertMechanic')} <span className="text-destructive">*</span>
               </Label>
               {mechanicsLoading ? (
                 <div className="flex items-center gap-2 py-2 text-sm text-muted-foreground">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Loading mechanics...
+                  <Icon name="sync" size={16} className="animate-spin" />
+                  {t('appointment.detail.loadingMechanics')}
                 </div>
               ) : (
                 <Select
@@ -704,12 +697,12 @@ export default function AppointmentDetailPage({
                   }}
                 >
                   <SelectTrigger id="mechanic">
-                    <SelectValue placeholder="Select a mechanic" />
+                    <SelectValue placeholder={t('appointment.detail.selectMechanic')} />
                   </SelectTrigger>
                   <SelectContent>
                     {mechanics.length === 0 ? (
                       <SelectItem value="__none" disabled>
-                        No active mechanics found
+                        {t('appointment.detail.noMechanics')}
                       </SelectItem>
                     ) : (
                       mechanics.map((m) => (
@@ -725,7 +718,7 @@ export default function AppointmentDetailPage({
 
             {/* Priority */}
             <div className="space-y-2">
-              <Label htmlFor="convertPriority">Priority</Label>
+              <Label htmlFor="convertPriority">{t('appointment.detail.priority')}</Label>
               <Select
                 value={convertForm.priority}
                 onValueChange={(v) =>
@@ -736,17 +729,17 @@ export default function AppointmentDetailPage({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="low">Low</SelectItem>
-                  <SelectItem value="normal">Normal</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
-                  <SelectItem value="emergency">Emergency</SelectItem>
+                  <SelectItem value="low">{t('repair.priority.low')}</SelectItem>
+                  <SelectItem value="normal">{t('repair.priority.normal')}</SelectItem>
+                  <SelectItem value="high">{t('repair.priority.high')}</SelectItem>
+                  <SelectItem value="emergency">{t('repair.priority.emergency')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             {/* Target date */}
             <div className="space-y-2">
-              <Label htmlFor="convertTargetDate">Target Completion Date</Label>
+              <Label htmlFor="convertTargetDate">{t('appointment.detail.targetDate')}</Label>
               <Input
                 id="convertTargetDate"
                 type="date"
@@ -759,7 +752,7 @@ export default function AppointmentDetailPage({
 
             {/* Description */}
             <div className="space-y-2">
-              <Label htmlFor="convertDesc">Description</Label>
+              <Label htmlFor="convertDesc">{t('appointment.convertDialog.description')}</Label>
               <textarea
                 id="convertDesc"
                 value={convertForm.description}
@@ -774,17 +767,19 @@ export default function AppointmentDetailPage({
           <DialogFooter>
             <Button
               variant="outline"
-              onClick={() => setShowConvertDialog(false)}
-              disabled={convertLoading}
+              onClick={() => setShowRescheduleDialog(false)}
+              disabled={rescheduleLoading}
+              className="border border-outline-variant text-on-surface-variant"
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button
               onClick={handleConvert}
               disabled={convertLoading || mechanicsLoading}
+              className="bg-primary text-on-primary rounded-lg px-lg py-sm font-title-md text-title-md"
             >
-              {convertLoading && <Loader2 className="h-4 w-4 animate-spin" />}
-              Convert to Repair
+              {convertLoading && <Icon name="sync" size={16} className="animate-spin" />}
+              {t('appointment.detail.convertToRepair')}
             </Button>
           </DialogFooter>
         </DialogContent>

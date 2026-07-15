@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>New Appointment - GaragePro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container": "#eceef0",
+                    "outline-variant": "#c5c5d3",
+                    "tertiary-container": "#384055",
+                    "tertiary": "#222a3e",
+                    "secondary-container": "#e02928",
+                    "secondary": "#bb0112",
+                    "tertiary-fixed": "#dae2fd",
+                    "on-primary-fixed": "#00164e",
+                    "outline": "#757682",
+                    "tertiary-fixed-dim": "#bec6e0",
+                    "on-secondary-fixed-variant": "#93000b",
+                    "on-error-container": "#93000a",
+                    "surface-container-low": "#f2f4f6",
+                    "surface-container-high": "#e6e8ea",
+                    "error-container": "#ffdad6",
+                    "surface-container-highest": "#e0e3e5",
+                    "surface-bright": "#f7f9fb",
+                    "secondary-fixed": "#ffdad6",
+                    "on-tertiary-fixed-variant": "#3f465c",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "on-secondary-fixed": "#410002",
+                    "surface": "#f7f9fb",
+                    "primary-fixed": "#dce1ff",
+                    "inverse-surface": "#2d3133",
+                    "surface-dim": "#d8dadc",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-container": "#90a8ff",
+                    "primary-container": "#1e3a8a",
+                    "primary": "#00236f",
+                    "on-surface": "#191c1e",
+                    "on-primary-fixed-variant": "#264191",
+                    "on-tertiary-fixed": "#131b2e",
+                    "on-tertiary-container": "#a4acc5",
+                    "secondary-fixed-dim": "#ffb4ab",
+                    "surface-tint": "#4059aa",
+                    "on-surface-variant": "#444651",
+                    "on-background": "#191c1e",
+                    "inverse-primary": "#b6c4ff",
+                    "background": "#f7f9fb",
+                    "on-error": "#ffffff",
+                    "on-secondary-container": "#fffbff",
+                    "on-secondary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "inverse-on-surface": "#eff1f3",
+                    "surface-variant": "#e0e3e5",
+                    "primary-fixed-dim": "#b6c4ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "sm": "8px",
+                    "lg": "24px",
+                    "container-margin": "24px",
+                    "gutter": "16px",
+                    "xl": "32px",
+                    "md": "16px",
+                    "base": "4px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "title-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "label-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-xl": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "title-md": ["18px", {"lineHeight": "26px", "fontWeight": "600"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f7f9fb; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #c5c5d3; border-radius: 10px; }
+        .glass-panel { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.3); }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex">
+<!-- SideNavBar (Shared Component) -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container-lowest flex flex-col py-lg px-md border-r border-outline-variant z-50">
+<div class="mb-xl px-sm">
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary">GaragePro</h1>
+<p class="text-label-sm text-on-surface-variant">Casablanca Branch</p>
+</div>
+<nav class="flex-1 space-y-xs overflow-y-auto custom-scrollbar">
+<div class="flex items-center gap-md px-md py-sm rounded-lg cursor-pointer transition-colors hover:bg-surface-container-low text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</div>
+<!-- Active State: Calendar -->
+<div class="flex items-center gap-md px-md py-sm rounded-lg cursor-pointer transition-colors text-primary font-bold border-r-4 border-primary font-body-md text-body-md bg-surface-container-low">
+<span class="material-symbols-outlined">calendar_today</span>
+<span>Calendar</span>
+</div>
+<div class="flex items-center gap-md px-md py-sm rounded-lg cursor-pointer transition-colors hover:bg-surface-container-low text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined">build</span>
+<span>Jobs</span>
+</div>
+<div class="flex items-center gap-md px-md py-sm rounded-lg cursor-pointer transition-colors hover:bg-surface-container-low text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined">inventory_2</span>
+<span>Inventory</span>
+</div>
+<div class="flex items-center gap-md px-md py-sm rounded-lg cursor-pointer transition-colors hover:bg-surface-container-low text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined">receipt_long</span>
+<span>Billing</span>
+</div>
+</nav>
+<div class="mt-auto pt-lg border-t border-outline-variant flex flex-col gap-xs">
+<button class="w-full bg-primary text-on-primary py-sm rounded-lg font-bold hover:opacity-90 transition-opacity flex items-center justify-center gap-sm mb-lg">
+<span class="material-symbols-outlined">add</span>
+<span>New Appointment</span>
+</button>
+<div class="flex items-center gap-md px-md py-sm rounded-lg cursor-pointer transition-colors hover:bg-surface-container-low text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</div>
+<div class="flex items-center gap-md px-md py-sm rounded-lg cursor-pointer transition-colors hover:bg-surface-container-low text-on-surface-variant font-body-md text-body-md">
+<span class="material-symbols-outlined">help</span>
+<span>Support</span>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="ml-64 flex-1 flex flex-col">
+<!-- TopAppBar (Shared Component) -->
+<header class="fixed top-0 right-0 left-64 h-16 bg-surface flex justify-between items-center px-lg border-b border-outline-variant z-40">
+<div class="flex items-center gap-lg">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-md text-outline">search</span>
+<input class="bg-surface-container-low border-none rounded-full py-xs pl-10 pr-lg text-body-md focus:ring-2 focus:ring-primary-container w-64" placeholder="Search appointments..." type="text"/>
+</div>
+<nav class="flex gap-lg font-title-md text-title-md">
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Month</a>
+<a class="text-primary border-b-2 border-primary pb-xs" href="#">Week</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Day</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Agenda</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<button class="bg-primary text-on-primary px-lg py-sm rounded-lg font-bold hover:opacity-90 active:scale-95 transition-all">Add Entry</button>
+<button class="text-on-surface-variant hover:text-primary p-xs"><span class="material-symbols-outlined">notifications</span></button>
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold text-label-sm">WM</div>
+</div>
+</header>
+<!-- Form Content -->
+<div class="mt-16 p-xl flex flex-col gap-xl">
+<!-- Header Section -->
+<div class="flex items-center justify-between">
+<div>
+<h2 class="font-headline-xl text-headline-xl text-primary">New Schedule Entry</h2>
+<p class="text-body-lg text-on-surface-variant">Create a new service appointment and assign resources.</p>
+</div>
+<div class="flex gap-md">
+<button class="px-xl py-md rounded-lg border border-outline text-on-surface hover:bg-surface-container-low transition-colors font-bold">Cancel</button>
+<button class="px-xl py-md rounded-lg bg-primary text-on-primary hover:bg-opacity-90 transition-all font-bold shadow-md">Confirm Appointment</button>
+</div>
+</div>
+<div class="grid grid-cols-12 gap-lg">
+<!-- Left Column: Service Details -->
+<div class="col-span-8 flex flex-col gap-lg">
+<!-- Service & Client Section -->
+<div class="bg-surface-container-lowest p-xl rounded-xl border border-outline-variant shadow-sm flex flex-col gap-lg">
+<div class="flex items-center gap-sm pb-md border-b border-outline-variant">
+<span class="material-symbols-outlined text-primary">engineering</span>
+<h3 class="font-title-md text-title-md text-on-surface">Service &amp; Customer</h3>
+</div>
+<div class="grid grid-cols-2 gap-lg">
+<div class="flex flex-col gap-xs">
+<label class="text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">Service Type</label>
+<select class="w-full p-md border border-outline-variant rounded-lg bg-surface text-body-md focus:ring-2 focus:ring-primary-container outline-none transition-all">
+<option>Standard Maintenance (Oil Change)</option>
+<option>Brake System Repair</option>
+<option>Engine Diagnostics</option>
+<option>Transmission Service</option>
+<option>Electrical System Check</option>
+</select>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">Priority Level</label>
+<div class="flex gap-sm h-full">
+<button class="flex-1 rounded-lg border border-outline-variant bg-surface text-label-sm hover:border-primary hover:text-primary transition-all">Routine</button>
+<button class="flex-1 rounded-lg border-2 border-secondary bg-error-container text-secondary font-bold text-label-sm">Urgent</button>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-lg">
+<div class="flex flex-col gap-xs relative">
+<label class="text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">Search Vehicle</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline">directions_car</span>
+<input class="w-full pl-10 pr-md py-md border border-outline-variant rounded-lg bg-surface text-body-md focus:ring-2 focus:ring-primary-container outline-none" placeholder="Plate # or VIN..." type="text"/>
+</div>
+<div class="mt-sm p-sm bg-surface-container-low rounded-lg flex items-center gap-md">
+<div class="w-12 h-12 bg-white rounded-md border border-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A side view of a modern white German luxury sedan, parked in a high-tech, brightly lit automotive workshop with polished concrete floors. The car is sleek and reflective, showing the clean workshop environment. High-key lighting, professional commercial photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKHZxeOddgtIi5UBUc8FKDO-zkCzck66zU7duI1EoxyLq-NUtE_jiUn-JBp5TIbp6WnDiEpeGFhzyAA-XPCtkoEd1Q1lH6E6Lp7AmEbUmzsuKOUPn5-9-5fFMR1ZaDllRu2WwCS174oV6qhQrHIcrrBiVyjClEcV5OgkdJ0YM31SQW8PkgjaPKraDOH8xqf43a4rMe8IrD_gi4lRO0WCaao36NzJ8Z3_k702xtNgJ4ahljI2h8NhqVoA"/>
+</div>
+<div class="flex-1">
+<p class="text-body-md font-bold text-primary">Mercedes-Benz C300 (2022)</p>
+<p class="text-label-sm text-on-surface-variant">Plate: 1234-A-12 | Owner: Ahmed Mansour</p>
+</div>
+<button class="text-secondary hover:underline text-label-sm">Change</button>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">Customer Details</label>
+<div class="p-md border border-outline-variant rounded-lg bg-surface-container-low flex flex-col gap-xs opacity-80">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-sm">person</span>
+<span class="text-body-md font-medium">Ahmed Mansour</span>
+</div>
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-sm">phone</span>
+<span class="text-body-md">+212 661-234567</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Time & Schedule Section -->
+<div class="bg-surface-container-lowest p-xl rounded-xl border border-outline-variant shadow-sm flex flex-col gap-lg">
+<div class="flex items-center justify-between pb-md border-b border-outline-variant">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">schedule</span>
+<h3 class="font-title-md text-title-md text-on-surface">Time &amp; Schedule</h3>
+</div>
+<button class="flex items-center gap-xs px-md py-xs bg-secondary-container text-on-secondary-container rounded-full text-label-sm font-bold hover:brightness-110 transition-all" id="checkConflictsBtn">
+<span class="material-symbols-outlined text-sm">event_busy</span>
+                                Check Conflicts
+                            </button>
+</div>
+<div class="grid grid-cols-2 gap-lg">
+<div class="flex flex-col gap-xs">
+<label class="text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">Start Date &amp; Time</label>
+<div class="flex gap-sm">
+<input class="flex-1 p-md border border-outline-variant rounded-lg bg-surface text-body-md focus:ring-2 focus:ring-primary-container outline-none" type="date" value="2023-11-24"/>
+<input class="w-32 p-md border border-outline-variant rounded-lg bg-surface text-body-md focus:ring-2 focus:ring-primary-container outline-none" type="time" value="09:00"/>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">End Date &amp; Time (Estimated)</label>
+<div class="flex gap-sm">
+<input class="flex-1 p-md border border-outline-variant rounded-lg bg-surface text-body-md focus:ring-2 focus:ring-primary-container outline-none" type="date" value="2023-11-24"/>
+<input class="w-32 p-md border border-outline-variant rounded-lg bg-surface text-body-md focus:ring-2 focus:ring-primary-container outline-none" type="time" value="11:30"/>
+</div>
+</div>
+</div>
+<!-- Conflict Notification (Hidden by default) -->
+<div class="hidden animate-pulse flex items-start gap-md p-md bg-error-container border border-secondary text-secondary rounded-lg" id="conflictAlert">
+<span class="material-symbols-outlined">warning</span>
+<div class="flex-1">
+<p class="text-body-md font-bold">Scheduling Conflict Detected!</p>
+<p class="text-label-sm">Mechanic 'Karim Z.' is already booked for 'Engine Repair' from 09:30 to 12:00 in Bay 02.</p>
+</div>
+<button class="text-label-sm underline font-bold">Auto-Reschedule</button>
+</div>
+</div>
+</div>
+<!-- Right Column: Resource Allocation -->
+<div class="col-span-4 flex flex-col gap-lg">
+<div class="bg-surface-container-lowest p-xl rounded-xl border border-outline-variant shadow-sm flex flex-col gap-lg h-full">
+<div class="flex items-center gap-sm pb-md border-b border-outline-variant">
+<span class="material-symbols-outlined text-primary">badge</span>
+<h3 class="font-title-md text-title-md text-on-surface">Resource Allocation</h3>
+</div>
+<!-- Mechanic Selection -->
+<div class="flex flex-col gap-xs">
+<label class="text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">Assigned Mechanic</label>
+<div class="space-y-sm">
+<div class="flex items-center gap-md p-md rounded-lg border-2 border-primary bg-primary-fixed ring-2 ring-primary-container/20 cursor-pointer">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold">KZ</div>
+<div class="flex-1">
+<p class="text-body-md font-bold text-primary">Karim Zidane</p>
+<p class="text-label-sm text-on-primary-fixed-variant">Master Technician</p>
+</div>
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex items-center gap-md p-md rounded-lg border border-outline-variant hover:bg-surface-container-low cursor-pointer transition-colors">
+<div class="w-10 h-10 rounded-full bg-outline flex items-center justify-center text-white font-bold">YB</div>
+<div class="flex-1">
+<p class="text-body-md font-medium text-on-surface">Yassin Benaddi</p>
+<p class="text-label-sm text-on-surface-variant">Senior Specialist</p>
+</div>
+</div>
+<div class="flex items-center gap-md p-md rounded-lg border border-outline-variant hover:bg-surface-container-low cursor-pointer transition-colors">
+<div class="w-10 h-10 rounded-full bg-outline flex items-center justify-center text-white font-bold">OF</div>
+<div class="flex-1">
+<p class="text-body-md font-medium text-on-surface">Omar Fadel</p>
+<p class="text-label-sm text-on-surface-variant">Junior Mechanic</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Workshop Bay Selection -->
+<div class="flex flex-col gap-xs mt-md">
+<label class="text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">Workshop Bay</label>
+<div class="grid grid-cols-2 gap-sm">
+<div class="p-md rounded-lg border border-outline-variant bg-surface hover:border-primary cursor-pointer flex flex-col items-center gap-xs">
+<span class="text-title-md font-bold">Bay 01</span>
+<span class="text-label-sm text-green-600 font-bold">Available</span>
+</div>
+<div class="p-md rounded-lg border-2 border-primary bg-primary-fixed cursor-pointer flex flex-col items-center gap-xs">
+<span class="text-title-md font-bold text-primary">Bay 02</span>
+<span class="text-label-sm text-on-primary-fixed-variant font-bold">Selected</span>
+</div>
+<div class="p-md rounded-lg border border-outline-variant bg-surface-container-low opacity-50 cursor-not-allowed flex flex-col items-center gap-xs">
+<span class="text-title-md font-bold">Bay 03</span>
+<span class="text-label-sm text-secondary font-bold">Occupied</span>
+</div>
+<div class="p-md rounded-lg border border-outline-variant bg-surface hover:border-primary cursor-pointer flex flex-col items-center gap-xs">
+<span class="text-title-md font-bold">Bay 04</span>
+<span class="text-label-sm text-green-600 font-bold">Available</span>
+</div>
+</div>
+</div>
+<!-- Internal Notes -->
+<div class="flex flex-col gap-xs mt-auto pt-lg border-t border-outline-variant">
+<label class="text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">Internal Notes</label>
+<textarea class="w-full p-md border border-outline-variant rounded-lg bg-surface text-body-md focus:ring-2 focus:ring-primary-container outline-none min-h-[100px] resize-none" placeholder="Special instructions for the mechanic..."></textarea>
+</div>
+</div>
+</div>
+</div>
+<!-- Bento Preview Section (Recent Similar Entries) -->
+<div class="grid grid-cols-4 gap-lg">
+<div class="col-span-4">
+<h4 class="font-title-md text-title-md text-on-surface mb-md">Quick Context</h4>
+</div>
+<div class="bg-surface-container p-md rounded-lg flex items-center gap-md">
+<div class="p-sm bg-primary text-on-primary rounded-md"><span class="material-symbols-outlined">history</span></div>
+<div>
+<p class="text-label-sm font-bold uppercase text-on-surface-variant">Last Visit</p>
+<p class="text-body-md font-medium">14 Oct 2023</p>
+</div>
+</div>
+<div class="bg-surface-container p-md rounded-lg flex items-center gap-md">
+<div class="p-sm bg-primary text-on-primary rounded-md"><span class="material-symbols-outlined">payments</span></div>
+<div>
+<p class="text-label-sm font-bold uppercase text-on-surface-variant">Outstanding</p>
+<p class="text-body-md font-medium">MAD 0.00</p>
+</div>
+</div>
+<div class="bg-surface-container p-md rounded-lg flex items-center gap-md">
+<div class="p-sm bg-primary text-on-primary rounded-md"><span class="material-symbols-outlined">inventory</span></div>
+<div>
+<p class="text-label-sm font-bold uppercase text-on-surface-variant">Parts Reserved</p>
+<p class="text-body-md font-medium">5 Items (Oil, Filter...)</p>
+</div>
+</div>
+<div class="bg-surface-container p-md rounded-lg flex items-center gap-md">
+<div class="p-sm bg-primary text-on-primary rounded-md"><span class="material-symbols-outlined">verified</span></div>
+<div>
+<p class="text-label-sm font-bold uppercase text-on-surface-variant">Warranty Status</p>
+<p class="text-body-md font-medium text-green-700">Active (Exp. 2025)</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Simple Interactivity for the demo -->
+<script>
+        const checkBtn = document.getElementById('checkConflictsBtn');
+        const alert = document.getElementById('conflictAlert');
+
+        checkBtn.addEventListener('click', () => {
+            alert.classList.toggle('hidden');
+            if (!alert.classList.contains('hidden')) {
+                checkBtn.innerHTML = '<span class="material-symbols-outlined text-sm">refresh</span> Re-checking...';
+                setTimeout(() => {
+                    checkBtn.innerHTML = '<span class="material-symbols-outlined text-sm">event_busy</span> Conflicts Found';
+                    checkBtn.classList.remove('bg-secondary-container', 'text-on-secondary-container');
+                    checkBtn.classList.add('bg-error', 'text-on-error');
+                }, 800);
+            } else {
+                checkBtn.innerHTML = '<span class="material-symbols-outlined text-sm">event_busy</span> Check Conflicts';
+                checkBtn.classList.add('bg-secondary-container', 'text-on-secondary-container');
+                checkBtn.classList.remove('bg-error', 'text-on-error');
+            }
+        });
+    </script>
+</body></html>

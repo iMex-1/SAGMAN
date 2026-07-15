@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Reports Overview | Sagman Garage</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error-container": "#93000a",
+                    "error": "#ba1a1a",
+                    "surface-bright": "#f7f9fb",
+                    "on-secondary-fixed-variant": "#93000b",
+                    "on-primary": "#ffffff",
+                    "outline": "#757682",
+                    "on-secondary-container": "#fffbff",
+                    "primary": "#00236f",
+                    "tertiary": "#222a3e",
+                    "outline-variant": "#c5c5d3",
+                    "on-secondary": "#ffffff",
+                    "on-primary-container": "#90a8ff",
+                    "surface-dim": "#d8dadc",
+                    "primary-fixed-dim": "#b6c4ff",
+                    "on-primary-fixed-variant": "#264191",
+                    "tertiary-container": "#384055",
+                    "inverse-primary": "#b6c4ff",
+                    "surface-container": "#eceef0",
+                    "surface-container-highest": "#e0e3e5",
+                    "surface-container-high": "#e6e8ea",
+                    "primary-container": "#1e3a8a",
+                    "tertiary-fixed": "#dae2fd",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed-dim": "#ffb4ab",
+                    "on-tertiary-container": "#a4acc5",
+                    "on-error": "#ffffff",
+                    "secondary": "#bb0112",
+                    "on-background": "#191c1e",
+                    "inverse-surface": "#2d3133",
+                    "surface-variant": "#e0e3e5",
+                    "on-tertiary": "#ffffff",
+                    "inverse-on-surface": "#eff1f3",
+                    "surface-container-low": "#f2f4f6",
+                    "on-surface-variant": "#444651",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed": "#ffdad6",
+                    "surface": "#f7f9fb",
+                    "background": "#f7f9fb",
+                    "surface-tint": "#4059aa",
+                    "primary-fixed": "#dce1ff",
+                    "on-tertiary-fixed": "#131b2e",
+                    "on-secondary-fixed": "#410002",
+                    "on-tertiary-fixed-variant": "#3f465c",
+                    "on-primary-fixed": "#00164e",
+                    "tertiary-fixed-dim": "#bec6e0",
+                    "on-surface": "#191c1e",
+                    "secondary-container": "#e02928"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "sm": "8px",
+                    "xs": "4px",
+                    "xl": "32px",
+                    "gutter": "16px",
+                    "lg": "24px",
+                    "container-margin": "24px",
+                    "md": "16px",
+                    "base": "4px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "title-md": ["Inter"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-xl": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "title-md": ["18px", {"lineHeight": "26px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #c5c5d3; border-radius: 10px; }
+        .glass-effect { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
+        .trend-up { color: #008000; }
+        .trend-down { color: #bb0112; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface flex min-h-screen">
+<!-- SideNavBar (As defined in JSON) -->
+<aside class="w-64 h-screen sticky top-0 left-0 bg-surface border-r border-outline-variant flex flex-col py-lg z-50">
+<div class="px-lg mb-xl">
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary">Sagman Garage</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Management Hub</p>
+</div>
+<nav class="flex-1 space-y-1 px-sm overflow-y-auto custom-scrollbar">
+<!-- Navigation Items Mapping -->
+<a class="flex items-center px-md py-sm rounded-lg text-on-surface-variant font-medium hover:bg-surface-container-high transition-colors group" href="#">
+<span class="material-symbols-outlined mr-md">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center px-md py-sm rounded-lg text-on-surface-variant font-medium hover:bg-surface-container-high transition-colors group" href="#">
+<span class="material-symbols-outlined mr-md">build</span>
+<span class="font-body-md text-body-md">Repairs</span>
+</a>
+<a class="flex items-center px-md py-sm rounded-lg text-on-surface-variant font-medium hover:bg-surface-container-high transition-colors group" href="#">
+<span class="material-symbols-outlined mr-md">event</span>
+<span class="font-body-md text-body-md">Appointments</span>
+</a>
+<a class="flex items-center px-md py-sm rounded-lg text-on-surface-variant font-medium hover:bg-surface-container-high transition-colors group" href="#">
+<span class="material-symbols-outlined mr-md">inventory_2</span>
+<span class="font-body-md text-body-md">Inventory</span>
+</a>
+<a class="flex items-center px-md py-sm rounded-lg text-on-surface-variant font-medium hover:bg-surface-container-high transition-colors group" href="#">
+<span class="material-symbols-outlined mr-md">badge</span>
+<span class="font-body-md text-body-md">Employees</span>
+</a>
+<a class="flex items-center px-md py-sm rounded-lg text-on-surface-variant font-medium hover:bg-surface-container-high transition-colors group" href="#">
+<span class="material-symbols-outlined mr-md">calendar_month</span>
+<span class="font-body-md text-body-md">Calendar</span>
+</a>
+<!-- Active State for Reports -->
+<a class="flex items-center px-md py-sm rounded-lg text-primary font-bold border-r-4 border-primary bg-primary-container/10 transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">bar_chart</span>
+<span class="font-body-md text-body-md">Reports</span>
+</a>
+<a class="flex items-center px-md py-sm rounded-lg text-on-surface-variant font-medium hover:bg-surface-container-high transition-colors group" href="#">
+<span class="material-symbols-outlined mr-md">notifications</span>
+<span class="font-body-md text-body-md">Notifications</span>
+</a>
+<a class="flex items-center px-md py-sm rounded-lg text-on-surface-variant font-medium hover:bg-surface-container-high transition-colors group" href="#">
+<span class="material-symbols-outlined mr-md">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</nav>
+<div class="px-lg mt-auto pt-lg">
+<button class="w-full bg-primary text-on-primary py-md rounded-xl font-bold transition-all active:scale-95 duration-150">
+                New Repair Order
+            </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-w-0">
+<!-- TopNavBar (As defined in JSON) -->
+<header class="flex justify-between items-center px-lg py-md w-full sticky top-0 z-50 bg-white border-b border-outline-variant">
+<div class="flex items-center gap-lg flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-xl pr-md py-sm bg-surface-container-low border-none rounded-full font-body-md text-body-md focus:ring-2 focus:ring-primary/20 outline-none" placeholder="Search orders, invoices, or customers..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md ml-lg">
+<button class="bg-primary text-on-primary px-lg py-sm rounded-lg font-title-md text-title-md hover:opacity-90 transition-opacity">
+                    New Repair/Appointment
+                </button>
+<div class="flex items-center gap-sm">
+<button class="p-base text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-base text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">help</span>
+</button>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="Close-up professional portrait of a workshop manager with a confident expression, wearing a clean technician uniform with a small logo, soft workshop lighting in the background with blurred tools and luxury cars, high-key cinematic style, polished and professional." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDN0oj_EtHmQXeZTv1s1qbe6bpoUMCfNw_-7rufOZ5UgC6iS6JONmcPYhKAGrYsx7o-AMKTF0rtZ-6o89qwyzhN3A9iuQ3hAg1bc4KlyzYuK8F6Uz8044V1Dn1zHFe2GjEQVD0gjFZnYY5AOerNlTVJZpGrpCexRg6IgZU_MLsfUJs21H0j-W_a829C-zJ7Zpbtn3mfFQeZx0VrszL4xqP_NpW06kPN_5e_TxxlCpKZZKX0jJ71iPMXSA"/>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="p-lg space-y-lg">
+<!-- Header & Filters -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-md">
+<div>
+<h2 class="font-headline-xl text-headline-xl text-primary">Reports Overview</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Performance metrics for Sagman Garage - June 2024</p>
+</div>
+<div class="flex flex-wrap items-center gap-sm bg-white p-base rounded-xl border border-outline-variant shadow-sm">
+<button class="px-md py-xs font-label-sm text-label-sm rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors">Today</button>
+<button class="px-md py-xs font-label-sm text-label-sm rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors">Week</button>
+<button class="px-md py-xs font-label-sm text-label-sm rounded-lg bg-primary text-on-primary shadow-sm transition-colors">Month</button>
+<button class="px-md py-xs font-label-sm text-label-sm rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors">Custom</button>
+<div class="w-px h-6 bg-outline-variant mx-xs"></div>
+<button class="flex items-center gap-xs px-md py-xs font-label-sm text-label-sm rounded-lg text-primary border border-primary hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span> PDF
+                    </button>
+<button class="flex items-center gap-xs px-md py-xs font-label-sm text-label-sm rounded-lg text-primary border border-primary hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined text-[18px]">description</span> Excel
+                    </button>
+</div>
+</div>
+<!-- Summary Cards (Bento Style) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-lg">
+<!-- Total Revenue -->
+<div class="bg-white p-lg border border-outline-variant rounded-xl flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start">
+<span class="p-sm bg-primary-container/10 rounded-lg text-primary">
+<span class="material-symbols-outlined">payments</span>
+</span>
+<span class="font-label-sm text-label-sm trend-up flex items-center">
+<span class="material-symbols-outlined text-[16px] mr-xs">trending_up</span> +12.4%
+                        </span>
+</div>
+<div class="mt-md">
+<p class="font-body-md text-body-md text-on-surface-variant">Total Revenue</p>
+<h3 class="font-headline-lg text-headline-lg text-primary mt-xs">142,500.00 <span class="text-label-sm">MAD</span></h3>
+</div>
+</div>
+<!-- Gross Profit Margin -->
+<div class="bg-white p-lg border border-outline-variant rounded-xl flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start">
+<span class="p-sm bg-secondary-container/10 rounded-lg text-secondary">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+</span>
+<span class="font-label-sm text-label-sm trend-down flex items-center">
+<span class="material-symbols-outlined text-[16px] mr-xs">trending_down</span> -2.1%
+                        </span>
+</div>
+<div class="mt-md">
+<p class="font-body-md text-body-md text-on-surface-variant">Gross Profit Margin</p>
+<h3 class="font-headline-lg text-headline-lg text-primary mt-xs">32.8%</h3>
+</div>
+</div>
+<!-- Avg Invoice Value -->
+<div class="bg-white p-lg border border-outline-variant rounded-xl flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start">
+<span class="p-sm bg-tertiary-container/10 rounded-lg text-tertiary">
+<span class="material-symbols-outlined">receipt_long</span>
+</span>
+<span class="font-label-sm text-label-sm trend-up flex items-center">
+<span class="material-symbols-outlined text-[16px] mr-xs">trending_up</span> +5.8%
+                        </span>
+</div>
+<div class="mt-md">
+<p class="font-body-md text-body-md text-on-surface-variant">Avg Invoice Value</p>
+<h3 class="font-headline-lg text-headline-lg text-primary mt-xs">3,450.00 <span class="text-label-sm">MAD</span></h3>
+</div>
+</div>
+<!-- Customer Satisfaction -->
+<div class="bg-white p-lg border border-outline-variant rounded-xl flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start">
+<span class="p-sm bg-primary-container/10 rounded-lg text-primary">
+<span class="material-symbols-outlined">sentiment_very_satisfied</span>
+</span>
+<span class="font-label-sm text-label-sm trend-up flex items-center">
+<span class="material-symbols-outlined text-[16px] mr-xs">trending_up</span> +0.4%
+                        </span>
+</div>
+<div class="mt-md">
+<p class="font-body-md text-body-md text-on-surface-variant">Customer Satisfaction</p>
+<h3 class="font-headline-lg text-headline-lg text-primary mt-xs">4.8 / 5.0</h3>
+</div>
+</div>
+</div>
+<!-- Middle Section: Trends & Service Distribution -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+<!-- Large Line Chart -->
+<div class="lg:col-span-2 bg-white p-lg border border-outline-variant rounded-xl">
+<div class="flex justify-between items-center mb-lg">
+<h4 class="font-title-md text-title-md text-primary">Revenue &amp; Profit Trends</h4>
+<div class="flex items-center gap-md">
+<div class="flex items-center gap-xs">
+<div class="w-3 h-3 rounded-full bg-primary"></div>
+<span class="font-label-sm text-label-sm">Revenue</span>
+</div>
+<div class="flex items-center gap-xs">
+<div class="w-3 h-3 rounded-full bg-secondary"></div>
+<span class="font-label-sm text-label-sm">Profit</span>
+</div>
+</div>
+</div>
+<div class="relative h-[300px] w-full flex items-end justify-between px-md pb-md">
+<!-- Simulated Chart Grid -->
+<div class="absolute inset-0 flex flex-col justify-between pointer-events-none p-md">
+<div class="border-b border-surface-container-highest w-full h-px"></div>
+<div class="border-b border-surface-container-highest w-full h-px"></div>
+<div class="border-b border-surface-container-highest w-full h-px"></div>
+<div class="border-b border-surface-container-highest w-full h-px"></div>
+<div class="border-b border-surface-container-highest w-full h-px"></div>
+</div>
+<!-- Placeholder Chart Visualization (CSS) -->
+<div class="relative flex-1 flex items-end justify-around h-full gap-xs pt-xl">
+<!-- Visualizing trend with simple bars for demo as per prompt logic -->
+<div class="w-full h-full flex items-end gap-sm">
+<div class="flex-1 flex flex-col justify-end items-center gap-xs h-full">
+<div class="w-full bg-primary/20 rounded-t-sm" style="height: 40%"></div>
+<span class="text-[10px] text-outline">Jan</span>
+</div>
+<div class="flex-1 flex flex-col justify-end items-center gap-xs h-full">
+<div class="w-full bg-primary/30 rounded-t-sm" style="height: 55%"></div>
+<span class="text-[10px] text-outline">Feb</span>
+</div>
+<div class="flex-1 flex flex-col justify-end items-center gap-xs h-full">
+<div class="w-full bg-primary/40 rounded-t-sm" style="height: 48%"></div>
+<span class="text-[10px] text-outline">Mar</span>
+</div>
+<div class="flex-1 flex flex-col justify-end items-center gap-xs h-full">
+<div class="w-full bg-primary/50 rounded-t-sm" style="height: 65%"></div>
+<span class="text-[10px] text-outline">Apr</span>
+</div>
+<div class="flex-1 flex flex-col justify-end items-center gap-xs h-full">
+<div class="w-full bg-primary/70 rounded-t-sm" style="height: 85%"></div>
+<span class="text-[10px] text-outline">May</span>
+</div>
+<div class="flex-1 flex flex-col justify-end items-center gap-xs h-full">
+<div class="w-full bg-primary rounded-t-sm" style="height: 95%"></div>
+<span class="text-[10px] text-outline">Jun</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Donut Chart Side Card -->
+<div class="bg-white p-lg border border-outline-variant rounded-xl">
+<h4 class="font-title-md text-title-md text-primary mb-lg">Revenue by Service</h4>
+<div class="relative flex justify-center py-md">
+<!-- Donut Graphic Simulation -->
+<div class="w-48 h-48 rounded-full border-[16px] border-primary flex items-center justify-center relative">
+<div class="absolute inset-[-16px] rounded-full border-[16px] border-secondary" style="clip-path: polygon(50% 50%, 100% 0, 100% 100%, 50% 100%)"></div>
+<div class="absolute inset-[-16px] rounded-full border-[16px] border-tertiary" style="clip-path: polygon(50% 50%, 0 100%, 0 50%, 50% 50%)"></div>
+<div class="text-center">
+<p class="text-outline text-label-sm">Total Services</p>
+<p class="font-bold text-primary text-headline-lg">142</p>
+</div>
+</div>
+</div>
+<div class="mt-lg space-y-md">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-sm">
+<div class="w-3 h-3 rounded-full bg-primary"></div>
+<span class="font-body-md text-body-md">Mechanics</span>
+</div>
+<span class="font-bold">65%</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-sm">
+<div class="w-3 h-3 rounded-full bg-secondary"></div>
+<span class="font-body-md text-body-md">Hydraulics</span>
+</div>
+<span class="font-bold">25%</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-sm">
+<div class="w-3 h-3 rounded-full bg-tertiary"></div>
+<span class="font-body-md text-body-md">Electrical</span>
+</div>
+<span class="font-bold">10%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Section: Daily Performance Table -->
+<div class="bg-white border border-outline-variant rounded-xl overflow-hidden">
+<div class="px-lg py-md border-b border-outline-variant flex justify-between items-center">
+<h4 class="font-title-md text-title-md text-primary">Daily Performance Summary</h4>
+<span class="bg-surface-container text-on-surface-variant px-md py-xs rounded-full font-label-sm text-label-sm">June 2024</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low font-label-sm text-label-sm text-outline border-b border-outline-variant">
+<th class="px-lg py-md font-medium uppercase tracking-wider">Date</th>
+<th class="px-lg py-md font-medium uppercase tracking-wider text-center">Cars Received</th>
+<th class="px-lg py-md font-medium uppercase tracking-wider text-center">Cars Delivered</th>
+<th class="px-lg py-md font-medium uppercase tracking-wider text-right">Revenue (MAD)</th>
+<th class="px-lg py-md font-medium uppercase tracking-wider text-right">Efficiency %</th>
+<th class="px-lg py-md"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant font-body-md text-body-md">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-lg py-md font-medium">June 15, 2024</td>
+<td class="px-lg py-md text-center">12</td>
+<td class="px-lg py-md text-center">9</td>
+<td class="px-lg py-md text-right font-bold">18,450.00</td>
+<td class="px-lg py-md text-right">
+<div class="flex items-center justify-end gap-sm">
+<div class="w-16 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-primary h-full" style="width: 75%"></div>
+</div>
+<span>75%</span>
+</div>
+</td>
+<td class="px-lg py-md text-right">
+<button class="text-outline hover:text-primary"><span class="material-symbols-outlined">more_vert</span></button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-lg py-md font-medium">June 14, 2024</td>
+<td class="px-lg py-md text-center">8</td>
+<td class="px-lg py-md text-center">10</td>
+<td class="px-lg py-md text-right font-bold">15,200.00</td>
+<td class="px-lg py-md text-right">
+<div class="flex items-center justify-end gap-sm">
+<div class="w-16 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-primary h-full" style="width: 92%"></div>
+</div>
+<span>92%</span>
+</div>
+</td>
+<td class="px-lg py-md text-right">
+<button class="text-outline hover:text-primary"><span class="material-symbols-outlined">more_vert</span></button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-lg py-md font-medium">June 13, 2024</td>
+<td class="px-lg py-md text-center">15</td>
+<td class="px-lg py-md text-center">6</td>
+<td class="px-lg py-md text-right font-bold">9,800.00</td>
+<td class="px-lg py-md text-right">
+<div class="flex items-center justify-end gap-sm">
+<div class="w-16 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 40%"></div>
+</div>
+<span class="text-secondary font-bold">40%</span>
+</div>
+</td>
+<td class="px-lg py-md text-right">
+<button class="text-outline hover:text-primary"><span class="material-symbols-outlined">more_vert</span></button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-lg py-md font-medium">June 12, 2024</td>
+<td class="px-lg py-md text-center">10</td>
+<td class="px-lg py-md text-center">11</td>
+<td class="px-lg py-md text-right font-bold">22,100.00</td>
+<td class="px-lg py-md text-right">
+<div class="flex items-center justify-end gap-sm">
+<div class="w-16 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-primary h-full" style="width: 100%"></div>
+</div>
+<span>100%</span>
+</div>
+</td>
+<td class="px-lg py-md text-right">
+<button class="text-outline hover:text-primary"><span class="material-symbols-outlined">more_vert</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-lg py-md bg-surface-container-low border-t border-outline-variant flex justify-between items-center">
+<p class="font-label-sm text-label-sm text-outline">Showing 15 of 30 days</p>
+<div class="flex items-center gap-xs">
+<button class="p-xs rounded border border-outline-variant hover:bg-surface-container transition-colors disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="px-sm py-xs font-label-sm text-label-sm bg-primary text-on-primary rounded">1</button>
+<button class="px-sm py-xs font-label-sm text-label-sm hover:bg-surface-container rounded">2</button>
+<button class="p-xs rounded border border-outline-variant hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer (As defined in JSON) -->
+<footer class="flex flex-col md:flex-row justify-between items-center px-lg py-md w-full mt-auto bg-surface-container-lowest border-t border-outline-variant">
+<div class="mb-sm md:mb-0">
+<span class="font-title-md text-title-md font-bold text-primary">Sagman Garage</span>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-xs">© 2024 Sagman Garage Management System. All rights reserved.</p>
+</div>
+<div class="flex gap-lg">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:underline decoration-primary transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:underline decoration-primary transition-colors" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:underline decoration-primary transition-colors" href="#">Support</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:underline decoration-primary transition-colors" href="#">Contact</a>
+</div>
+</footer>
+</main>
+<!-- FAB (Suppressed as per rules for Reports screen) -->
+<script>
+        // Micro-interaction for hover states on charts
+        document.querySelectorAll('.hover\\:shadow-md').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-2px)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Simple tab state switching for demo
+        const dateTabs = document.querySelectorAll('.filter-tab');
+        dateTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                dateTabs.forEach(t => {
+                    t.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm');
+                    t.classList.add('text-on-surface-variant', 'hover:bg-surface-container');
+                });
+                tab.classList.remove('text-on-surface-variant', 'hover:bg-surface-container');
+                tab.classList.add('bg-primary', 'text-on-primary', 'shadow-sm');
+            });
+        });
+    </script>
+</body></html>

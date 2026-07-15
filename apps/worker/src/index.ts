@@ -9,11 +9,17 @@ import { AppError } from './utils/errors';
 const app = new Hono<{ Bindings: Env }>();
 
 app.use('/api/v1/*', cors({
-  origin: [
-    'http://localhost:3000',
-    'https://*.pages.dev',
-    'https://*.workers.dev',
-  ],
+  origin: (origin) => {
+    if (!origin) return null;
+    try {
+      const u = new URL(origin);
+      if (u.hostname === 'localhost' && u.port === '3000') return origin;
+      if (u.hostname.endsWith('.pages.dev')) return origin;
+      if (u.hostname.endsWith('.workers.dev')) return origin;
+      if (u.hostname.endsWith('.imexlab.uk')) return origin;
+    } catch {}
+    return null;
+  },
   allowMethods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
   allowHeaders: ['Content-Type', 'Authorization'],
   credentials: true,

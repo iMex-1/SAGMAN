@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const LOCALES = [
-  { code: "fr", label: "Français", flag: "🇫🇷", dir: "ltr" },
-  { code: "ar", label: "العربية", flag: "🇲🇦", dir: "rtl" },
+  { code: "fr", label: "Français", dir: "ltr" },
+  { code: "ar", label: "العربية", dir: "rtl" },
 ] as const;
 
 interface LanguageSwitcherProps {
@@ -17,6 +17,7 @@ interface LanguageSwitcherProps {
 export function LanguageSwitcher({
   variant = "default",
 }: LanguageSwitcherProps) {
+  const t = useTranslations();
   const locale = useLocale();
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -25,12 +26,8 @@ export function LanguageSwitcher({
 
   function switchLocale(code: string) {
     setOpen(false);
-    startTransition(async () => {
-      await fetch("/api/locale", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ locale: code }),
-      });
+    startTransition(() => {
+      document.cookie = `NEXT_LOCALE=${code};path=/;max-age=${60*60*24*365};sameSite=lax`;
       window.location.reload();
     });
   }
@@ -47,13 +44,11 @@ export function LanguageSwitcher({
           isPending && "opacity-50 cursor-wait",
         )}
         disabled={isPending}
-        aria-label="Switch language"
+        aria-label={t('common.language')}
       >
         <Globe className="h-4 w-4" />
-        <span className="hidden sm:inline">
-          {current.flag} {current.label}
-        </span>
-        <span className="sm:hidden">{current.flag}</span>
+        <span className="hidden sm:inline">{current.label}</span>
+        <span className="sm:hidden">{current.label.slice(0, 2)}</span>
       </button>
 
       {open && (
@@ -70,7 +65,6 @@ export function LanguageSwitcher({
                 )}
                 dir={l.dir}
               >
-                <span className="text-base">{l.flag}</span>
                 <span>{l.label}</span>
               </button>
             ))}

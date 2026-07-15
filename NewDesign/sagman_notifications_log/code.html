@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Notifications Log - Sagman Garage</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#bec6e0",
+                        "on-surface-variant": "#444651",
+                        "surface-variant": "#e0e3e5",
+                        "primary-fixed": "#dce1ff",
+                        "on-primary-container": "#90a8ff",
+                        "surface-bright": "#f7f9fb",
+                        "outline-variant": "#c5c5d3",
+                        "surface-tint": "#4059aa",
+                        "secondary-container": "#e02928",
+                        "on-tertiary-fixed-variant": "#3f465c",
+                        "surface-container": "#eceef0",
+                        "on-primary-fixed-variant": "#264191",
+                        "surface": "#f7f9fb",
+                        "surface-dim": "#d8dadc",
+                        "primary-fixed-dim": "#b6c4ff",
+                        "on-tertiary-container": "#a4acc5",
+                        "on-primary-fixed": "#00164e",
+                        "tertiary-container": "#384055",
+                        "outline": "#757682",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#dae2fd",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#eff1f3",
+                        "secondary-fixed": "#ffdad6",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed": "#131b2e",
+                        "inverse-surface": "#2d3133",
+                        "inverse-primary": "#b6c4ff",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed": "#410002",
+                        "background": "#f7f9fb",
+                        "on-secondary-container": "#fffbff",
+                        "secondary-fixed-dim": "#ffb4ab",
+                        "on-secondary-fixed-variant": "#93000b",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#191c1e",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#191c1e",
+                        "surface-container-low": "#f2f4f6",
+                        "secondary": "#bb0112",
+                        "error-container": "#ffdad6",
+                        "primary-container": "#1e3a8a",
+                        "surface-container-high": "#e6e8ea",
+                        "tertiary": "#222a3e",
+                        "primary": "#00236f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "xl": "32px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "base": "4px",
+                        "md": "16px",
+                        "container-margin": "24px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "title-md": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "title-md": ["18px", {"lineHeight": "26px", "fontWeight": "600"}],
+                        "headline-xl": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f7f9fb; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #c5c5d3; border-radius: 10px; }
+    </style>
+</head>
+<body class="flex min-h-screen text-on-surface">
+<!-- SideNavBar (Authority Source: JSON) -->
+<aside class="hidden md:flex flex-col h-screen sticky left-0 w-64 bg-surface-container-low border-r border-outline-variant py-md px-sm z-50">
+<div class="px-md py-lg mb-xl">
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary">Sagman Garage</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Workshop Management</p>
+</div>
+<nav class="flex-1 space-y-xs">
+<!-- Dashboard -->
+<a class="flex items-center gap-sm px-md py-sm rounded transition-all duration-200 text-on-surface-variant hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-sm text-label-sm">Dashboard</span>
+</a>
+<!-- Appointments -->
+<a class="flex items-center gap-sm px-md py-sm rounded transition-all duration-200 text-on-surface-variant hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-label-sm text-label-sm">Appointments</span>
+</a>
+<!-- Jobs -->
+<a class="flex items-center gap-sm px-md py-sm rounded transition-all duration-200 text-on-surface-variant hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined">build</span>
+<span class="font-label-sm text-label-sm">Jobs</span>
+</a>
+<!-- Inventory -->
+<a class="flex items-center gap-sm px-md py-sm rounded transition-all duration-200 text-on-surface-variant hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-label-sm text-label-sm">Inventory</span>
+</a>
+<!-- Notifications (ACTIVE STATE LOGIC) -->
+<a class="flex items-center gap-sm px-md py-sm rounded transition-all duration-200 text-primary font-bold bg-primary-fixed/20" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-label-sm text-label-sm">Notifications</span>
+</a>
+</nav>
+<div class="mt-auto pt-md space-y-xs border-t border-outline-variant">
+<button class="w-full bg-primary text-on-primary py-sm rounded-lg font-label-sm mb-md flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-sm">add</span>
+                New Repair Order
+            </button>
+<a class="flex items-center gap-sm px-md py-sm rounded transition-all duration-200 text-on-surface-variant hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined">contact_support</span>
+<span class="font-label-sm text-label-sm">Support</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm rounded transition-all duration-200 text-on-surface-variant hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-sm text-label-sm">Logout</span>
+</a>
+</div>
+</aside>
+<div class="flex-1 flex flex-col min-w-0 bg-background">
+<!-- TopNavBar (Authority Source: JSON) -->
+<header class="flex justify-between items-center px-lg h-16 w-full sticky top-0 z-40 bg-surface border-b border-outline-variant">
+<div class="flex items-center gap-md">
+<span class="md:hidden material-symbols-outlined text-primary cursor-pointer">menu</span>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-outline">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full w-64 md:w-96 text-body-md focus:ring-2 focus:ring-primary outline-none" placeholder="Search notification logs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="flex items-center gap-sm text-on-surface-variant">
+<span class="material-symbols-outlined cursor-pointer hover:bg-surface-container-low p-2 rounded-full transition-colors">notifications</span>
+<span class="material-symbols-outlined cursor-pointer hover:bg-surface-container-low p-2 rounded-full transition-colors">settings</span>
+<span class="material-symbols-outlined cursor-pointer hover:bg-surface-container-low p-2 rounded-full transition-colors">help</span>
+</div>
+<div class="h-8 w-8 rounded-full bg-primary-fixed overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional close-up headshot of a workshop manager in a modern, brightly lit automotive office. He is wearing a clean branded polo shirt, smiling confidently. The background shows blurred garage bays with high-end diagnostic equipment in a clean, daylight-filled environment with a blue and gray color scheme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAv05iVYQBLFtNbAm-mqI3pE53sRsMowe3eZ8TntQIsrpVxA6QEFq29R0NnbVmbFbIA8HaCXIIVQitsrWpMplMBSW6km9PKR4TCvKYJ5h19ueOCkhGWtjfAHdr4vp65ZtTvXk9fqkrkMHsCGU9N-TqW8jMUwt-pJyzDv9VJb2EqvYzw1EXfEHs1O4C1tINrAaxbqF13ODhD4QzmsEbdb9QB0rsuTFg7aC4FLxak-CqaaeimDKrhwooN1w"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 p-gutter md:p-lg overflow-y-auto">
+<!-- Header Section -->
+<div class="mb-lg flex flex-col md:flex-row md:items-end justify-between gap-md">
+<div>
+<h2 class="font-headline-xl text-headline-xl text-on-surface tracking-tight mb-xs">Notifications Log</h2>
+<p class="text-on-surface-variant font-body-md">Audit trail of all outbound and system communications.</p>
+</div>
+<div class="flex gap-sm">
+<button class="px-md py-sm bg-surface-container-lowest border border-outline-variant rounded-lg text-on-surface font-label-sm flex items-center gap-xs hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                        Export CSV
+                    </button>
+<button class="px-md py-sm bg-primary text-on-primary rounded-lg font-label-sm flex items-center gap-xs shadow-sm hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-[18px]">refresh</span>
+                        Refresh Logs
+                    </button>
+</div>
+</div>
+<!-- Bento Grid Stats & Filters -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-md mb-lg">
+<!-- Filter Chips Card (Bento Style) -->
+<div class="md:col-span-3 bg-surface-container-lowest border border-outline-variant p-md rounded-xl shadow-sm">
+<h3 class="font-label-sm text-on-surface-variant mb-md uppercase tracking-wider">Quick Filters</h3>
+<div class="flex flex-wrap gap-sm">
+<button class="px-md py-2 bg-primary-container text-on-primary-container rounded-full font-label-sm flex items-center gap-xs">
+                            All Logs
+                        </button>
+<button class="px-md py-2 bg-surface-container-high text-on-surface-variant hover:bg-primary-fixed/20 hover:text-primary rounded-full font-label-sm flex items-center gap-xs transition-colors">
+<span class="material-symbols-outlined text-[16px]">warning</span>
+                            System Alerts
+                        </button>
+<button class="px-md py-2 bg-surface-container-high text-on-surface-variant hover:bg-primary-fixed/20 hover:text-primary rounded-full font-label-sm flex items-center gap-xs transition-colors">
+<span class="material-symbols-outlined text-[16px]">chat</span>
+                            WhatsApp
+                        </button>
+<button class="px-md py-2 bg-surface-container-high text-on-surface-variant hover:bg-primary-fixed/20 hover:text-primary rounded-full font-label-sm flex items-center gap-xs transition-colors">
+<span class="material-symbols-outlined text-[16px]">inventory</span>
+                            Inventory Alerts
+                        </button>
+<button class="px-md py-2 bg-surface-container-high text-on-surface-variant hover:bg-primary-fixed/20 hover:text-primary rounded-full font-label-sm flex items-center gap-xs transition-colors">
+<span class="material-symbols-outlined text-[16px]">event_available</span>
+                            Appointments
+                        </button>
+</div>
+</div>
+<!-- Summary Card -->
+<div class="bg-surface-container-lowest border border-outline-variant p-md rounded-xl shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<h3 class="font-label-sm text-on-surface-variant uppercase tracking-wider">Success Rate</h3>
+<span class="text-secondary font-bold">98.2%</span>
+</div>
+<div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden mt-sm">
+<div class="h-full bg-primary w-[98.2%]"></div>
+</div>
+<p class="text-[10px] text-on-surface-variant mt-xs">Last 24 hours: 1,248 sent, 23 failed.</p>
+</div>
+</div>
+<!-- Main Data Table Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden flex flex-col">
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="px-md py-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Timestamp</th>
+<th class="px-md py-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Category</th>
+<th class="px-md py-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Message</th>
+<th class="px-md py-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Recipient</th>
+<th class="px-md py-sm font-label-sm text-on-surface-variant uppercase tracking-wider text-center">Status</th>
+<th class="px-md py-sm font-label-sm text-on-surface-variant uppercase tracking-wider"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- High Urgency Alert -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-md py-md border-l-4 border-secondary">
+<div class="font-body-md text-on-surface">Oct 24, 2023</div>
+<div class="text-[12px] text-on-surface-variant">14:32:01</div>
+</td>
+<td class="px-md py-md">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-secondary text-[20px]">warning</span>
+<span class="font-body-md text-secondary font-semibold">Inventory Alert</span>
+</div>
+</td>
+<td class="px-md py-md">
+<p class="font-body-md text-on-surface line-clamp-1">Critical Low Stock: 5W-30 Synthetic Oil (Batch B-20) below threshold of 10 units.</p>
+</td>
+<td class="px-md py-md">
+<div class="flex items-center gap-sm">
+<div class="h-6 w-6 rounded-full bg-surface-container-high flex items-center justify-center text-[10px] font-bold">SM</div>
+<span class="font-body-md text-on-surface">Store Manager</span>
+</div>
+</td>
+<td class="px-md py-md text-center">
+<span class="px-sm py-[2px] bg-primary-fixed/30 text-primary text-[11px] font-bold rounded uppercase">Delivered</span>
+</td>
+<td class="px-md py-md text-right">
+<button class="opacity-0 group-hover:opacity-100 material-symbols-outlined text-outline hover:text-primary transition-all">visibility</button>
+</td>
+</tr>
+<!-- Standard WhatsApp Message -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-md py-md border-l-4 border-transparent">
+<div class="font-body-md text-on-surface">Oct 24, 2023</div>
+<div class="text-[12px] text-on-surface-variant">14:15:45</div>
+</td>
+<td class="px-md py-md">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary text-[20px]">chat</span>
+<span class="font-body-md text-on-surface">WhatsApp</span>
+</div>
+</td>
+<td class="px-md py-md">
+<p class="font-body-md text-on-surface line-clamp-1">Hi Ahmed, your vehicle (Renault Clio - 123-A-5) is ready for pickup.</p>
+</td>
+<td class="px-md py-md">
+<div class="flex items-center gap-sm">
+<div class="h-6 w-6 rounded-full bg-surface-container-high flex items-center justify-center text-[10px] font-bold text-on-surface-variant">AC</div>
+<span class="font-body-md text-on-surface">Ahmed C. (Client)</span>
+</div>
+</td>
+<td class="px-md py-md text-center">
+<span class="px-sm py-[2px] bg-green-100 text-green-700 text-[11px] font-bold rounded uppercase">Read</span>
+</td>
+<td class="px-md py-md text-right">
+<button class="opacity-0 group-hover:opacity-100 material-symbols-outlined text-outline hover:text-primary transition-all">visibility</button>
+</td>
+</tr>
+<!-- Failed Notification -->
+<tr class="hover:bg-surface-container-low transition-colors group bg-secondary/5">
+<td class="px-md py-md border-l-4 border-secondary">
+<div class="font-body-md text-on-surface">Oct 24, 2023</div>
+<div class="text-[12px] text-on-surface-variant">13:50:12</div>
+</td>
+<td class="px-md py-md">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">event_available</span>
+<span class="font-body-md text-on-surface">Appointment</span>
+</div>
+</td>
+<td class="px-md py-md">
+<p class="font-body-md text-on-surface line-clamp-1">Booking Confirmation: Maintenance check scheduled for Oct 26 at 09:00 AM.</p>
+</td>
+<td class="px-md py-md">
+<div class="flex items-center gap-sm">
+<div class="h-6 w-6 rounded-full bg-surface-container-high flex items-center justify-center text-[10px] font-bold text-on-surface-variant">SB</div>
+<span class="font-body-md text-on-surface">Salma B. (Client)</span>
+</div>
+</td>
+<td class="px-md py-md text-center">
+<span class="px-sm py-[2px] bg-error-container text-on-error-container text-[11px] font-bold rounded uppercase">Failed</span>
+</td>
+<td class="px-md py-md text-right">
+<button class="px-sm py-1 bg-secondary text-on-secondary text-[10px] rounded hover:opacity-90 transition-opacity">Retry</button>
+</td>
+</tr>
+<!-- System Alert -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-md py-md border-l-4 border-transparent">
+<div class="font-body-md text-on-surface">Oct 24, 2023</div>
+<div class="text-[12px] text-on-surface-variant">12:22:18</div>
+</td>
+<td class="px-md py-md">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-outline text-[20px]">settings</span>
+<span class="font-body-md text-on-surface">System Alert</span>
+</div>
+</td>
+<td class="px-md py-md">
+<p class="font-body-md text-on-surface line-clamp-1">Daily backup completed successfully. Total 4.2GB processed.</p>
+</td>
+<td class="px-md py-md">
+<div class="flex items-center gap-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">terminal</span>
+<span class="font-body-md">System Log</span>
+</div>
+</td>
+<td class="px-md py-md text-center">
+<span class="px-sm py-[2px] bg-surface-container-high text-on-surface-variant text-[11px] font-bold rounded uppercase">Sent</span>
+</td>
+<td class="px-md py-md text-right">
+<button class="opacity-0 group-hover:opacity-100 material-symbols-outlined text-outline hover:text-primary transition-all">visibility</button>
+</td>
+</tr>
+<!-- Multiple WhatsApp/Appointment Entries to fill space -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-md py-md border-l-4 border-transparent">
+<div class="font-body-md text-on-surface">Oct 24, 2023</div>
+<div class="text-[12px] text-on-surface-variant">11:45:00</div>
+</td>
+<td class="px-md py-md">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary text-[20px]">chat</span>
+<span class="font-body-md text-on-surface">WhatsApp</span>
+</div>
+</td>
+<td class="px-md py-md">
+<p class="font-body-md text-on-surface line-clamp-1">Invoice #INV-2023-452 has been sent to client.</p>
+</td>
+<td class="px-md py-md">
+<div class="flex items-center gap-sm">
+<div class="h-6 w-6 rounded-full bg-surface-container-high flex items-center justify-center text-[10px] font-bold text-on-surface-variant">KM</div>
+<span class="font-body-md text-on-surface">Karim M. (Client)</span>
+</div>
+</td>
+<td class="px-md py-md text-center">
+<span class="px-sm py-[2px] bg-primary-fixed/30 text-primary text-[11px] font-bold rounded uppercase">Delivered</span>
+</td>
+<td class="px-md py-md text-right">
+<button class="opacity-0 group-hover:opacity-100 material-symbols-outlined text-outline hover:text-primary transition-all">visibility</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Footer -->
+<div class="bg-surface-container-low px-md py-sm flex items-center justify-between border-t border-outline-variant">
+<span class="font-label-sm text-on-surface-variant">Showing 1 to 25 of 1,248 logs</span>
+<div class="flex gap-xs">
+<button class="p-1 rounded hover:bg-surface-variant disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="px-sm py-1 bg-primary text-on-primary font-label-sm rounded">1</button>
+<button class="px-sm py-1 hover:bg-surface-variant font-label-sm rounded transition-colors">2</button>
+<button class="px-sm py-1 hover:bg-surface-variant font-label-sm rounded transition-colors">3</button>
+<button class="p-1 rounded hover:bg-surface-variant">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Micro-interaction Scripts -->
+<script>
+        document.querySelectorAll('tbody tr').forEach(row => {
+            row.addEventListener('click', () => {
+                // Future Detail Modal Logic
+                console.log('Row clicked, opening detail view...');
+            });
+        });
+
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('input', (e) => {
+            // Future Search Logic
+            console.log('Searching for:', e.target.value);
+        });
+    </script>
+</body></html>

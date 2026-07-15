@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>WhatsApp Communications - Sagman Garage</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed-dim": "#bec6e0",
+                    "on-surface-variant": "#444651",
+                    "surface-variant": "#e0e3e5",
+                    "primary-fixed": "#dce1ff",
+                    "on-primary-container": "#90a8ff",
+                    "surface-bright": "#f7f9fb",
+                    "outline-variant": "#c5c5d3",
+                    "surface-tint": "#4059aa",
+                    "secondary-container": "#e02928",
+                    "on-tertiary-fixed-variant": "#3f465c",
+                    "surface-container": "#eceef0",
+                    "on-primary-fixed-variant": "#264191",
+                    "surface": "#f7f9fb",
+                    "surface-dim": "#d8dadc",
+                    "primary-fixed-dim": "#b6c4ff",
+                    "on-tertiary-container": "#a4acc5",
+                    "on-primary-fixed": "#00164e",
+                    "tertiary-container": "#384055",
+                    "outline": "#757682",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed": "#dae2fd",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-on-surface": "#eff1f3",
+                    "secondary-fixed": "#ffdad6",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed": "#131b2e",
+                    "inverse-surface": "#2d3133",
+                    "inverse-primary": "#b6c4ff",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-error": "#ffffff",
+                    "on-secondary-fixed": "#410002",
+                    "background": "#f7f9fb",
+                    "on-secondary-container": "#fffbff",
+                    "secondary-fixed-dim": "#ffb4ab",
+                    "on-secondary-fixed-variant": "#93000b",
+                    "on-primary": "#ffffff",
+                    "on-surface": "#191c1e",
+                    "on-secondary": "#ffffff",
+                    "on-background": "#191c1e",
+                    "surface-container-low": "#f2f4f6",
+                    "secondary": "#bb0112",
+                    "error-container": "#ffdad6",
+                    "primary-container": "#1e3a8a",
+                    "surface-container-high": "#e6e8ea",
+                    "tertiary": "#222a3e",
+                    "primary": "#00236f"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "gutter": "16px",
+                    "xl": "32px",
+                    "lg": "24px",
+                    "xs": "4px",
+                    "base": "4px",
+                    "md": "16px",
+                    "container-margin": "24px",
+                    "sm": "8px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "title-md": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "title-md": ["18px", {"lineHeight": "26px", "fontWeight": "600"}],
+                    "headline-xl": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .chat-scrollbar::-webkit-scrollbar { width: 4px; }
+        .chat-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .chat-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .bubble-sent { border-radius: 16px 16px 2px 16px; }
+        .bubble-received { border-radius: 16px 16px 16px 2px; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex overflow-hidden">
+<!-- SideNavBar (Shared Component Anchor) -->
+<aside class="hidden md:flex flex-col h-screen sticky left-0 w-64 bg-surface-container-low border-r border-outline-variant py-md px-sm z-50">
+<div class="flex items-center gap-sm px-sm mb-xl">
+<div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined">build</span>
+</div>
+<div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">Sagman Garage</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Workshop Management</p>
+</div>
+</div>
+<nav class="flex-1 space-y-xs">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-variant transition-all duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-sm text-label-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-variant transition-all duration-200" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-label-sm text-label-sm">Appointments</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-variant transition-all duration-200" href="#">
+<span class="material-symbols-outlined">build</span>
+<span class="font-label-sm text-label-sm">Jobs</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-variant transition-all duration-200" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-label-sm text-label-sm">Inventory</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-primary font-bold bg-primary-fixed/20 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">notifications</span>
+<span class="font-label-sm text-label-sm">Notifications</span>
+</a>
+</nav>
+<div class="mt-auto space-y-xs border-t border-outline-variant pt-md">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-variant transition-all duration-200" href="#">
+<span class="material-symbols-outlined">contact_support</span>
+<span class="font-label-sm text-label-sm">Support</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-variant transition-all duration-200" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-sm text-label-sm">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-screen overflow-hidden">
+<!-- TopNavBar (Shared Component Anchor) -->
+<header class="w-full sticky top-0 z-40 bg-surface flex justify-between items-center px-lg h-16 border-b border-outline-variant">
+<div class="flex items-center gap-md">
+<div class="md:hidden w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-[18px]">menu</span>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container border border-outline-variant rounded-lg text-body-md font-body-md focus:ring-2 focus:ring-primary focus:border-transparent outline-none w-64 md:w-80" placeholder="Search conversations..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant mx-sm"></div>
+<div class="flex items-center gap-sm cursor-pointer active:opacity-80 transition-opacity">
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a workshop manager in a clean, modern garage setting. The person is wearing a branded polo shirt with the Sagman logo, looking confident and approachable. The background shows blurred high-end diagnostic tools and a clean workspace with cool blue lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrUTxfV4OpCA6iGPs68G0FMYMR6XY4fjDDCjLsEkkO-R31vIWluAfhaszbSqu9Hm37uL8o8juUGddaxjNGnEjmIqtaYpKzvcweDEgoNptAwQ5HolmoI_7jaPgqS2sRG9DYLqp00GpoW6FhFoDneFfhh8jtEGXrL00vpIt-VgNoctS-tXl0GkQ2MUsspwtG0DLDphPc-uKmpqScgNnc3o6iyS_FD1B9ecOffj-0PoCriZsIJoDVxYn6Wg"/>
+</div>
+<span class="hidden md:block font-body-md text-body-md font-semibold text-primary">Manager</span>
+</div>
+</div>
+</header>
+<!-- WhatsApp Layout -->
+<div class="flex-1 flex overflow-hidden">
+<!-- Left Panel: Conversations List -->
+<section class="w-full md:w-[380px] lg:w-[420px] flex-shrink-0 bg-surface border-r border-outline-variant flex flex-col">
+<div class="p-md border-b border-outline-variant flex justify-between items-center bg-surface-container-lowest">
+<h2 class="font-title-md text-title-md text-primary">Communications</h2>
+<button class="flex items-center gap-xs px-sm py-1.5 bg-primary text-on-primary rounded-lg font-label-sm text-label-sm hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                        New Chat
+                    </button>
+</div>
+<div class="flex-1 overflow-y-auto chat-scrollbar">
+<!-- Conversation Item: Active -->
+<div class="p-md flex gap-md cursor-pointer bg-primary-fixed/20 border-l-4 border-primary">
+<div class="w-12 h-12 rounded-full overflow-hidden bg-surface-container-highest flex-shrink-0 border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A close-up portrait of a customer, a middle-aged man with a friendly expression. He is wearing a casual button-down shirt. The lighting is soft and natural, emphasizing a professional yet personal customer-service oriented atmosphere of the garage." src="https://lh3.googleusercontent.com/aida-public/AB6AXuChpd65sixR0NqE1THfp9-C2RtgDoITVkueDHuFpNtXc42YlKJ1wDDQWiR4awjpLzWRGEMRD-iL6zH3qcJzbuXRqf58qI1u19M-FyWiPlXQ1vaJ-iEc-c-hN4_AV1bGAqI1Tk157-y2SCm7BMgSXaR6-vmFzl8iV7MT_Tm3ilPyqCnwmWzN9m4c51rNqiVFZZEobSfThTpOFeC2v6Ty1kAp8w31cdTZ8AYLgJAOS9aDTpoWCaT1qB7raA"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start mb-0.5">
+<h3 class="font-body-lg text-body-lg font-bold text-on-surface truncate">Ahmed Mansouri</h3>
+<span class="text-xs text-on-surface-variant font-medium">10:45 AM</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary text-[16px]" style="font-variation-settings: 'FILL' 1;">done_all</span>
+<p class="font-body-md text-body-md text-on-surface-variant truncate">Thank you, I will come at 5 PM to pick it up.</p>
+</div>
+</div>
+</div>
+<!-- Conversation Item -->
+<div class="p-md flex gap-md cursor-pointer hover:bg-surface-container-low border-l-4 border-transparent transition-colors">
+<div class="w-12 h-12 rounded-full overflow-hidden bg-surface-container-highest flex-shrink-0 border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A portrait of a young female professional customer. She looks pleased and satisfied. The image captures her in a bright, modern setting with high-key lighting that matches the clean white and light-gray garage brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDz3ol2d2wR0eoEcC9yaNWCNNMkZutEdUSdv2JXLbx5lf0YRudMgdVJ4dCMGsBoc07cqPQjX_reD_TGSJ3Y8kMd0O1YiHRkHXNC68GoHPGz_lc4EjNVmH0_lJMqTcXy74XhWiodkpsa25MqyTD22LJr9ZfLEPrGhxdoKKcJ6CqnDBmc0sNLdrFIt3f9971ij6Pt3hM9UfDyplbcr-R5kwta2l779VL3Ne6UxiT7zt3loyL0dbiuuButsg"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start mb-0.5">
+<h3 class="font-body-lg text-body-lg font-bold text-on-surface truncate">Sara El Amrani</h3>
+<span class="text-xs text-on-surface-variant font-medium">09:12 AM</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]">done_all</span>
+<p class="font-body-md text-body-md text-on-surface-variant truncate">Is the oil change finished?</p>
+</div>
+</div>
+</div>
+<!-- Conversation Item -->
+<div class="p-md flex gap-md cursor-pointer hover:bg-surface-container-low border-l-4 border-transparent transition-colors">
+<div class="w-12 h-12 rounded-full overflow-hidden bg-surface-container-highest flex-shrink-0 border border-outline-variant">
+<div class="w-full h-full flex items-center justify-center bg-tertiary text-on-tertiary font-bold">KM</div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start mb-0.5">
+<h3 class="font-body-lg text-body-lg font-bold text-on-surface truncate">Karim Mazouni</h3>
+<span class="text-xs text-on-surface-variant font-medium">Yesterday</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-secondary text-[16px]">error</span>
+<p class="font-body-md text-body-md text-secondary font-medium truncate">Delivery delayed: Parts out of stock</p>
+</div>
+</div>
+<div class="w-5 h-5 bg-secondary text-on-secondary text-[10px] flex items-center justify-center rounded-full self-center">1</div>
+</div>
+<!-- Additional Mock Items -->
+<div class="p-md flex gap-md cursor-pointer hover:bg-surface-container-low border-l-4 border-transparent transition-colors">
+<div class="w-12 h-12 rounded-full overflow-hidden bg-surface-container-highest flex-shrink-0 border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A portrait of an elderly man with a classic Mercedes, looking satisfied. The image has a warm, trustworthy vibe, fitting for a reliable automotive workshop brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZdrte6Z2uvIe-Nn7F6UAAbwgh4HXXdqXppt8JzSU8Nv-gBtLzlNh2JVL5Y1nSOwKbzgbCo2cYSVLzj85sIm6b9WUWbxiMxhDbsGQs00uf4XcbN6L5Scm5Q5QtLtYgssBEZHHuuR7Gu_hz-x2zZytjtecPjV3K3kYdHAahBauPJsY9p1-GmudONuTK8Q5As58y8ga3MyXqSFg1tm3lpZWAe60Ehc9tlspE7i5rnwgdow4niTjl_nQKAQ"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start mb-0.5">
+<h3 class="font-body-lg text-body-lg font-bold text-on-surface truncate">Driss Bekkali</h3>
+<span class="text-xs text-on-surface-variant font-medium">Yesterday</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant truncate">Please send the invoice PDF.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Panel: Active Chat Thread -->
+<section class="hidden md:flex flex-1 flex-col bg-surface-container-low relative">
+<!-- Chat Header -->
+<div class="p-md flex justify-between items-center bg-surface border-b border-outline-variant z-10 shadow-sm">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="Close up profile of Ahmed Mansouri, the customer in focus. The photo is crisp and professional, using a shallow depth of field with the garage interior softly blurred in the background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjwnv4kxpbNcDsXJOZAuRTdPUQV5LLBdnEly8EAQJZsDMHk6j8ZcX7eGw81h5sIKn0Q3HsGtfWSDaycQx1PvI6IYT80tLAE692G59izVNhtXTvo3gy0cFS1624K_p5EVZg9kXHOnA0RmYHEDbd1OQCb-dNb3o2GQzxFjaX7NmhmftYPdExmyDUPD22SXyyWbXsVOgkisnwkLdoHbhjIo9f1VX0SmGqOmYM2AsUxH_WgwHFAA6vaTmUMQ"/>
+</div>
+<div>
+<h2 class="font-title-md text-title-md text-on-surface leading-none">Ahmed Mansouri</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1 mt-1">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span> Online
+                            </p>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<button class="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined">call</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined">videocam</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Chat Body -->
+<div class="flex-1 overflow-y-auto p-lg space-y-md chat-scrollbar bg-[#f8fafc]">
+<!-- Date Divider -->
+<div class="flex justify-center my-lg">
+<span class="px-3 py-1 bg-surface-container-highest text-on-surface-variant text-[11px] font-bold rounded-full uppercase tracking-wider">Today</span>
+</div>
+<!-- Message Received -->
+<div class="flex justify-start">
+<div class="max-w-[70%] bg-surface border border-outline-variant p-md shadow-sm bubble-received">
+<p class="font-body-md text-body-md text-on-surface">Hello Sagman Team, any update on my car repair? I need it for a trip tomorrow morning.</p>
+<p class="text-[10px] text-on-surface-variant text-right mt-1">08:30 AM</p>
+</div>
+</div>
+<!-- System Event: Auto Reply -->
+<div class="flex justify-center">
+<div class="flex items-center gap-xs px-md py-1.5 bg-surface-container border border-outline-variant rounded-full">
+<span class="material-symbols-outlined text-[16px] text-primary">smart_toy</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Auto-reply sent: "We're working on it!"</span>
+</div>
+</div>
+<!-- Message Sent -->
+<div class="flex justify-end">
+<div class="max-w-[70%] bg-primary text-on-primary p-md shadow-md bubble-sent">
+<p class="font-body-md text-body-md">Good morning Mr. Ahmed. Our team is currently finalizing the brake system check. We expect it to be ready by 4:00 PM.</p>
+<div class="flex justify-end items-center gap-xs mt-1">
+<p class="text-[10px] text-on-primary-container">09:15 AM</p>
+<span class="material-symbols-outlined text-[14px] text-on-primary-container" style="font-variation-settings: 'FILL' 1;">done_all</span>
+</div>
+</div>
+</div>
+<!-- System Event: Notification Triggered -->
+<div class="flex justify-center">
+<div class="flex items-center gap-xs px-md py-1.5 bg-emerald-50 border border-emerald-200 rounded-full">
+<span class="material-symbols-outlined text-[16px] text-emerald-600">check_circle</span>
+<span class="font-label-sm text-label-sm text-emerald-700">Notification triggered: <strong>Car Ready</strong></span>
+</div>
+</div>
+<!-- Message Sent (Automated Notification) -->
+<div class="flex justify-end">
+<div class="max-w-[70%] bg-primary text-on-primary p-md shadow-md bubble-sent">
+<div class="flex items-center gap-sm mb-sm p-sm bg-white/10 rounded">
+<span class="material-symbols-outlined text-white">directions_car</span>
+<div>
+<p class="text-xs font-bold">REPAIR COMPLETE</p>
+<p class="text-[11px] opacity-80">BMW X5 - plate 1234-A-15</p>
+</div>
+</div>
+<p class="font-body-md text-body-md">Great news! Your vehicle is ready for pickup. Your total invoice amount is 1,450.00 MAD.</p>
+<div class="flex justify-end items-center gap-xs mt-1">
+<p class="text-[10px] text-on-primary-container">10:42 AM</p>
+<span class="material-symbols-outlined text-[14px] text-on-primary-container" style="font-variation-settings: 'FILL' 1;">done_all</span>
+</div>
+</div>
+</div>
+<!-- Message Received -->
+<div class="flex justify-start">
+<div class="max-w-[70%] bg-surface border border-outline-variant p-md shadow-sm bubble-received">
+<p class="font-body-md text-body-md text-on-surface">Thank you, I will come at 5 PM to pick it up.</p>
+<p class="text-[10px] text-on-surface-variant text-right mt-1">10:45 AM</p>
+</div>
+</div>
+</div>
+<!-- Chat Input Area -->
+<div class="p-md bg-surface border-t border-outline-variant shadow-sm">
+<div class="flex items-end gap-sm bg-surface-container-low p-sm rounded-xl border border-outline-variant focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent transition-all">
+<button class="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">add_circle</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">sentiment_satisfied</span>
+</button>
+<textarea class="flex-1 bg-transparent border-none focus:ring-0 resize-none font-body-md text-body-md py-2 px-1 text-on-surface placeholder:text-on-surface-variant/60" id="chatInput" placeholder="Type a message..." rows="1"></textarea>
+<button class="w-10 h-10 bg-primary text-on-primary rounded-lg flex items-center justify-center shadow-md hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+<div class="flex gap-md mt-md">
+<button class="flex items-center gap-xs px-sm py-1 bg-surface-container-highest hover:bg-outline-variant rounded text-[11px] font-bold text-on-surface-variant transition-colors uppercase">
+<span class="material-symbols-outlined text-[14px]">bolt</span> Quick Replies
+                        </button>
+<button class="flex items-center gap-xs px-sm py-1 bg-surface-container-highest hover:bg-outline-variant rounded text-[11px] font-bold text-on-surface-variant transition-colors uppercase">
+<span class="material-symbols-outlined text-[14px]">receipt_long</span> Send Invoice
+                        </button>
+<button class="flex items-center gap-xs px-sm py-1 bg-surface-container-highest hover:bg-outline-variant rounded text-[11px] font-bold text-on-surface-variant transition-colors uppercase">
+<span class="material-symbols-outlined text-[14px]">schedule</span> Book Pickup
+                        </button>
+</div>
+</div>
+</section>
+<!-- Mobile View Fallback -->
+<section class="md:hidden flex-1 flex items-center justify-center p-xl bg-surface-container-low text-center">
+<div class="max-w-xs">
+<span class="material-symbols-outlined text-6xl text-primary/20 mb-md">forum</span>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-primary mb-sm">Select a Conversation</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Tap on a customer from the list to view the full WhatsApp thread and manage communications.</p>
+</div>
+</section>
+</div>
+</main>
+<script>
+        // Auto-resize textarea
+        const textarea = document.getElementById('chatInput');
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+            if (this.scrollHeight > 150) {
+                this.style.height = '150px';
+                this.style.overflowY = 'auto';
+            } else {
+                this.style.overflowY = 'hidden';
+            }
+        });
+
+        // Simple mock interaction for the send button
+        const sendBtn = document.querySelector('button .material-symbols-outlined[style*="send"]')?.parentElement;
+        sendBtn?.addEventListener('click', () => {
+            if (textarea.value.trim() !== "") {
+                console.log("Sending message:", textarea.value);
+                textarea.value = "";
+                textarea.style.height = 'auto';
+            }
+        });
+    </script>
+</body></html>

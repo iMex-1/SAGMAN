@@ -51,7 +51,7 @@ parts.get('/', authorize(['manager', 'mechanic']), async (c) => {
 });
 
 // POST /parts
-parts.post('/', authorize(['manager']), async (c) => {
+parts.post('/', authorize(['manager', 'overseer']), async (c) => {
   const body = await c.req.json() as any;
   const id = crypto.randomUUID();
 
@@ -121,7 +121,7 @@ parts.get('/:id', authorize(['manager', 'mechanic']), async (c) => {
 });
 
 // PATCH /parts/:id
-parts.patch('/:id', authorize(['manager']), async (c) => {
+parts.patch('/:id', authorize(['manager', 'overseer']), async (c) => {
   const { id } = c.req.param();
   const body = await c.req.json() as any;
 
@@ -157,7 +157,7 @@ parts.patch('/:id', authorize(['manager']), async (c) => {
 });
 
 // DELETE /parts/:id
-parts.delete('/:id', authorize(['manager']), async (c) => {
+parts.delete('/:id', authorize(['manager', 'overseer']), async (c) => {
   const { id } = c.req.param();
 
   const part = await c.env.DB.prepare(
@@ -180,7 +180,7 @@ parts.delete('/:id', authorize(['manager']), async (c) => {
 });
 
 // POST /parts/:id/stock
-parts.post('/:id/stock', authorize(['manager']), async (c) => {
+parts.post('/:id/stock', authorize(['manager', 'overseer']), async (c) => {
   const { id } = c.req.param();
   const user = c.get('user');
   const body = await c.req.json() as { quantity: number; note?: string };
@@ -207,7 +207,7 @@ parts.post('/:id/stock', authorize(['manager']), async (c) => {
 });
 
 // POST /parts/:id/adjust
-parts.post('/:id/adjust', authorize(['manager']), async (c) => {
+parts.post('/:id/adjust', authorize(['manager', 'overseer']), async (c) => {
   const { id } = c.req.param();
   const user = c.get('user');
   const body = await c.req.json() as { quantityChange: number; note: string };

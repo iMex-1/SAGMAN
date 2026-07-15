@@ -6,11 +6,14 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { PhoneInput } from '@/components/ui/phone-input'
+import { Icon } from '@/components/ui/icon'
 import { api, ApiError } from '@/lib/api-client'
 import { authStorage } from '@/lib/auth'
-import { UserPlus, ArrowLeft } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 export default function PortalRegisterPage() {
+  const t = useTranslations()
   const router = useRouter()
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
@@ -21,7 +24,7 @@ export default function PortalRegisterPage() {
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault()
     if (!name.trim() || !phone.trim() || !password.trim()) {
-      setError('Veuillez remplir tous les champs')
+      setError(t('portal.register.fillAllFields'))
       return
     }
 
@@ -36,7 +39,7 @@ export default function PortalRegisterPage() {
         }
       }>('/auth/portal/register', {
         name: name.trim(),
-        phone: phone.trim(),
+        phone,
         password,
       })
 
@@ -49,7 +52,7 @@ export default function PortalRegisterPage() {
       })
       router.push('/portal/cars')
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Impossible de créer le compte')
+      setError(err instanceof ApiError ? err.message : t('portal.register.createFailed'))
     } finally {
       setIsLoading(false)
     }
@@ -60,36 +63,36 @@ export default function PortalRegisterPage() {
       <div className="w-full max-w-sm">
         <Link
           href="/portal"
-          className="mb-6 flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          className="mb-6 flex items-center gap-1.5 text-sm text-on-surface-variant transition-colors hover:text-primary"
         >
-          <ArrowLeft className="h-4 w-4" />
-          Retour à l&apos;accueil
+          <Icon name="arrow_back" size={16} />
+          {t('portal.register.backToHome')}
         </Link>
 
-        <div className="rounded-2xl border bg-white p-8 shadow-card">
+        <div className="bg-white border border-outline-variant rounded-xl shadow-sm p-8">
           <div className="mb-8 text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
-              <UserPlus className="h-7 w-7 text-primary" />
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary">
+              <Icon name="person_add" size={28} className="text-white" />
             </div>
-            <h1 className="text-xl font-bold text-foreground">Création de compte</h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Inscrivez-vous avec votre téléphone et un mot de passe.
+            <h1 className="font-headline-lg text-headline-lg text-primary">{t('portal.register.title')}</h1>
+            <p className="mt-1 text-body-md font-body-md text-on-surface-variant">
+              {t('portal.register.subtitle')}
             </p>
           </div>
 
           {error && (
-            <div className="mb-4 rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+            <div className="mb-4 rounded-lg border border-error/30 bg-error-container px-4 py-3 text-sm text-on-error-container">
               {error}
             </div>
           )}
 
           <form onSubmit={handleRegister} className="space-y-5">
             <div className="space-y-1.5">
-              <Label htmlFor="name">Nom complet</Label>
+              <Label htmlFor="name" className="text-primary">{t('portal.register.nameLabel')}</Label>
               <Input
                 id="name"
                 type="text"
-                placeholder="Votre nom"
+                placeholder={t('portal.register.namePlaceholder')}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
@@ -99,13 +102,12 @@ export default function PortalRegisterPage() {
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="phone">Numéro de téléphone</Label>
-              <Input
+              <Label htmlFor="phone" className="text-primary">{t('portal.register.phoneLabel')}</Label>
+              <PhoneInput
                 id="phone"
-                type="tel"
-                placeholder="+212 6XX XXX XXX"
+                placeholder={t('portal.register.phonePlaceholder')}
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={setPhone}
                 required
                 autoComplete="tel"
                 className="h-12"
@@ -113,11 +115,11 @@ export default function PortalRegisterPage() {
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="password">Mot de passe</Label>
+              <Label htmlFor="password" className="text-primary">{t('portal.register.passwordLabel')}</Label>
               <Input
                 id="password"
                 type="password"
-                placeholder="Entrez votre mot de passe"
+                placeholder={t('portal.register.passwordPlaceholder')}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -126,15 +128,15 @@ export default function PortalRegisterPage() {
               />
             </div>
 
-            <Button type="submit" className="h-12 w-full text-base font-semibold" isLoading={isLoading}>
-              {isLoading ? 'Inscription en cours…' : 'Créer mon compte'}
+            <Button type="submit" className="h-12 w-full text-base font-semibold bg-primary text-white rounded-lg px-xl py-md font-title-md text-title-md" isLoading={isLoading}>
+              {isLoading ? t('portal.register.submitting') : t('portal.register.submit')}
             </Button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-muted-foreground">
-            Vous avez déjà un compte ?{' '}
+          <div className="mt-6 text-center text-sm text-on-surface-variant">
+            {t('portal.register.hasAccount')}{' '}
             <Link href="/portal/login" className="font-medium text-primary hover:underline">
-              Se connecter
+              {t('portal.register.login')}
             </Link>
           </div>
         </div>

@@ -14,7 +14,7 @@
     "previous": "السابق",
     "search": "بحث",
     "filter": "تصفية",
-    "loading": "جار التحميل...",
+    "loading": "كتشف...",
     "noResults": "لا توجد نتائج",
     "error": "حدث خطأ",
     "success": "تمت العملية بنجاح",
@@ -28,6 +28,7 @@
     "yes": "نعم",
     "no": "لا",
     "required": "مطلوب",
+    "preview": "معاينة",
     "optional": "اختياري",
     "unknown": "غير معروف",
     "total": "الإجمالي",
@@ -37,25 +38,50 @@
     "name": "الاسم",
     "email": "البريد الإلكتروني",
     "submit": "إرسال",
-    "sending": "جار الإرسال...",
-    "saving": "جار الحفظ...",
-    "deleting": "جار الحذف...",
+    "sending": "كتشف...",
+    "saving": "كتشف...",
+    "deleting": "كتشف...",
     "networkError": "تعذر الاتصال بالخادم. تحقق من تشغيل الواجهة البرمجية.",
     "confirmDeleteTitle": "تأكيد الحذف",
     "confirmDeleteDesc": "هذا الإجراء لا يمكن التراجع عنه.",
     "page": "صفحة",
     "of": "من",
     "items": "عناصر",
-    "language": "اللغة"
+    "language": "اللغة",
+    "retry": "إعادة المحاولة",
+    "cost": "التكلفة",
+    "unit": "الوحدة",
+    "price": "السعر",
+    "finalPrice": "السعر النهائي",
+    "currentPrice": "السعر الحالي",
+    "hours": "ساعات",
+    "hint": "تلميح",
+    "example": "مثال",
+    "or": "أو",
+    "and": "و",
+    "clear": "مسح",
+    "open": "فتح",
+    "menu": "القائمة",
+    "viewAll": "عرض الكل",
+    "today": "اليوم",
+    "days": "أيام",
+    "noData": "لا توجد بيانات متاحة",
+    "unexpectedError": "حدث خطأ غير متوقع.",
+    "searchPlaceholder": "البحث عن الإصلاحات والمركبات والعملاء...",
+    "allRightsReserved": "جميع الحقوق محفوظة.",
+    "privacyPolicy": "سياسة الخصوصية",
+    "termsOfService": "شروط الخدمة",
+    "support": "الدعم"
   },
   "nav": {
-    "dashboard": "لوحة التحكم",
+    "dashboard": "الوحة الرئيسية",
+    "newRepair": "إصلاح جديد",
     "repairs": "الإصلاحات",
     "appointments": "المواعيد",
     "cars": "السيارات",
     "stock": "المخزون",
     "calendar": "التقويم",
-    "employees": "الموظفون",
+    "employees": "المستخدمين",
     "reports": "التقارير",
     "notifications": "الإشعارات",
     "settings": "الإعدادات",
@@ -68,48 +94,66 @@
     "emailPlaceholder": "manager@sagman.garage",
     "password": "كلمة المرور",
     "passwordPlaceholder": "••••••••",
-    "forgotPassword": "نسيت كلمة المرور؟ تواصل مع المسؤول.",
-    "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
-    "accountDeactivated": "تم تعطيل حسابك",
+    "identifierLabel": "الإيميل أو النمرة",
+    "identifierPlaceholder": "بلاصة الإيميل أو النمرة: manager@sagman.garage",
+    "forgotPassword": "نسيت كلمة السر؟ تواصل مع المسؤول.",
+    "invalidCredentials": "الإيميل أو كلمة السر غالطة",
+    "accountDeactivated": "الحساب ديالك معطل",
+    "unexpectedError": "مشكل فالتطبيق. عاود حاول.",
     "welcome": "مرحباً",
     "systemTitle": "نظام الإدارة",
-    "subtitle": "تسجيل الدخول إلى نظام إدارة المرأب"
+    "subtitle": "دخول للنظام ديال المرأب",
+    "clientPortal": "نتي زبون؟",
+    "clientPortalLink": "دخل للفضاء ديال الزبناء"
   },
   "dashboard": {
-    "title": "لوحة التحكم",
+    "title": "لوحة المعلومات",
+    "subtitle": "نظرة على النشاط ديال المرأب",
     "today": "اليوم",
     "thisWeek": "هذا الأسبوع",
     "thisMonth": "هذا الشهر",
-    "totalRevenue": "رقم الأعمال",
-    "carsReceived": "سيارات مستقبلة",
-    "carsDelivered": "سيارات مسلمة",
-    "avgRepairTime": "متوسط وقت الإصلاح",
-    "onTimeRate": "معدل الالتزام بالمواعيد",
-    "delayedRepairs": "إصلاحات متأخرة",
-    "activeRepairs": "الإصلاحات الجارية",
-    "overdueRepairs": "الإصلاحات المتأخرة",
-    "lowStockParts": "قطع نفدت من المخزون",
+    "totalRevenue": "المدخول",
+    "totalExpenses": "المصاريف",
+    "netProfit": "الربح الصافي",
+    "carsReceived": "السيارات الواصلة",
+    "carsDelivered": "السيارات المسلّمة",
+    "onTimeRate": "معدل الاحترام ديال المواعيد",
+    "delayedRepairs": "التصليحات المتأخرة",
+    "activeRepairs": "التصليحات الجارية",
+    "noActiveRepairs": "ماكاينش تصليحات جارية دابا",
+    "overdueRepairs": "التصليحات المتأخرة",
+    "lowStockParts": "القطع ناقصة فالمخزون",
     "pendingAppointments": "مواعيد بانتظار التأكيد",
-    "emergencyRepairs": "إصلاحات طارئة",
-    "revenueChart": "رقم الأعمال الشهري",
+    "emergencyRepairs": "تصليحات عاجلة",
+    "noUrgentRepairs": "ماكاينش تصليحات عاجلة",
+    "revenueChart": "المدخول الشهري",
     "mechanicPerformance": "أداء الميكانيكيين",
-    "carsCompleted": "سيارات منجزة",
-    "avgTimePerRepair": "متوسط الوقت لكل إصلاح",
-    "delays": "التأخيرات"
+    "carsCompleted": "السيارات المكتملة",
+    "avgTimePerRepair": "متوسط الوقت لكل تصليح",
+    "delays": "التأخيرات",
+    "score": "الأداء"
   },
   "repair": {
-    "title": "الإصلاحات",
-    "newRepair": "إصلاح جديد",
-    "repairDetail": "تفاصيل الإصلاح",
+    "title": "التصليحات",
+    "newRepair": "تصليح جديد",
+    "repairDetail": "تفاصيل التصليح",
+    "create": {
+      "title": "تصليح جديد",
+      "description": "تسجيل تصليح جديد",
+      "backLink": "الرجوع لـ لائحة التصليحات",
+      "submit": "إنشاء التصليح",
+      "submitting": "جاري الإنشاء..."
+    },
     "status": {
-      "received": "مستقبل",
+      "received": "تم الاستلام",
       "diagnosing": "قيد التشخيص",
       "awaiting_approval": "بانتظار الموافقة",
-      "in_progress": "قيد التنفيذ",
+      "in_progress": "قيد الإصلاح",
       "waiting_for_parts": "انتظار القطع",
-      "complete": "منتهٍ",
-      "delivered": "مسلّم",
-      "cancelled": "ملغى"
+      "complete": "اكتمل الإصلاح",
+      "delivered": "تم التسليم",
+      "cancelled": "ملغى",
+      "repairLabel": "إصلاح"
     },
     "priority": {
       "low": "منخفض",
@@ -118,13 +162,15 @@
       "emergency": "طارئ"
     },
     "fields": {
+      "vehicle": "المركبة (الماتريكول)",
       "car": "السيارة",
-      "mechanic": "الميكانيكي",
+      "mechanic": "الميكانيكي الرئيسي",
       "priority": "الأولوية",
-      "description": "وصف المشكلة",
+      "description": "الوصف / المشكل المبلغ",
       "internalNotes": "ملاحظات داخلية",
-      "targetDate": "التاريخ المستهدف",
-      "estimatedHours": "المدة التقديرية (ساعات)",
+      "targetDate": "تاريخ الانتهاء المتوقع",
+      "startDate": "تاريخ البداية",
+      "estimatedHours": "المدة التقريبية (ساعات)",
       "actualCompletion": "تاريخ الانتهاء الفعلي",
       "diagnosis": "تقرير التشخيص",
       "partsTotal": "إجمالي القطع",
@@ -132,37 +178,150 @@
       "discount": "تخفيض",
       "finalTotal": "المجموع النهائي"
     },
+    "placeholders": {
+      "searchVehicle": "بلاصة الماتريكول: 123456-A-50",
+      "noVehicleFound": "لا توجد مركبة.",
+      "selectMechanic": "ختار الميكانيكي...",
+      "loadingMechanics": "جاري تحميل الميكانيكيين...",
+      "description": "بلاصة الوصف: مثلاً كليكسون مقطوع",
+      "internalNotes": "بلاصة الملاحظات: مثلاً الزبون مستعجل",
+      "estimatedHours": "بلاصة المدة: 4"
+    },
+    "priorities": {
+      "low": "Basse (منخفضة)",
+      "normal": "Normale (عادية)",
+      "high": "Haute (عالية)",
+      "urgent": "🚨 Urgence (ضروري)"
+    },
+    "validation": {
+      "vehicleRequired": "ختار مركبة.",
+      "mechanicRequired": "ختار الميكانيكي الرئيسي.",
+      "descriptionRequired": "دير وصف للمشكل."
+    },
+    "toasts": {
+      "created": "تم إنشاء التصليح بنجاح",
+      "error": "فشل إنشاء التصليح."
+    },
     "actions": {
       "startDiagnosis": "بدء التشخيص",
-      "submitForApproval": "إرسال للموافقة",
-      "startRepair": "بدء الإصلاح",
+      "startRepair": "البدء في التصليح",
       "waitingForParts": "انتظار القطع",
-      "markComplete": "تحديد كمنتهٍ",
-      "markDelivered": "تحديد كمسلّم",
+      "markComplete": "تأكيد اكتمال الإصلاح",
+      "markDelivered": "تأكيد التسليم",
       "reopen": "إعادة فتح",
-      "cancel": "إلغاء الإصلاح",
+      "resume": "استئناف التصليح",
+      "cancel": "إلغاء التصليح",
       "fileDelayReport": "الإبلاغ عن تأخير",
-      "shareDiagnosis": "مشاركة مع العميل",
+      "sendToClient": "تأكيد وإرسال إلى الزبون",
+      "confirmDelivery": "تأكيد التسليم",
       "approve": "موافقة",
       "reject": "رفض",
       "bypass": "تجاوز الموافقة"
     },
+    "updatedTo": "تم التحديث إلى",
+    "smsTemplates": {
+      "inRepair": "مرحباً {name}، سيارتك {matricule} دابا فالتصليح.",
+      "estimatedDuration": "المدة التقريبية:",
+      "targetDate": "تاريخ الانتهاء المتوقع:"
+    },
+    "whatsapp": "مرحباً، كنقطب معاك بخصوص تصليح السيارة {matricule} ({make} {model}).",
+    "noWorkLogs": "ماكاينش مداخلات فالسجل.",
+    "notFound": "هاد التصليح موجودش.",
     "overdue": "متأخر",
-    "overdueWarning": "هذا الإصلاح متأخر! أرسل تقرير تأخير للمتابعة.",
-    "noPaymentWarning": "سجّل الدفع قبل تحديد كمسلّم",
+    "overdueWarning": "هذا التصليح متأخر! أرسل تقرير تأخير للمتابعة.",
+      "noPaymentWarning": "سجّل الدفع قبل تأكيد التسليم",
     "reopenReason": "سبب إعادة الفتح",
     "cancellationReason": "سبب الإلغاء",
     "delayReason": "سبب التأخير",
+    "delay": {
+      "title": "تقرير التأخير",
+      "documentReason": "وثّق سبب التأخير. سيتم تسجيله في سجل التصليح.",
+      "reasonLabel": "السبب *",
+      "reasonPlaceholder": "بلاصة التأخير: علاش تأخر التصليح?",
+      "evidenceLabel": "أدلة / ملاحظات إضافية",
+      "evidencePlaceholder": "بلاصة الدليل: وثّق سبب التأخير",
+      "submit": "إرسال التقرير",
+      "submitted": "تم إرسال تقرير التأخير",
+      "failed": "فشل إرسال تقرير التأخير"
+    },
+    "info": {
+      "title": "معلومات التصليح",
+      "description": "الوصف",
+      "internalNotes": "ملاحظات داخلية",
+      "cancellationReason": "سبب الإلغاء",
+      "reopenedReason": "سبب إعادة الفتح",
+      "createdBy": "تم بواسطة",
+      "createdAt": "تاريخ الإنشاء",
+      "completedAt": "تاريخ الانتهاء"
+    },
+    "vehicle": {
+      "title": "السيارة والزبون",
+      "color": "اللون",
+      "noClient": "ماكاينش زبون مرتبط بهاد السيارة."
+    },
+    "costs": {
+      "title": "ملخص التكاليف",
+      "partsTotal": "إجمالي القطع",
+      "laborTotal": "إجمالي اليد العاملة",
+      "discount": "الخصم",
+      "garageFee": "رسوم المرأب",
+      "finalTotal": "المجموع النهائي"
+    },
+    "dialogs": {
+      "cancel": {
+        "title": "إلغاء التصليح",
+        "description": "يرجى تقديم سبب الإلغاء. هذا الإجراء لا يمكن التراجع عنه.",
+        "reasonLabel": "سبب الإلغاء *",
+        "reasonPlaceholder": "بلاصة السبب: مثلاً الزبون بدّل رأيو"
+      },
+      "reopen": {
+        "title": "إعادة فتح التصليح",
+        "description": "قدم سبب إعادة الفتح.",
+        "reasonLabel": "سبب إعادة الفتح *",
+        "reasonPlaceholder": "بلاصة السبب: علاش كترجّع هاد التصليح?"
+      },
+      "timeEstimation": {
+        "title": "تقدير التصليح",
+        "description": "حدد المدة التقديرية وتاريخ الانتهاء المتوقع قبل البدء في التصليح.",
+        "duration": "المدة التقديرية (ساعات)",
+        "durationPlaceholder": "بلاصة المدة: 6",
+        "targetDate": "تاريخ الانتهاء المتوقع",
+        "whatsappHint": "سيتم إرسال رسالة واتساب إلى الزبون بهاد المعلومات."
+      },
+      "complete": {
+        "title": "تأكيد اكتمال الإصلاح",
+        "description": "حدد السعر النهائي للتصليح قبل تأكيد الاكتمال.",
+        "currentPrice": "السعر الحالي",
+        "finalPrice": "السعر النهائي",
+        "hint": "سيتم إرسال هاد السعر للزبون. اتركه فارغاً لاستخدام السعر المحسوب."
+      },
+      "deliver": {
+        "title": "تأكيد التسليم",
+        "description": "أكد أن السيارة قد تم تسليمها إلى الزبون."
+      }
+    },
     "diagnosisSections": {
       "issues": "المشكلات المحددة",
+      "issuesPlaceholder": "بلاصة المشكل: شنو لقيتي فالسيارة?",
+      "addIssue": "إضافة مشكلة",
       "severity": {
         "Minor": "بسيط",
         "Moderate": "متوسط",
         "Critical": "خطير"
       },
-      "recommendations": "الإصلاحات الموصى بها",
+      "recommendations": "التصليحات الموصى بها",
+      "recommendationsPlaceholder": "بلاصة التوصيات: شنو خاص يتصلح?",
       "additionalNotes": "ملاحظات إضافية",
-      "estimatedDuration": "المدة التقديرية"
+      "additionalNotesPlaceholder": "بلاصة الملاحظات: حاجة أخرى?",
+      "estimatedDuration": "المدة التقديرية (ساعات)",
+      "estimated": "تقدير:",
+      "shared": "تمت المشاركة مع الزبون",
+      "noDiagnosis": "لا يوجد تقرير تشخيص بعد.",
+      "editDiagnosis": "تعديل التشخيص",
+      "fillDiagnosis": "ملء التشخيص",
+      "saveDiagnosis": "حفظ التشخيص",
+      "saved": "تم حفظ التشخيص",
+      "saveFailed": "فشل حفظ التشخيص"
     },
     "clientApproval": {
       "pending": "بانتظار الموافقة",
@@ -174,30 +333,58 @@
       "title": "سجل الأعمال",
       "addEntry": "إضافة سجل",
       "description": "وصف العمل",
-      "hours": "الساعات المنجزة",
-      "by": "بواسطة"
+      "descriptionPlaceholder": "بلاصة السجل: شنو درت فهاد الخدمة?",
+      "hours": "الساعات المنجزة *",
+      "hoursPlaceholder": "بلاصة الساعات: 2.5",
+      "by": "بواسطة",
+      "added": "تمت إضافة سجل العمل",
+      "failed": "فشل إضافة سجل العمل"
     },
     "parts": {
       "title": "القطع المستخدمة",
       "addPart": "إضافة قطعة",
       "searchParts": "البحث عن قطعة",
+      "searchPlaceholder": "بلاصة البحث: سميّة القطعة...",
+      "moduleComingSoon": "وحدة القطع قريباً",
+      "part": "القطعة",
+      "category": "الفئة",
       "quantity": "الكمية",
-      "unitCost": "تكلفة الوحدة",
+      "unitCost": "سعر الوحدة",
+      "unitLabel": "/ وحدة",
       "subtotal": "المجموع الفرعي",
-      "stockOverride": "فرض (مخزون غير كافٍ)",
-      "noPartsYet": "لم تُضف قطع بعد"
+      "quantityLabel": "الكمية *",
+      "stockOverride": "تجاهل التحقق من المخزون",
+      "noPartsYet": "لم تُضف قطع بعد.",
+      "added": "تمت إضافة القطعة",
+      "removed": "تمت إزالة القطعة",
+      "addFailed": "فشل إضافة القطعة",
+      "removeFailed": "فشل إزالة القطعة"
     },
     "labor": {
       "title": "اليد العاملة",
       "addItem": "إضافة خدمة",
       "description": "الوصف",
+      "descriptionPlaceholder": "بلاصة الخدمة: مثلاً تبديل الزيت",
       "cost": "التكلفة",
-      "noLaborYet": "لم تُضف خدمات بعد"
+      "costLabel": "التكلفة *",
+      "noLaborYet": "لم تُضف خدمات بعد.",
+      "added": "تمت إضافة الخدمة",
+      "removed": "تمت إزالة الخدمة",
+      "addFailed": "فشل إضافة الخدمة",
+      "removeFailed": "فشل إزالة الخدمة"
     },
     "statusHistory": "سجل الحالات",
+    "noStatusHistory": "لا توجد تغييرات في الحالة.",
     "mechanics": "الميكانيكيون المعينون",
+    "noMechanics": "لا يوجد ميكانيكي معيّن.",
     "primary": "رئيسي",
     "reassign": "إعادة التعيين",
+    "reassignDialog": {
+      "title": "إعادة تعيين الميكانيكيين",
+      "description": "اختر الميكانيكيين وحدد الرئيسي.",
+      "selectPrimary": "الميكانيكي الرئيسي",
+      "selectPrimaryPlaceholder": "بلاصة الميكانيكي: أحمد بنعلي"
+    },
     "payment": {
       "title": "الدفع",
       "register": "تسجيل الدفع",
@@ -206,9 +393,60 @@
       "changeDue": "الباقي",
       "method": "طريقة الدفع",
       "cash": "نقداً",
+      "check": "شيك",
+      "card": "بطاقة بنكية",
+      "transfer": "تحويل",
       "paid": "مدفوع",
+      "paidBy": "دفع بواسطة",
+      "paidByNamePlaceholder": "بلاصة الإسم: أحمد بنعلي",
+      "notes": "ملاحظات",
+      "notesPlaceholder": "بلاصة الملاحظات: أي معلومة على الدفع",
+      "checkImage": "صورة الشيك",
+      "checkImageRequired": "صورة الشيك مطلوبة",
+      "checkImageHint": "يرجى تحديد صورة الشيك.",
+      "received": "تم استلام الدفع",
+      "confirm": "تأكيد الدفع",
       "invoiceNumber": "رقم الفاتورة",
-      "viewInvoice": "عرض الفاتورة"
+      "viewInvoice": "عرض الفاتورة رقم"
+    },
+    "invoice": {
+      "backLink": "الرجوع للتصليح",
+      "notFound": "الفاتورة غير موجودة.",
+      "retry": "إعادة المحاولة",
+      "print": "طباعة / PDF",
+      "header": "الفاتورة",
+      "invoiceNum": "فاتورة رقم",
+      "date": "التاريخ",
+      "repairId": "معرف التصليح",
+      "billedTo": "المفوتر ليه",
+      "noClient": "زبون بلا حساب",
+      "vehicle": "المركبة",
+      "color": "اللون : {color}",
+      "descriptionHeading": "وصف التصليح",
+      "partsHeading": "القطع المستعملة",
+      "partName": "إسم القطعة",
+      "qty": "الكمية",
+      "unitPrice": "الثمن للقطعة",
+      "subtotal": "المجموع الفرعي",
+      "ref": "المرجع : {reference}",
+      "laborHeading": "خدمة اليد العاملة",
+      "desc": "الوصف",
+      "cost": "الثمن",
+      "partsTotal": "مجموع القطع :",
+      "laborTotal": "مجموع اليد العاملة :",
+      "discount": "الخصم :",
+      "garageFees": "مصاريف المرأب :",
+      "total": "المجموع :",
+      "paymentDetails": "تفاصيل الدفع",
+      "amountReceived": "المبلغ المستلم :",
+      "changeDue": "المبلغ المرجع :",
+      "paidBy": "مدفوع من طرف : {name}",
+      "notes": "ملاحظات : {notes}",
+      "preparedBy": "من إعداد",
+      "mechanic": "الميكانيكي الرئيسي",
+      "footer": "{garage} — شكراً على ثقتكم",
+      "phone": "الهاتف : {phone}",
+      "loadFailed": "تعذر تحميل الفاتورة."
     },
     "photos": {
       "title": "الصور",
@@ -217,48 +455,159 @@
       "after": "بعد",
       "upload": "تحميل صورة"
     },
+    "unassigned": "غير معيّن",
     "filters": {
       "allStatuses": "كل الحالات",
+      "allPriorities": "الأولوية: الكل",
+      "allMechanics": "الميكانيكي: الكل",
+      "period": "الفترة",
       "active": "نشط",
       "overdue": "متأخر",
-      "delivered": "مسلّم",
+      "delivered": "تم التسليم",
       "cancelled": "ملغى"
     }
   },
+  "client": {
+    "title": "الزبنة",
+    "detail": {
+      "notFound": "الزبون غير موجود.",
+      "loadError": "تعذر تحميل الزبون.",
+      "clientSince": "زبون مند {date}",
+      "contactInfo": "معلومات الاتصال",
+      "phone": "رقم الهاتف",
+      "email": "البريد الإلكتروني",
+      "vehicles": "السيارات ({count})",
+      "noVehicles": "ماكاينش سيارات مسجلة.",
+      "repairs": "التصليحات ({count})",
+      "noRepairs": "ماكاينش تصليحات مسجلة.",
+      "vehicle": "السيارة",
+      "description": "الوصف",
+      "mechanic": "الميكانيكي",
+      "status": "الحالة",
+      "cost": "الثمن",
+      "date": "التاريخ"
+    }
+  },
+  "search": {
+    "title": "البحث العام",
+    "placeholder": "بحث فالسيارات، العملاء، التصليحات، الفواتير...",
+    "button": "بحث",
+    "error": "خطأ فالبحث.",
+    "results": "{count} نتيجة/نتائج لـ",
+    "noResults": "ما لقيناش نتائج لـ",
+    "noResultsHint": "جرب بكلمات أخرى ولا تأكد من الإملاء",
+    "vehicles": "السيارات ({count})",
+    "clients": "العملاء ({count})",
+    "repairs": "التصليحات ({count})",
+    "invoices": "الفواتير ({count})",
+    "welcome": "بحث فجميع السيارات، العملاء، التصليحات والفواتير",
+    "examples": "أمثلة على البحث:",
+    "plateHint": "رقم الماتريكول",
+    "clientNameHint": "إسم الزبون",
+    "phoneHint": "رقم الهاتف",
+    "repairIdHint": "معرف التصليح",
+    "invoiceHint": "رقم الفاتورة",
+    "brandHint": "الماركة ديال السيارة"
+  },
   "appointment": {
     "title": "المواعيد",
-    "newAppointment": "موعد جديد",
-    "status": {
-      "pending": "بانتظار التأكيد",
-      "confirmed": "مؤكد",
-      "rescheduled": "مؤجل",
-      "cancelled": "ملغى",
-      "converted": "تحول إلى إصلاح"
+    "newTitle": "موعد جديد",
+    "newDescription": "تخطيط زيارة زبون للمرأب.",
+    "backLink": "الرجوع لـ لائحة المواعيد",
+    "managerConfirmNote": "المواعيد لي كاينشئها المسؤول كتكون مؤكدة بشكل مباشر.",
+    "sections": {
+      "client": "الزبون",
+      "vehicle": "المركبة",
+      "details": "التفاصيل"
     },
     "fields": {
-      "clientName": "اسم العميل",
-      "clientPhone": "هاتف العميل",
-      "vehicleMatricule": "رقم لوحة السيارة",
-      "purpose": "السبب / وصف المشكلة",
+      "clientName": "إسم الزبون",
+      "clientPhone": "رقم الهاتف ديال الزبون",
+      "plate": "الماتريكول (اختياري)",
+      "purpose": "الغرض / وصف المشكل",
+      "date": "التاريخ المطلوب",
+      "time": "الوقت المطلوب",
+      "notes": "ملاحظات (اختياري)"
+    },
+    "placeholders": {
+      "clientName": "بلاصة الإسم: أحمد بنعلي",
+      "clientPhone": "بلاصة النمرة: 6××××××××",
+      "plate": "بلاصة الماتريكول: 123456-A-50",
+      "purpose": "بلاصة المشكل: مثلاً كليكسون مقطوع",
+      "notes": "بلاصة الملاحظات: مثلاً جي نهار السبت"
+    },
+    "validation": {
+      "nameRequired": "إسم الزبون مطلوب.",
+      "phoneRequired": "رقم الهاتف ديال الزبون مطلوب.",
+      "purposeRequired": "الغرض مطلوب.",
+      "dateRequired": "التاريخ مطلوب.",
+      "timeRequired": "الوقت مطلوب."
+    },
+    "toasts": {
+      "created": "تم إنشاء الموعد",
+      "confirmed": "تم تأكيد الموعد",
+      "rescheduled": "تم تأجيل الموعد",
+      "cancelled": "تم إلغاء الموعد",
+      "converted": "تم التحويل لتصليح"
+    },
+    "status": {
+      "pending": "قيد الانتظار",
+      "confirmed": "مؤكد",
+      "rescheduled": "تم تأجيله",
+      "cancelled": "ملغي",
+      "converted": "تم التحويل"
+    },
+    "errors": {
+      "generic": "حدث خطأ غير متوقع. المرجو إعادة المحاولة.",
+      "loadFailed": "تعذر تحميل الموعد.",
+      "confirmFailed": "فشل التأكيد",
+      "loadMechanicsFailed": "تعذر تحميل الميكانيكيين. المرجو الإغلاق وإعادة المحاولة."
+    },
+    "detail": {
+      "title": "تفاصيل الموعد",
+      "infoCard": "معلومات الموعد",
+      "clientName": "إسم الزبون",
+      "phone": "رقم الهاتف",
+      "vehicle": "المركبة",
+      "purpose": "السبب",
       "requestedDate": "التاريخ المطلوب",
-      "requestedTime": "الوقت المطلوب",
-      "notes": "ملاحظات"
+      "rescheduledTo": "تم تأجيله لـ",
+      "createdOn": "تاريخ الإنشاء",
+      "relatedRepair": "تصليح مرتبط",
+      "viewRepair": "شوف التصليح",
+      "convertToRepair": "تحويل لتصليح",
+      "maxCapacity": "الطاقة الاستيعابية القصوى وصلاتها",
+      "confirmAnyway": "أكد على كل حال",
+      "notFound": "الموعد غير موجود.",
+      "notes": "ملاحظات",
+      "cancellationReason": "سبب الإلغاء",
+      "confirmDialogTitle": "تأكيد الموعد",
+      "confirmDialogDescription": "تأكيد هاذ الموعد؟",
+      "capacityWarningText": "الكاراج ممتلئ ({current}/{max} مواعيد مؤكدة). واش كتأكد على كل حال؟",
+      "rescheduleDialogTitle": "تأجيل الموعد",
+      "rescheduleDialogDescription": "ختار تاريخ ووقت جديدين.",
+      "rescheduleButton": "تأجيل",
+      "newDate": "تاريخ جديد",
+      "newTime": "وقت جديد",
+      "dateTimeRequired": "ختار تاريخ ووقت.",
+      "cancelDialogTitle": "إلغاء الموعد",
+      "cancelDialogDescription": "علاش كتسالي هاذ الموعد؟",
+      "cancelButton": "إلغاء الموعد",
+      "cancelReasonRequired": "علاش كتسالي هاذ الموعد؟",
+      "cancelReasonLabel": "سبب الإلغاء",
+      "cancelReasonPlaceholder": "علاش كتسالي هاذ الموعد؟",
+      "convertDialogTitle": "إنشاء تصليح من هاذ الموعد.",
+      "convertMechanic": "الميكانيكي الرئيسي",
+      "loadingMechanics": "جاري تحميل الميكانيكيين...",
+      "selectMechanic": "ختار ميكانيكي",
+      "noMechanics": "ماكاينش ميكانيكيين نشطين",
+      "priority": "الأولوية",
+      "targetDate": "التاريخ المستهدف للإنجاز",
+      "selectMechanicRequired": "ختار ميكانيكي رئيسي.",
+      "backLink": "الرجوع لـ لائحة المواعيد"
     },
-    "actions": {
-      "confirm": "تأكيد",
-      "reschedule": "تأجيل",
-      "cancel": "إلغاء",
-      "convert": "تحويل إلى إصلاح"
-    },
-    "capacity": {
-      "warning": "تم الوصول إلى الطاقة الاستيعابية القصوى لهذا اليوم",
-      "current": "المواعيد المجدولة حالياً",
-      "limit": "الحد الأقصى للسعة",
-      "proceedAnyway": "تأكيد على أي حال"
-    },
-    "managerNote": "المواعيد التي ينشئها المسؤول يتم تأكيدها فوراً.",
     "convertDialog": {
-      "title": "تحويل إلى إصلاح",
+      "title": "تحويل إلى تصليح",
       "primaryMechanic": "الميكانيكي الرئيسي",
       "priority": "الأولوية",
       "description": "الوصف",
@@ -266,10 +615,22 @@
     }
   },
   "car": {
-    "title": "السيارات",
+    "title": "لمركبات",
+    "newTitle": "تسجيل مركبة جديدة",
+    "newDescription": "إضافة مركبة لنظام المرأب",
+    "backLink": "الرجوع لـ لائحة المركبات",
+    "subtitle": "إدارة المركبات المسجلة",
     "registerCar": "تسجيل سيارة",
+    "searchPlaceholder": "البحث عن لوحة، ماركة أو موديل...",
+    "registerFirst": "سجل سيارتك الأولى",
+    "repairCount": "التصليحات",
+    "sections": {
+      "identity": "هوية المركبة",
+      "reception": "الاستقبال"
+    },
     "fields": {
       "matricule": "رقم اللوحة",
+      "plate": "رقم اللوحة / الماتريكول",
       "make": "الماركة",
       "model": "الموديل",
       "year": "سنة الصنع",
@@ -277,32 +638,156 @@
       "vin": "رقم الهيكل (VIN)",
       "mileage": "العداد (كم)",
       "notes": "ملاحظات",
-      "client": "العميل المرتبط",
+      "client": "الزبون المرتبط",
       "clientHint": "اتركه فارغاً للزوار المباشرين"
     },
-    "repairHistory": "سجل الإصلاحات",
-    "newRepair": "إصلاح جديد",
-    "noRepairs": "لا توجد إصلاحات مسجلة",
-    "activeRepairBlock": "هذه السيارة لديها إصلاح نشط",
-    "walkin": "زبون مباشر (بدون حساب)"
+    "placeholders": {
+      "plate": "بلاصة الماتريكول: 123456-A-50",
+      "make": "بلاصة الماركة: مثلاً تويوتا، رونو...",
+      "model": "بلاصة الموديل: مثلاً كورولا، كليو...",
+      "year": "بلاصة العام: 2020",
+      "color": "بلاصة اللون: بيض، كحل، حمر...",
+      "vin": "بلاصة الرقم: رقم الشاصي (17 حرف)",
+      "mileage": "بلاصة الكيلومترا: 45000",
+      "notes": "بلاصة الملاحظات: مثلاً عندها صوت فالعارضة"
+    },
+    "validation": {
+      "plateRequired": "رقم اللوحة (الماتريكول) مطلوب.",
+      "makeRequired": "الماركة مطلوبة.",
+      "modelRequired": "الموديل مطلوب.",
+      "invalidYear": "دخل عام صحيح.",
+      "invalidMileage": "الكيلومترات خاص يكونو رقم."
+    },
+    "toasts": {
+      "created": "تم تسجيل المركبة",
+      "createdDesc": "{matricule} تمت إضافتها للنظام.",
+      "error": "حدث خطأ غير متوقع. المرجو إعادة المحاولة."
+    },
+    "create": {
+      "submit": "تسجيل المركبة",
+      "submitting": "جار التسجيل...",
+      "clientNote": "ربط الزبون يتم من صفحة التفاصيل بعد التسجيل. اترك المركبة بدون ربط للزوار المباشرين."
+    },
+    "repairHistory": "سجل التصليحات",
+    "newRepair": "تصليح جديد",
+    "noRepairs": "لا توجد تصليحات مسجلة",
+    "noRepairsForCar": "هذه السيارة ليس لديها تصليحات مسجلة بعد",
+    "registeredOn": "مسجلة في {date}",
+    "activeRepair": "تصليح جارٍ",
+    "priority": "الأولوية:",
+    "scheduledFor": "مقرر في {date}",
+    "mechanic": "الميكانيكي:",
+    "completedOn": "تم في {date}",
+    "backToCars": "العودة إلى سياراتي",
+    "carNotFound": "السيارة غير موجودة",
+    "loadCarError": "تعذر تحميل تفاصيل السيارة",
+    "activeRepairBlock": "هذه السيارة لديها تصليح نشط",
+    "walkin": "زبون مباشر (بدون حساب)",
+    "detail": {
+      "backLink": "الرجوع لـ لائحة المركبات",
+      "notFound": "لم يتم العثور على المركبة.",
+      "retry": "إعادة المحاولة",
+      "info": "معلومات لمركبة",
+      "plate": "الماتريكول",
+      "make": "الماركة",
+      "model": "الموديل",
+      "year": "العام",
+      "color": "اللون",
+      "vin": "VIN (رقم الشاصي)",
+      "mileage": "الكيلومترات",
+      "registeredOn": "تاريخ التسجيل",
+      "notes": "الملاحظات",
+      "editNotes": "تعديل الملاحظات",
+      "save": "حفظ",
+      "noNotes": "ماكاينش ملاحظات. دير كليك على التعديل باش تزيد.",
+      "client": "الزبون",
+      "viewClient": "شوف الزبون",
+      "noClient": "بلا حساب زبون",
+      "repairHistory": "تاريخ التصليحات",
+      "repairCount": "{count, plural, one {# تصليح} other {# تصليحات}}",
+      "noRepairs": "ماكاينش تصليحات مسجلة لهاذ المركبة.",
+      "newRepair": "تصليح جديد",
+      "deleteSection": "منطقة خطر",
+      "deleteDescription": "حذف هاذ المركبة و جميع البيانات المرتبطة بها نهائياً.",
+      "deleteButton": "حذف المركبة",
+      "deleteConfirm": "حذف المركبة",
+      "deleteConfirmMessage": "واش كتأكد بغيتي تحذف هاذ المركبة؟ هاذ الإجراء نهائي و غيحذف جميع التصليحات المرتبطة.",
+      "deleteSuccess": "تم حذف {matricule}.",
+      "toasts": {
+        "notesSaved": "تم حفظ الملاحظات",
+        "saveFailed": "فشل الحفظ",
+        "deleteFailed": "فشل الحذف",
+        "genericError": "حدث خطأ غير متوقع.",
+        "deleted": "تم حذف المركبة"
+      }
+    },
+    "table": {
+      "id": "المعرف",
+      "status": "الحالة",
+      "priority": "الأولوية",
+      "mechanic": "الميكانيكي",
+      "createdAt": "تاريخ الإنشاء",
+      "targetDate": "التاريخ المتوقع",
+      "actions": "الإجراءات",
+      "view": "عرض"
+    },
+    "errors": {
+      "loadFailed": "تعذر تحميل المركبات."
+    },
+    "empty": {
+      "noResults": "لم يتم العثور على مركبات لـ \"{search}\".",
+      "none": "لا توجد مركبات مسجلة."
+    }
   },
   "employee": {
-    "title": "الموظفون",
+    "title": "لمستخدمين",
+    "clientsTitle": "الزبنة",
+    "subtitle": "إدارة موظفي المرأب وصلاحياتهم",
+    "clientsSubtitle": "عرض قائمة الزبنة المسجلين",
     "newEmployee": "موظف جديد",
+    "addFirst": "أضف موظفك الأول",
+    "clientSearchPlaceholder": "البحث عن زبون بالاسم أو الهاتف...",
+    "clientsEmpty": "ماكاينش زبنة مسجلين.",
+    "clientsNoResults": "لم يتم العثور على زبون لهذا البحث.",
+    "clientSince": "منذ {date}",
+    "create": {
+      "title": "إضافة مستخدم جديد",
+      "description": "إنشاء حساب للمستخدم في نظام تسيير الڭاراج",
+      "backLink": "الرجوع لـ لائحة المستخدمين",
+      "submit": "إنشاء الحساب",
+      "submitting": "جاري الإنشاء...",
+      "uploading": "جاري رفع الصورة..."
+    },
+    "sections": {
+      "personalInfo": "المعلومات الشخصية",
+      "additionalInfo": "معلومات إضافية"
+    },
     "roles": {
       "manager": "مسؤول",
       "mechanic": "ميكانيكي",
       "overseer": "مشرف"
     },
     "fields": {
-      "fullName": "الاسم الكامل",
+      "fullName": "الإسم الكامل",
       "email": "البريد الإلكتروني",
       "password": "كلمة المرور",
-      "phone": "الهاتف",
+      "phone": "رقم الهاتف",
       "specialty": "التخصص",
-      "role": "الدور",
+      "role": "الصفة (الدور)",
       "status": "الحالة",
-      "joinDate": "تاريخ الالتحاق"
+      "joinDate": "تاريخ الالتحاق",
+      "cin": "رقم البطاقة الوطنية (CIN)",
+      "address": "عنوان السكن",
+      "photo": "الصورة الشخصية"
+    },
+    "placeholders": {
+      "fullName": "بلاصة الاسم: أحمد بنعلي",
+      "phone": "بلاصة النمرة: 6××××××××",
+      "cin": "بلاصة الرقم: رقم البطاقة الوطنية",
+      "address": "بلاصة العنوان: الحي، المدينة",
+      "role": "تحديد الصفة: مدير أو ميكانيكي",
+      "specialty": "بلاصة التخصص: مثلاً ميكانيكي محركات",
+      "customSpecialty": "حدد التخصص بالضبط"
     },
     "status": {
       "active": "نشط",
@@ -312,42 +797,230 @@
       "deactivate": "تعطيل",
       "activate": "تفعيل",
       "resetPassword": "إعادة تعيين كلمة المرور",
-      "newPassword": "كلمة المرور الجديدة"
+      "newPassword": "كلمة المرور الجديدة",
+      "delete": "حذف المستخدم",
+      "deleteConfirm": "هل أنت متأكد من حذف {name} ؟",
+      "deleteDescription": "حذف صلاحية ولوج هذا المستخدم للنظام بشكل نهائي."
     },
     "lastManager": "لا يمكن تعطيل آخر مسؤول نشط",
     "deactivateConfirm": "هل أنت متأكد من تعطيل هذا الموظف؟",
-    "historyPreserved": "سيتم الاحتفاظ بالسجل التاريخي"
+    "historyPreserved": "سيتم الاحتفاظ بالسجل التاريخي",
+    "validation": {
+      "nameRequired": "الاسم مطلوب.",
+      "roleRequired": "الصفة (الدور) مطلوبة.",
+      "cinRequired": "رقم البطاقة الوطنية (CIN) مطلوب.",
+      "phoneRequired": "رقم الهاتف مطلوب."
+    },
+    "edit": {
+      "title": "تعديل المستخدم",
+      "description": "تعديل معلومات المستخدم.",
+      "submit": "حفظ التعديلات",
+      "success": "تم تحديث بيانات المستخدم بنجاح."
+    },
+    "delete": {
+      "success": "تم حذف {name}."
+    },
+    "errors": {
+      "loadFailed": "تعذر تحميل الموظفين.",
+      "actionFailed": "فشل الإجراء",
+      "generic": "حدث خطأ غير متوقع. المرجو إعادة المحاولة.",
+      "notFound": "لم يتم العثور على الموظف."
+    },
+    "empty": {
+      "noResults": "لم يتم العثور على موظفين.",
+      "noActive": "لم يتم العثور على موظفين نشطين.",
+      "noInactive": "لم يتم العثور على موظفين غير نشطين."
+    },
+    "specialties": {
+      "Moteur": "الميكانيك (Mécanicien)",
+      "Transmission": "الطولي / الهيكل (Tôlier / Carrossier)",
+      "Freins": "البونسور / الحكاك (Ponceur)",
+      "Suspension": "ميكانيك عام (Mécanique générale)",
+      "Électrique": "تريسيان / كهرباء السيارات (Électricien auto)",
+      "Carrosserie": "دياڭنوستيك / الفحص بالكمبيوتر (Diagnostic auto)",
+      "Diagnostic": "بوليستير / إصلاح الفايبر (Polyester)",
+      "Climatisation": "كلاص / تكييف (Climatisation)",
+      "Autre": "تخصص آخر (Autre)"
+    }
   },
   "stock": {
     "title": "المخزون والقطع",
     "newPart": "قطعة جديدة",
+    "create": {
+      "title": "إضافة قطعة جديدة",
+      "backLink": "الرجوع للمخزون",
+      "partInfo": "معلومات القطعة",
+      "submit": "إنشاء القطعة",
+      "submitting": "جاري الإنشاء..."
+    },
     "fields": {
-      "name": "اسم القطعة",
+      "name": "إسم القطعة",
       "reference": "المرجع",
       "category": "الفئة",
       "compatibleModels": "الموديلات المتوافقة",
       "unitCost": "تكلفة الوحدة",
       "quantity": "الكمية في المخزون",
       "minThreshold": "الحد الأدنى",
-      "supplier": "المورد"
+      "unitPrice": "الثمن (MAD)",
+      "minStock": "الحد الأدنى للمخزون",
+      "supplier": "المورد (اختياري)",
+      "stockAlert": "تنبيه كيما المخزون يهبط لهذا المستوى"
+    },
+    "placeholders": {
+      "name": "بلاصة الإسم: مثلاً مجموعة پلاتو الفرامل",
+      "reference": "بلاصة المرجع: BP-001",
+      "category": "ختار الفئة",
+      "customCategory": "حدد الفئة بالضبط",
+      "unitPrice": "بلاصة الثمن: 250 درهم",
+      "minStock": "بلاصة الحد: 5 قطع",
+      "supplier": "بلاصة المورد: مثلاً ABC Auto Pièces"
+    },
+    "validation": {
+      "nameRequired": "إسم القطعة مطلوب.",
+      "refRequired": "رقم المرجع مطلوب.",
+      "categoryRequired": "الفئة مطلوبة.",
+      "priceRequired": "ثمن صحيح مطلوب.",
+      "minStockRequired": "حد أدنى صحيح مطلوب.",
+      "customCategoryRequired": "المرجو تحديد الفئة بالضبط"
+    },
+    "preview": {
+      "title": "معاينة",
+      "name": "الإسم",
+      "reference": "المرجع",
+      "category": "الفئة",
+      "unitPrice": "الثمن",
+      "minStock": "الحد الأدنى",
+      "supplier": "المورد",
+      "units": "قطعة"
+    },
+    "toasts": {
+      "created": "تم إنشاء القطعة بنجاح",
+      "error": "حدث خطأ غير متوقع.",
+      "errorTitle": "فشل الإنشاء"
     },
     "categories": {
-      "Engine": "المحرك",
-      "Brakes": "الفرامل",
-      "Electrical": "الكهرباء",
-      "Bodywork": "الهيكل",
-      "Suspension": "التعليق",
-      "Other": "أخرى"
+      "Engine": "المحرك (Moteur)",
+      "Brakes": "الفرامل (Freins)",
+      "Electrical": "الكهرباء (Électrique)",
+      "Bodywork": "البدن (Carrosserie)",
+      "Suspension": "التعليق (Suspension)",
+      "Other": "حاجة أخرى (Autre)"
+    },
+    "categoriesMap": {
+      "Moteur": "المحرك (Moteur)",
+      "Transmission": "علبة السرعة (Transmission)",
+      "Freins": "الفرامل (Freins)",
+      "Suspension": "التعليق (Suspension)",
+      "Électrique": "الكهرباء (Électrique)",
+      "Carrosserie": "البدن (Carrosserie)",
+      "Intérieur": "الداخلية (Intérieur)",
+      "Fluides": "السوائل والزيوت (Fluides)",
+      "Filtres": "الفلاتر (Filtres)",
+      "Courroies & Durites": "السيور والخراطيم (Courroies & Durites)",
+      "Outils": "الأدوات (Outils)",
+      "Autre": "حاجة أخرى (Autre)"
     },
     "lowStock": "مخزون منخفض",
     "outOfStock": "نفد من المخزون",
     "addStock": "إضافة مخزون",
     "adjustStock": "تعديل المخزون",
     "transactionHistory": "سجل المعاملات",
+    "searchPlaceholder": "البحث عن قطع...",
+    "allCategories": "جميع الفئات",
+    "totalParts": "{total} قطعة",
+    "stockAdded": "تمت إضافة المخزون",
+    "stockAdjusted": "تم تعديل المخزون",
+    "confirmAdjust": "تعديل",
+    "addQuantity": "الكمية المراد إضافتها *",
+    "addQuantityPlaceholder": "مثال: 10",
+    "noteOptional": "ملاحظة (اختيارية)",
+    "notePlaceholder": "مثال: تسليم المورد",
+    "quantityChange": "تغير الكمية *",
+    "quantityChangePlaceholder": "مثال: +5 أو -3",
+    "newStockValue": "المخزون الجديد: {qty} وحدة",
+    "adjustmentReason": "سبب التعديل *",
+    "adjustmentReasonPlaceholder": "مثال: قطع تالفة تم إزالتها, تصحيح الجرد",
+    "errors": {
+      "loadFailed": "تعذر تحميل القطع.",
+      "invalidQuantity": "كمية غير صالحة",
+      "positiveNumber": "أدخل رقماً صحيحاً موجباً.",
+      "nonZeroNumber": "أدخل رقماً صحيحاً غير صفري.",
+      "noteRequired": "الملاحظة مطلوبة",
+      "adjustmentReason": "يرجى شرح سبب التعديل.",
+      "addFailed": "فشل إضافة المخزون.",
+      "adjustFailed": "فشل تعديل المخزون."
+    },
+    "empty": {
+      "noResults": "لم يتم العثور على قطع."
+    },
     "transactions": {
       "received": "استلام",
       "used": "مُستخدم",
       "adjustment": "تعديل"
+    },
+    "detail": {
+      "backLink": "الرجوع للمخزون",
+      "notFound": "القطعة غير موجودة.",
+      "title": "تفاصيل المخزون",
+      "reference": "المرجع :",
+      "category": "الفئة",
+      "unitPrice": "الثمن للقطعة",
+      "currentStock": "المخزون الحالي",
+      "minThreshold": "الحد الأدنى",
+      "supplier": "المورد",
+      "stockValue": "قيمة المخزون",
+      "createdOn": "تاريخ الإنشاء",
+      "inStock": "قطعة فالمخزون",
+      "lowStock": "المخزون قليل (الحد :",
+      "addStock": "إضافة مخزون",
+      "adjust": "تعديل",
+      "transactions": "حركات المخزون",
+      "totalTransactions": "{count} عملية/عمليات",
+      "noTransactions": "ماكاينش حركات فالمخزون دابا",
+      "type": "النوع",
+      "variation": "التغير",
+      "stockAfter": "المخزون من بعد",
+      "user": "المستخدم",
+      "date": "التاريخ",
+      "note": "الملاحظة",
+      "received": "وصل",
+      "used": "مستخدم",
+      "adjusted": "معدل",
+      "units": "قطعة/قطع",
+      "pageInfo": "صفحة {page} من {totalPages}",
+      "repairLabel": "تصليح :"
+    },
+    "addDialog": {
+      "title": "إضافة للمخزون",
+      "description": "إضافة مخزون وصل لـ {name}",
+      "quantity": "الكمية الواصلة",
+      "note": "ملاحظة",
+      "receiptImage": "صورة الوصل",
+      "quantityPlaceholder": "دير الكمية",
+      "notePlaceholder": "مثلاً: وصل من المورد ABC، الفاتورة رقم 12345",
+      "success": "تمت إضافة {quantity} قطعة/قطع للمخزون",
+      "errors": {
+        "quantity": "دير كمية صحيحة فوق الصفر.",
+        "note": "دير ملاحظة كتوضح هاد الإضافة."
+      }
+    },
+    "adjustDialog": {
+      "title": "تعديل المخزون",
+      "description": "تعديل يدوي للمخزون ديال {name}. استعمل أرقام موجبة باش تزيد، سالبة باش تنقص.",
+      "quantity": "التغير فالكمية",
+      "reason": "السبب",
+      "currentStock": "المخزون الحالي :",
+      "units": "قطعة/قطع",
+      "newStock": "المخزون الجديد :",
+      "quantityPlaceholder": "مثلاً: +5 أو -3",
+      "reasonPlaceholder": "مثلاً: قطع تالفة تم إزالتها, تصحيح الجرد",
+      "confirm": "تعديل",
+      "successIncreased": "تمت الزيادة فالمخزون بـ {quantity} قطعة/قطع",
+      "successDecreased": "تم النقص فالمخزون بـ {quantity} قطعة/قطع",
+      "errors": {
+        "quantity": "دير كمية غير صفرية.",
+        "reason": "دير ملاحظة كتشرح هاد التعديل."
+      }
     }
   },
   "settings": {
@@ -355,7 +1028,7 @@
     "sections": {
       "garage": "معلومات المرأب",
       "operational": "الإعدادات التشغيلية",
-      "portal": "بوابة العميل",
+      "portal": "بوابة الزبون",
       "session": "الجلسة"
     },
     "fields": {
@@ -367,7 +1040,7 @@
       "workingHours": "ساعات العمل",
       "overseerWhatsapp": "رقم واتساب المشرف",
       "requireDiagnosisApproval": "موافقة المسؤول على التشخيص",
-      "requireClientApproval": "موافقة العميل قبل البدء",
+      "requireClientApproval": "موافقة الزبون قبل البدء",
       "currencyLabel": "العملة",
       "sessionTimeout": "انتهاء الجلسة (ساعات)"
     },
@@ -376,12 +1049,15 @@
   "portal": {
     "landing": {
       "tagline": "سيارتك في أيدٍ أمينة",
-      "subtitle": "تابع حالة إصلاح سيارتك في الوقت الفعلي واحجز موعدك عبر الإنترنت.",
-      "bookAppointment": "احجز موعداً",
+      "subtitle": "تابع التصليح ديال سيارتك فاش بغيتي وحجز موعدك على النت.",
+      "bookAppointment": "حجز موعد",
       "trackRepair": "تابع إصلاحي",
       "ourServices": "خدماتنا",
       "contactUs": "اتصل بنا",
       "openingHours": "ساعات العمل",
+      "servicesBadge": "خبراتنا",
+      "servicesHeading1": "خدمات متكاملة",
+      "servicesHeading2": "لجميع احتياجاتك",
       "services": {
         "engine": "المحرك وناقل الحركة",
         "brakes": "الفرامل والتعليق",
@@ -389,13 +1065,141 @@
         "bodywork": "الهيكل والطلاء",
         "maintenance": "الصيانة وتغيير الزيت",
         "tires": "الإطارات وضبط الجنوط"
-      }
+      },
+      "servicesList": {
+        "generalMechanic": {
+          "name": "ميكانيكا عامة",
+          "desc": "صيانة وفحص وتصليح ميكانيكي شامل"
+        },
+        "hydraulic": {
+          "name": "الهيدروليك",
+          "desc": "نظام التوجيه المعزز والفرامل والتعليق الهيدروليكي"
+        },
+        "electricalAuto": {
+          "name": "كهرباء السيارات",
+          "desc": "التمديدات الكهربائية والبطارية والمولد والأنظمة الإلكترونية"
+        },
+        "advancedDiagnostic": {
+          "name": "تشخيص متقدم",
+          "desc": "تحليل إلكتروني كامل والبحث عن الأعطال"
+        },
+        "bodywork": {
+          "name": "هيكل ودهان",
+          "desc": "هيكل السيارة وإزالة الخدوش والدهان والتشطيبات الاحترافية"
+        },
+        "oilChange": {
+          "name": "تغيير الزيت والصيانة",
+          "desc": "تغيير الزيت والفلتر والفحوصات الدورية"
+        },
+        "washing": {
+          "name": "غسيل وتلميع",
+          "desc": "غسيل كامل وشمع حماية ومعالجة تجميلية"
+        },
+        "engineTuning": {
+          "name": "ضبط المحرك",
+          "desc": "ضبط الحقن وتوقيت التوزيع وتحسين الأداء"
+        }
+      },
+      "hero": {
+        "badge": "مرأب معتمد ومرخص",
+        "title1": "سيارتك تستحق",
+        "title2": "أفضل خدمة",
+        "description": "SAGMAN AUTO تقدم لك خبرة شاملة لجميع احتياجات سيارتك، مع متابعة شفافة وتدخلات عالية الجودة."
+      },
+      "accessAccount": "حسابي",
+      "callGarage": "اتصل بنا",
+      "stats": {
+        "yearsExperience": "سنوات من الخبرة",
+        "satisfiedClients": "زبون راضٍ",
+        "onTimeAppointments": "مواعيد في الوقت المحدد",
+        "averageRating": "متوسط التقييم ★"
+      },
+      "floatingBadge": "+ من 15 سنة",
+      "floatingBadgeDesc": "خبرة في السيارات",
+      "whyUs": {
+        "title": "لماذا تختارنا",
+        "heading1": "الثقة",
+        "heading2": "تُبنى على المدى الطويل",
+        "items": {
+          "certified": {
+            "title": "خبرة معتمدة",
+            "desc": "ميكانيكيونا مدربون على أحدث التقنيات بشهادات مصنع."
+          },
+          "equipment": {
+            "title": "معدات احترافية",
+            "desc": "أجهزة تشخيص، جهاز ضبط هندسة، كابينة دهان وفق المعايير."
+          },
+          "transparency": {
+            "title": "شفافية كاملة",
+            "desc": "تابع كل خطوة بالصور والتقارير المفصلة في الوقت الفعلي."
+          },
+          "support": {
+            "title": "خدمة عملاء سريعة",
+            "desc": "فريق في خدمتك من التشخيص إلى تسليم سيارتك."
+          }
+        }
+      },
+      "howItWorks": {
+        "badge": "في 3 خطوات",
+        "title": "كيف يعمل؟",
+        "cta": "ابدأ الآن",
+        "steps": {
+          "book": {
+            "title": "احجز موعداً",
+            "desc": "احجز عبر الإنترنت أو بالهاتف في أقل من دقيقتين."
+          },
+          "diagnosis": {
+            "title": "التشخيص والتصليح",
+            "desc": "فريقنا يقوم بتشخيص شامل ثم التصليحات اللازمة."
+          },
+          "tracking": {
+            "title": "المتابعة والتسليم",
+            "desc": "تابع التقدم في الوقت الفعلي واستلم سيارتك."
+          }
+        }
+      },
+      "testimonials": {
+        "badge": "شهادات العملاء",
+        "title": "ماذا يقول عملاؤنا",
+        "fallback": [
+          { "name": "كريم ب.", "text": "خدمة ممتازة، فريق محترف وتفاعل سريع. سيارتي كانت جاهزة قبل الوقت!" },
+          { "name": "صوفيا م.", "text": "أنصح بكراج صقمان. متابعة شفافة وشغل دقيق." },
+          { "name": "هشام ل.", "text": "كراج موثوق. التشخيص كان دقيق والتصليحات دائمة." }
+        ]
+      },
+      "review": {
+        "badge": "رأيك",
+        "title": "شاركنا رأيك",
+        "description": "شارك تجربتك مع SAGMAN AUTO",
+        "thanks": "شكراً لرأيك!",
+        "thanksDesc": "ملاحظاتك تساعدنا على تحسين خدماتنا.",
+        "yourRating": "تقييمك",
+        "yourComment": "تعليقك",
+        "commentOptional": "(اختياري)",
+        "commentPlaceholder": "بلاصة التعليق: شنو رائيك فالخدمة?",
+        "submit": "إرسال رأيي",
+        "submitting": "جار الإرسال..."
+      },
+      "contactBadge": "اتصل بنا",
+      "contactTitle": "تحدث عن سيارتك",
+      "contactDescription": "هل تحتاج إلى معلومات أو عرض سعر أو حجز موعد؟ فريقنا في خدمتك.",
+      "addressLabel": "العنوان",
+      "callNow": "اتصل الآن",
+      "whatsapp": "راسلنا على واتساب",
+      "whatsappMessage": "مرحباً، أتصل بكم من موقع SAGMAN AUTO.",
+      "footer": {
+        "description": "شريكك الموثوق لصيانة وتصليح جميع سياراتك.",
+        "followUs": "تابعنا"
+      },
+      "towing": "خدمة السحب",
+      "towingAriaLabel": "اتصال طارئ"
     },
     "login": {
-      "title": "فضاء العميل",
+      "title": "فضاء الزبون",
+      "signIn": "تسجيل الدخول",
       "subtitle": "أدخل رقم هاتفك للوصول إلى حسابك",
       "phoneLabel": "رقم الهاتف",
-      "phonePlaceholder": "+212 6XX XXX XXX",
+      "phonePlaceholder": "بلاصة النمرة: 6XX XXX XXX",
       "sendOtp": "إرسال الرمز",
       "sendingOtp": "جار الإرسال...",
       "otpLabel": "رمز التحقق",
@@ -405,37 +1209,182 @@
       "changePhone": "تغيير الرقم",
       "otpSent": "تم الإرسال! تحقق من رسائلك.",
       "invalidOtp": "الرمز غير صحيح أو منتهي الصلاحية",
-      "otpExpiry": "الرمز صالح لمدة 10 دقائق"
+      "otpExpiry": "الرمز صالح لمدة 10 دقائق",
+      "passwordSubtitle": "سجل الدخول إلى حسابك",
+      "passwordLabel": "كلمة المرور",
+      "passwordPlaceholder": "أدخل كلمة المرور",
+      "signIn": "تسجيل الدخول",
+      "signingIn": "جار تسجيل الدخول…",
+      "noAccount": "ليس لديك حساب؟",
+      "signUp": "إنشاء حساب",
+      "termsNotice": "بتسجيل الدخول، أنت توافق على",
+      "fillAllFields": "يرجى ملء جميع الحقول",
+      "invalidCredentials": "بيانات الدخول غير صحيحة",
+      "backToHome": "العودة إلى الرئيسية"
     },
     "myCars": {
       "title": "سياراتي",
-      "noActiveCars": "لا توجد إصلاحات نشطة حالياً",
-      "viewHistory": "عرض السجل"
+      "noActiveCars": "لا توجد تصليحات نشطة حالياً",
+      "viewHistory": "عرض السجل",
+      "greeting": "مرحباً، {name}",
+      "carsRegistered": "{count} سيارة مسجلة",
+      "carsRegisteredPlural": "{count} سيارات مسجلة",
+      "bookAppointment": "موعد",
+      "emptyTitle": "لا توجد سيارات مسجلة",
+      "emptyDesc": "احجز موعداً لتسجيل سيارتك",
+      "loadError": "تعذر تحميل سياراتك",
+      "noActiveRepair": "لا يوجد تصليح نشط",
+      "repairOverdue": "التصليح متأخر",
+      "estimatedDate": "التاريخ المتوقع:",
+      "repairHistory": "سجل التصليحات ({count})"
     },
     "repairStatus": {
-      "title": "متابعة الإصلاح",
+      "title": "متابعة التصليح",
       "currentStatus": "الحالة الحالية",
-      "repairProgress": "تقدم الإصلاح",
+      "repairProgress": "تقدم التصليح",
       "estimatedCompletion": "تاريخ الانتهاء المتوقع",
       "diagnosisResult": "نتيجة التشخيص",
       "issues": "المشكلات المحددة",
       "recommendations": "الأعمال الموصى بها",
       "estimatedCost": "التكلفة التقديرية",
       "contactGarage": "الاتصال بالمرأب",
-      "notFound": "الإصلاح غير موجود"
+      "notFound": "التصليح غير موجود",
+      "progression": "التقدم",
+      "details": "تفاصيل التصليح",
+      "reportedProblem": "المشكلة المبلغ عنها",
+      "expectedDate": "التاريخ المتوقع",
+      "completedDate": "تم في",
+      "mechanic": "الميكانيكي",
+      "entryDate": "تاريخ الدخول",
+      "readyTitle": "سيارتك جاهزة!",
+      "readyDesc": "يمكنك القدوم لاستلامها خلال ساعات العمل.",
+      "amountPaid": "المبلغ المدفوع: {amount} درهم",
+      "overdue": "متأخر",
+      "cancelled": "تم إلغاء هذا التصليح",
+      "backToCars": "سياراتي",
+      "question": "لديك سؤال؟",
+      "call": "اتصال",
+      "whatsapp": "واتساب",
+      "whatsappMessage": "مرحباً، أتصل بكم من حسابي في SAGMAN بخصوص تصليح {matricule}.",
+      "technicianNotes": "ملاحظات الفني",
+      "invoice": "الفاتورة",
+      "amount": "المبلغ",
+      "history": "السجل",
+      "paymentStatus": "مدفوع",
+      "diagnosisTitle": "نتيجة التشخيص",
+      "issuesIdentified": "المشكلات المحددة",
+      "recommendedWork": "الأعمال الموصى بها"
+    },
+    "register": {
+      "title": "إنشاء حساب",
+      "subtitle": "سجل بهاتفك وكلمة سر.",
+      "nameLabel": "الاسم",
+      "namePlaceholder": "بلاصة الاسم: أحمد بنعلي",
+      "phoneLabel": "رقم الهاتف",
+      "phonePlaceholder": "6XX XXX XXX",
+      "passwordLabel": "كلمة المرور",
+      "passwordPlaceholder": "أدخل كلمة المرور",
+      "submit": "إنشاء حسابي",
+      "submitting": "جار إنشاء الحساب…",
+      "hasAccount": "لديك حساب بالفعل؟",
+      "login": "تسجيل الدخول",
+      "fillAllFields": "يرجى ملء جميع الحقول",
+      "createFailed": "تعذر إنشاء الحساب",
+      "backToHome": "العودة إلى الرئيسية"
     },
     "booking": {
       "title": "حجز موعد",
-      "subtitle": "املأ النموذج لطلب موعد",
+      "subtitle": "املأ النموذج — سنؤكد لك بسرعة",
       "selectCar": "اختر سيارة",
       "orNewCar": "أو أدخل رقم لوحة جديد",
       "newMatricule": "رقم اللوحة الجديد",
       "issue": "وصف المشكلة",
       "preferredDate": "التاريخ المفضل",
       "notes": "ملاحظات إضافية",
-      "submit": "طلب موعد",
+      "submit": "إرسال طلبي",
       "success": "تم إرسال طلبك! سنؤكد موعدك قريباً.",
-      "availableDays": "اختر من الأيام المتاحة"
+      "availableDays": "اختر من الأيام المتاحة",
+      "authNotLoggedIn": "أنت غير مسجل الدخول",
+      "authLoginPrompt": "سجل الدخول",
+      "authDescription": "لربط هذا الموعد بحسابك ومتابعة تصليحك.",
+      "yourVehicle": "سيارتك",
+      "selectRegistered": "اختر سيارة مسجلة",
+      "otherVehicle": "سيارة أخرى (رقم لوحة جديد)",
+      "make": "الماركة",
+      "makePlaceholder": "بلاصة الماركة: BMW, Renault, Toyota",
+      "model": "الموديل",
+      "modelPlaceholder": "بلاصة الموديل: Clio, Golf",
+      "year": "سنة الصنع",
+      "yearPlaceholder": "بلاصة العام: 2020",
+      "color": "اللون",
+      "colorPlaceholder": "بلاصة اللون: أبيض، أسود...",
+      "dateTime": "التاريخ والوقت المطلوبان",
+      "date": "التاريخ",
+      "time": "الوقت",
+      "availableHours": "ساعات العمل: الإثنين–السبت، 08:00–17:30",
+      "problemDescription": "وصف المشكلة",
+      "describeProblem": "صف المشكلة",
+      "problemPlaceholder": "بلاصة المشكل: شنو فيها السيارة?",
+      "extraNotes": "ملاحظات إضافية (اختياري)",
+      "extraNotesPlaceholder": "بلاصة الملاحظات: مثلاً جي نهار السبت",
+      "submitting": "جار الإرسال…",
+      "confirmationNote": "ستتلقى تأكيداً عبر الرسائل القصيرة أو مكالمة هاتفية.",
+      "successTitle": "تم إرسال الطلب!",
+      "successDesc": "تم استلام طلب موعدك. سيتصل بك فريقنا قريباً للتأكيد.",
+      "viewMyCars": "عرض سياراتي",
+      "backToHome": "العودة إلى الرئيسية",
+      "selectDateError": "يرجى اختيار تاريخ",
+      "sendError": "خطأ في إرسال الطلب. حاول مرة أخرى."
+    },
+    "book": {
+      "vehiclePhoto": "صورة السيارة",
+      "photoOptional": "صورة (اختياري)",
+      "uploading": "جاري رفع الصورة..."
+    }
+  },
+  "reports": {
+    "title": "التقرير ديال اليوم",
+    "subtitle": "إنشاء تقرير نهاية اليوم",
+    "generate": "إنشاء التقرير",
+    "regenerate": "إعادة إنشاء التقرير",
+    "generating": "جار الإنشاء...",
+    "emptyPrompt": "انقر على \"إنشاء التقرير\" لإنشاء تقرير نهاية اليوم.",
+    "carsReceived": "السيارات الواصلة",
+    "carsDelivered": "السيارات المسلّمة",
+    "totalRevenue": "رقم الأعمال",
+    "sendViaWhatsApp": "إرسال إلى المشرف عبر واتساب",
+    "managerNotes": "ملاحظات المسؤول",
+    "notesPlaceholder": "بلاصة الملاحظات: شنو بغيتي توصل للمشرف?",
+    "errors": {
+      "generateFailed": "خطأ في إنشاء التقرير.",
+      "sendFailed": "خطأ في إرسال التقرير."
+    }
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "subtitle": "تاريخ رسائل واتساب المرسلة",
+    "type": "النوع",
+    "recipient": "المستلم",
+    "messagePreview": "معاينة الرسالة",
+    "sentBy": "أرسلت بواسطة",
+    "viewRepair": "عرض التصليح",
+    "pagination": "{total} إشعار · صفحة {page} / {totalPages}",
+    "errors": {
+      "loadFailed": "خطأ في تحميل الإشعارات."
+    }
+  },
+  "calendar": {
+    "title": "التقويم",
+    "weekView": "أسبوع",
+    "monthView": "شهر",
+    "today": "اليوم",
+    "appointments": "المواعيد ({count})",
+    "repairAbbr": "{count} تصليح",
+    "appointmentAbbr": "{count} موعد",
+    "dayEmpty": "لا توجد أنشطة لهذا اليوم",
+    "dayNames": ["الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت", "الأحد"],
+    "errors": {
+      "loadFailed": "خطأ في التحميل."
     }
   }
 }

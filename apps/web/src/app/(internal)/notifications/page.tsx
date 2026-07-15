@@ -2,17 +2,10 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import {
-  Loader2,
-  AlertCircle,
-  ExternalLink,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { api, ApiError } from "@/lib/api-client";
-import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 interface Notification {
   id: string;
@@ -28,34 +21,6 @@ interface NotificationsResponse {
   data: Notification[];
   meta: { total: number; page: number; limit: number; totalPages: number };
 }
-
-const TEMPLATE_LABELS: Record<string, string> = {
-  "T-01": "Confirmation RDV",
-  "T-02": "Report RDV",
-  "T-03": "Diagnostic",
-  "T-04": "Véhicule prêt",
-  "T-05": "Facture",
-  "T-06": "Rapport journalier",
-};
-
-const TEMPLATE_BADGE_COLORS: Record<string, string> = {
-  "T-01": "bg-blue-100 text-blue-700 border-blue-200",
-  "T-02": "bg-amber-100 text-amber-700 border-amber-200",
-  "T-03": "bg-purple-100 text-purple-700 border-purple-200",
-  "T-04": "bg-emerald-100 text-emerald-700 border-emerald-200",
-  "T-05": "bg-slate-100 text-slate-700 border-slate-200",
-  "T-06": "bg-orange-100 text-orange-700 border-orange-200",
-};
-
-const TYPE_FILTERS = [
-  "Tous",
-  "T-01",
-  "T-02",
-  "T-03",
-  "T-04",
-  "T-05",
-  "T-06",
-] as const;
 
 const LIMIT = 20;
 
@@ -74,10 +39,10 @@ function truncate(str: string, len: number) {
 }
 
 export default function NotificationsPage() {
+  const t = useTranslations();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
-  const [typeFilter, setTypeFilter] = useState<string>("Tous");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -91,7 +56,6 @@ export default function NotificationsPage() {
         page: String(page),
         limit: String(LIMIT),
       });
-      if (typeFilter !== "Tous") params.set("type", typeFilter);
 
       const res = await api.get<NotificationsResponse>(
         `/notifications?${params.toString()}`,
@@ -102,62 +66,41 @@ export default function NotificationsPage() {
       setError(
         err instanceof ApiError
           ? err.message
-          : "Erreur lors du chargement des notifications.",
+          : t('notifications.errors.loadFailed'),
       );
     } finally {
       setLoading(false);
     }
-  }, [page, typeFilter]);
+  }, [page]);
 
   useEffect(() => {
     load();
   }, [load]);
 
-  function handleTypeChange(type: string) {
-    setTypeFilter(type);
-    setPage(1);
-  }
-
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold">Journal des notifications</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Historique des messages WhatsApp envoyés
-        </p>
-      </div>
-
-      {/* Type filter tabs */}
-      <div className="flex flex-wrap gap-1">
-        {TYPE_FILTERS.map((type) => (
-          <button
-            key={type}
-            onClick={() => handleTypeChange(type)}
-            className={cn(
-              "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
-              typeFilter === type
-                ? "bg-primary text-primary-foreground"
-                : "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-            )}
-          >
-            {type === "Tous" ? "Tous" : `${type} — ${TEMPLATE_LABELS[type]}`}
-          </button>
-        ))}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-md">
+        <div>
+          <h2 className="font-headline-xl text-headline-xl">{t('notifications.title')}</h2>
+          <p className="font-body-lg text-body-lg text-on-surface-variant">
+            {t('notifications.subtitle')}
+          </p>
+        </div>
       </div>
 
       {/* Error */}
       {error && (
-        <div className="flex items-center gap-3 rounded-md border border-destructive/50 bg-destructive/10 p-4 text-destructive">
-          <AlertCircle className="h-5 w-5 shrink-0" />
-          <p className="text-sm">{error}</p>
+        <div className="flex items-center gap-3 rounded-lg border border-outline-variant bg-surface p-4">
+          <Icon name="error" size={20} className="shrink-0 text-primary" />
+          <p className="font-body-md text-body-md text-primary">{error}</p>
           <Button
             variant="outline"
             size="sm"
             onClick={load}
             className="ml-auto"
           >
-            Réessayer
+            {t('common.retry')}
           </Button>
         </div>
       )}
@@ -165,81 +108,72 @@ export default function NotificationsPage() {
       {/* Loading */}
       {loading ? (
         <div className="flex items-center justify-center py-16">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          <Icon name="progress_activity" size={32} className="animate-spin text-on-surface-variant" />
         </div>
       ) : notifications.length === 0 ? (
-        <div className="rounded-lg border bg-card p-12 text-center">
-          <p className="text-muted-foreground">Aucune notification trouvée.</p>
+        <div className="bg-white border border-outline-variant rounded-xl shadow-sm p-12 text-center">
+          <p className="font-body-lg text-body-lg text-on-surface-variant">{t('common.noResults')}</p>
         </div>
       ) : (
         <>
           {/* Table */}
-          <div className="rounded-lg border bg-card overflow-hidden">
-            <table className="w-full text-sm">
+          <div className="bg-white border border-outline-variant rounded-xl shadow-sm overflow-hidden">
+            <table className="w-full border-collapse">
               <thead>
-                <tr className="border-b bg-muted/50">
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                    Date
+                <tr className="bg-surface-container-low">
+                  <th className="px-4 py-3 text-left font-label-sm text-label-sm text-on-surface-variant">
+                    {t('common.date')}
                   </th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                    Type
+                  <th className="px-4 py-3 text-left font-label-sm text-label-sm text-on-surface-variant">
+                    {t('notifications.type')}
                   </th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                    Destinataire
+                  <th className="px-4 py-3 text-left font-label-sm text-label-sm text-on-surface-variant">
+                    {t('notifications.recipient')}
                   </th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden md:table-cell">
-                    Aperçu du message
+                  <th className="px-4 py-3 text-left font-label-sm text-label-sm text-on-surface-variant hidden md:table-cell">
+                    {t('notifications.messagePreview')}
                   </th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden lg:table-cell">
-                    Envoyé par
+                  <th className="px-4 py-3 text-left font-label-sm text-label-sm text-on-surface-variant hidden lg:table-cell">
+                    {t('notifications.sentBy')}
                   </th>
-                  <th className="px-4 py-3 text-right font-medium text-muted-foreground">
-                    Actions
+                  <th className="px-4 py-3 text-right font-label-sm text-label-sm text-on-surface-variant">
+                    {t('common.actions')}
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y">
+              <tbody>
                 {notifications.map((notif) => (
                   <tr
                     key={notif.id}
-                    className="hover:bg-muted/30 transition-colors"
+                    className="hover:bg-surface-container-low"
                   >
-                    <td className="px-4 py-3 whitespace-nowrap text-muted-foreground">
+                    <td className="px-4 py-3 whitespace-nowrap text-on-surface-variant font-body-md text-body-md">
                       {formatDateTime(notif.sentAt)}
                     </td>
                     <td className="px-4 py-3">
-                      <span
-                        className={cn(
-                          "inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold",
-                          TEMPLATE_BADGE_COLORS[notif.type] ??
-                            "bg-slate-100 text-slate-700 border-slate-200",
-                        )}
-                      >
+                      <span className="inline-flex items-center px-sm py-xs rounded-full font-label-sm text-label-sm font-bold border bg-surface-container-low text-on-surface-variant border-outline-variant">
                         {notif.type}
-                        {TEMPLATE_LABELS[notif.type]
-                          ? ` — ${TEMPLATE_LABELS[notif.type]}`
-                          : ""}
                       </span>
                     </td>
-                    <td className="px-4 py-3 font-medium">
+                    <td className="px-4 py-3 font-title-md text-title-md">
                       {notif.recipientPhone}
                     </td>
-                    <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">
+                    <td className="px-4 py-3 text-on-surface-variant font-body-md text-body-md hidden md:table-cell">
                       {truncate(notif.messagePreview, 60)}
                     </td>
-                    <td className="px-4 py-3 text-muted-foreground hidden lg:table-cell">
+                    <td className="px-4 py-3 text-on-surface-variant font-body-md text-body-md hidden lg:table-cell">
                       {notif.sentBy.name}
                     </td>
                     <td className="px-4 py-3 text-right">
                       {notif.repair ? (
                         <Button variant="ghost" size="sm" asChild>
                           <Link href={`/repairs/${notif.repair.id}`}>
-                            <ExternalLink className="h-4 w-4" />
-                            <span className="sr-only">Voir réparation</span>
+                            <Icon name="open_in_new" size={16} />
+                            <span className="sr-only">{t('notifications.viewRepair')}</span>
                           </Link>
                         </Button>
                       ) : (
-                        <span className="text-muted-foreground/40">—</span>
+                        <span className="text-on-surface-variant/40">—</span>
                       )}
                     </td>
                   </tr>
@@ -250,9 +184,8 @@ export default function NotificationsPage() {
 
           {/* Pagination */}
           <div className="flex items-center justify-between">
-            <p className="text-sm text-muted-foreground">
-              {total} notification{total !== 1 ? "s" : ""} · Page {page} /{" "}
-              {totalPages}
+            <p className="font-body-md text-body-md text-on-surface-variant">
+              {t('notifications.pagination').replace('{total}', String(total)).replace('{page}', String(page)).replace('{totalPages}', String(totalPages))}
             </p>
             <div className="flex items-center gap-2">
               <Button
@@ -261,8 +194,8 @@ export default function NotificationsPage() {
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page <= 1 || loading}
               >
-                <ChevronLeft className="h-4 w-4" />
-                Précédent
+                <Icon name="chevron_left" size={16} />
+                {t('common.previous')}
               </Button>
               <Button
                 variant="outline"
@@ -270,8 +203,8 @@ export default function NotificationsPage() {
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page >= totalPages || loading}
               >
-                Suivant
-                <ChevronRight className="h-4 w-4" />
+                {t('common.next')}
+                <Icon name="chevron_right" size={16} />
               </Button>
             </div>
           </div>

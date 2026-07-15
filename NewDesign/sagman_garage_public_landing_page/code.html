@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sagman Garage | Expert Car Care in Casablanca</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary": "#ffffff",
+                    "on-surface-variant": "#444651",
+                    "on-error": "#ffffff",
+                    "primary-fixed-dim": "#b6c4ff",
+                    "inverse-primary": "#b6c4ff",
+                    "tertiary-container": "#384055",
+                    "on-tertiary-fixed": "#131b2e",
+                    "surface-dim": "#d8dadc",
+                    "tertiary-fixed-dim": "#bec6e0",
+                    "primary": "#00236f",
+                    "outline": "#757682",
+                    "tertiary": "#222a3e",
+                    "primary-fixed": "#dce1ff",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-primary-fixed-variant": "#264191",
+                    "tertiary-fixed": "#dae2fd",
+                    "secondary-container": "#e02928",
+                    "on-error-container": "#93000a",
+                    "surface": "#f7f9fb",
+                    "on-secondary-fixed-variant": "#93000b",
+                    "inverse-surface": "#2d3133",
+                    "surface-container-lowest": "#ffffff",
+                    "error": "#ba1a1a",
+                    "inverse-on-surface": "#eff1f3",
+                    "on-tertiary-fixed-variant": "#3f465c",
+                    "primary-container": "#1e3a8a",
+                    "on-surface": "#191c1e",
+                    "surface-variant": "#e0e3e5",
+                    "on-primary-fixed": "#00164e",
+                    "secondary-fixed": "#ffdad6",
+                    "secondary-fixed-dim": "#ffb4ab",
+                    "outline-variant": "#c5c5d3",
+                    "on-secondary-fixed": "#410002",
+                    "surface-container-high": "#e6e8ea",
+                    "surface-container": "#eceef0",
+                    "surface-container-low": "#f2f4f6",
+                    "surface-bright": "#f7f9fb",
+                    "secondary": "#bb0112",
+                    "surface-tint": "#4059aa",
+                    "on-tertiary-container": "#a4acc5",
+                    "error-container": "#ffdad6",
+                    "on-secondary-container": "#fffbff",
+                    "on-primary-container": "#90a8ff",
+                    "background": "#f7f9fb",
+                    "on-background": "#191c1e",
+                    "on-secondary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "lg": "24px",
+                    "gutter": "16px",
+                    "base": "4px",
+                    "xl": "32px",
+                    "container-margin": "24px",
+                    "sm": "8px",
+                    "md": "16px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "title-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "headline-xl": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "title-md": ["18px", {"lineHeight": "26px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .nav-link-active {
+            color: #00236f;
+            border-bottom: 2px solid #00236f;
+            padding-bottom: 4px;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+        }
+        .text-shadow-sm {
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md selection:bg-primary selection:text-on-primary">
+<!-- TopAppBar Navigation -->
+<header class="sticky top-0 w-full z-50 bg-surface/95 backdrop-blur-sm transition-all duration-150 border-b border-outline-variant">
+<nav class="max-w-7xl mx-auto flex justify-between items-center h-16 px-lg">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 bg-primary-container rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">directions_car</span>
+</div>
+<span class="font-headline-lg text-headline-lg text-primary font-bold tracking-tight">Sagman Garage</span>
+</div>
+<div class="hidden md:flex items-center gap-xl">
+<a class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors" href="#services">Services</a>
+<a class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors" href="#trust">Why Us</a>
+<a class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors" href="#testimonials">Testimonials</a>
+<a class="font-title-md text-title-md text-on-surface-variant hover:text-primary transition-colors" href="#contact">Contact</a>
+</div>
+<div class="flex items-center gap-md">
+<button class="bg-primary hover:bg-primary-container text-on-primary font-title-md text-title-md px-lg py-sm rounded transition-all duration-150">
+                    Book Appointment
+                </button>
+</div>
+</nav>
+</header>
+<main>
+<!-- Hero Section -->
+<section class="relative h-[870px] flex items-center overflow-hidden">
+<div class="absolute inset-0 z-0">
+<div class="absolute inset-0 bg-gradient-to-r from-primary/90 to-transparent z-10"></div>
+<img class="w-full h-full object-cover" data-alt="A wide-angle, cinematic view of a pristine, high-tech automotive workshop in Casablanca. The interior features polished concrete floors, sleek blue tool cabinets, and a modern luxury SUV on a hydraulic lift. Cool, professional daylight streams through large windows, creating a bright and trustworthy atmosphere. The overall aesthetic is professional, organized, and technologically advanced, echoing the premium Sagman Garage brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtJiSxgacy_6j-82sau5MgQpwgmQfLVTdM-WUbO55W4v-3rHFWonbA7vl6LPheof3sZelv0qblGbxGkj4hcd9dSvNiAEuzeVKAplYu9BmeL6H_EkkvWF12USPXQE_-ierqOKruoKRN89Fuaapn4GoAHILFDKB0mF9-6KZ6-CA35fiJeYmFX6dPnNlM0kXKEYm9XCmwHB0zQFYhWUbfEg_aOFrG9uihgoU3cNpVXK1YUuZPQDEzlsbJwg"/>
+</div>
+<div class="relative z-20 max-w-7xl mx-auto px-lg w-full">
+<div class="max-w-2xl">
+<span class="inline-block px-sm py-xs bg-secondary-container text-on-secondary-container font-label-sm text-label-sm rounded mb-md uppercase tracking-wider font-bold">Premier Service in Casablanca</span>
+<h1 class="font-headline-xl text-headline-xl text-on-primary mb-md leading-tight text-shadow-sm">Expert Car Care You Can Trust</h1>
+<p class="font-body-lg text-body-lg text-on-primary/90 mb-xl max-w-xl">
+                        Casablanca's premier destination for professional automotive repairs and maintenance. We combine advanced technology with decades of expertise.
+                    </p>
+<div class="flex flex-wrap gap-md">
+<button class="bg-secondary text-on-secondary px-xl py-md rounded-lg font-title-md text-title-md hover:bg-secondary-container transition-all flex items-center gap-sm">
+                            Book Appointment
+                            <span class="material-symbols-outlined">calendar_month</span>
+</button>
+<button class="glass-card text-primary px-xl py-md rounded-lg font-title-md text-title-md border border-primary/20 hover:bg-white transition-all">
+                            View Services
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Services Section -->
+<section class="py-xl bg-surface" id="services">
+<div class="max-w-7xl mx-auto px-lg">
+<div class="text-center mb-xl">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-sm">Our Specialized Services</h2>
+<div class="h-1 w-20 bg-secondary mx-auto"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-lg">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant p-lg rounded-xl hover:shadow-lg transition-shadow group">
+<div class="w-12 h-12 bg-primary/5 text-primary rounded-lg flex items-center justify-center mb-md group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-3xl">build</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface mb-sm">Mechanical Repairs</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">From engine overhauls to suspension tuning, we handle complex mechanical issues with surgical precision.</p>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant p-lg rounded-xl hover:shadow-lg transition-shadow group">
+<div class="w-12 h-12 bg-primary/5 text-primary rounded-lg flex items-center justify-center mb-md group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-3xl">terminal</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface mb-sm">Computerized Diagnostics</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Using state-of-the-art diagnostic tools to identify and resolve electronic faults across all vehicle makes.</p>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant p-lg rounded-xl hover:shadow-lg transition-shadow group">
+<div class="w-12 h-12 bg-primary/5 text-primary rounded-lg flex items-center justify-center mb-md group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-3xl">oil_barrel</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface mb-sm">Routine Maintenance</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Preventative care including oil changes, brake checks, and seasonal inspections to keep you moving safely.</p>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-container-lowest border border-outline-variant p-lg rounded-xl hover:shadow-lg transition-shadow group">
+<div class="w-12 h-12 bg-primary/5 text-primary rounded-lg flex items-center justify-center mb-md group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-3xl">format_paint</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface mb-sm">Body Work</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Expert dent removal, painting, and chassis realignment to restore your vehicle to its factory-new appearance.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Trust Section - Bento Grid Layout -->
+<section class="py-xl bg-background" id="trust">
+<div class="max-w-7xl mx-auto px-lg">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-lg h-full">
+<div class="lg:col-span-2 bg-primary p-xl rounded-xl text-on-primary flex flex-col justify-center">
+<h2 class="font-headline-lg text-headline-lg mb-md">Why Casablanca Trusts Sagman Garage</h2>
+<p class="font-body-lg text-body-lg text-on-primary/80 mb-lg">We've built our reputation on three core pillars that define every repair order we process.</p>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<div class="flex flex-col gap-xs">
+<span class="material-symbols-outlined text-secondary text-4xl mb-xs">verified_user</span>
+<span class="font-title-md text-title-md">Certified Technicians</span>
+</div>
+<div class="flex flex-col gap-xs">
+<span class="material-symbols-outlined text-secondary text-4xl mb-xs">receipt_long</span>
+<span class="font-title-md text-title-md">Transparent Pricing</span>
+</div>
+<div class="flex flex-col gap-xs">
+<span class="material-symbols-outlined text-secondary text-4xl mb-xs">page_footer</span>
+<span class="font-title-md text-title-md">Original Spare Parts</span>
+</div>
+</div>
+</div>
+<div class="relative min-h-[300px] overflow-hidden rounded-xl">
+<img class="absolute inset-0 w-full h-full object-cover" data-alt="A close-up shot of a technician's hands wearing black nitrile gloves, carefully inspecting a high-performance engine component with a professional torque wrench. The lighting is focused and dramatic, highlighting the metallic textures of the engine and the precision of the tools. The background is a clean, blue-toned workshop environment typical of Sagman Garage's modern aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDs-ax78Z_5zspbQlSg9B7ZBTb8UayglgAX4LxZYGPN8ZDOnZqPvBoEZRyGhc-4BkEKkJ-tm8SiuKQdUmVFDEkM5Yh_FgAOwiBeIDGmfO-qzJqivS-sq6wfL4SMhCQXOnOmmWlBkzi3GHcsmQePuk-tID5dhls-0Thj6PcFxYtsMrAjWxsHMkeWJDuFY-ZTrc0N3i-QQEwDjv6YH2k-YyM09YP55ds7K-Tbsa3uh2Mk9INaGIbut4Xu3Q"/>
+<div class="absolute inset-0 bg-secondary/20 mix-blend-multiply"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Testimonials -->
+<section class="py-xl bg-surface-container-low overflow-hidden" id="testimonials">
+<div class="max-w-7xl mx-auto px-lg">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-xl text-center">What Our Clients Say</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg">
+<!-- Testimonial 1 -->
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant relative">
+<span class="material-symbols-outlined text-primary/10 text-6xl absolute top-4 right-4">format_quote</span>
+<div class="flex items-center gap-sm mb-md">
+<div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center font-bold text-on-primary-fixed">YB</div>
+<div>
+<p class="font-title-md text-title-md text-on-surface">Youssef B.</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">BMW 3 Series Owner</p>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant italic leading-relaxed">
+                            "The diagnostic accuracy at Sagman is unmatched. They found an electrical fault two other shops missed. Truly professional service in Casablanca."
+                        </p>
+</div>
+<!-- Testimonial 2 -->
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant relative">
+<span class="material-symbols-outlined text-primary/10 text-6xl absolute top-4 right-4">format_quote</span>
+<div class="flex items-center gap-sm mb-md">
+<div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center font-bold text-on-primary-fixed">KA</div>
+<div>
+<p class="font-title-md text-title-md text-on-surface">Karim A.</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Fleet Manager</p>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant italic leading-relaxed">
+                            "Managing a fleet of 10 cars is easier with Sagman. Their reporting is detailed, and they always use original parts. Highly recommended."
+                        </p>
+</div>
+<!-- Testimonial 3 -->
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant relative">
+<span class="material-symbols-outlined text-primary/10 text-6xl absolute top-4 right-4">format_quote</span>
+<div class="flex items-center gap-sm mb-md">
+<div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center font-bold text-on-primary-fixed">SL</div>
+<div>
+<p class="font-title-md text-title-md text-on-surface">Sara L.</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Audi Q5 Owner</p>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant italic leading-relaxed">
+                            "Transparent pricing and friendly staff. They explained the repairs needed before starting any work. No hidden costs!"
+                        </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Contact/Footer Section -->
+<section class="bg-tertiary text-on-tertiary py-xl" id="contact">
+<div class="max-w-7xl mx-auto px-lg">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-xl">
+<div class="space-y-lg">
+<div>
+<h2 class="font-headline-lg text-headline-lg mb-sm">Visit Our Workshop</h2>
+<p class="font-body-md text-on-tertiary-container">Drop by for a consultation or a quick diagnostic check.</p>
+</div>
+<div class="space-y-md">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 bg-tertiary-container rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary-fixed">location_on</span>
+</div>
+<p class="font-body-lg">Boulevard Yacoub El Mansour, Casablanca 20100</p>
+</div>
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 bg-tertiary-container rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary-fixed">call</span>
+</div>
+<p class="font-body-lg">+212 522-123456</p>
+</div>
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 bg-tertiary-container rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary-fixed">mail</span>
+</div>
+<p class="font-body-lg">contact@sagman-garage.com</p>
+</div>
+</div>
+<div class="pt-md border-t border-tertiary-container flex gap-md">
+<a class="w-10 h-10 bg-tertiary-container rounded flex items-center justify-center hover:bg-primary transition-colors" href="#">
+<span class="material-symbols-outlined">face_nod</span>
+</a>
+<a class="w-10 h-10 bg-tertiary-container rounded flex items-center justify-center hover:bg-primary transition-colors" href="#">
+<span class="material-symbols-outlined">share</span>
+</a>
+<a class="w-10 h-10 bg-tertiary-container rounded flex items-center justify-center hover:bg-primary transition-colors" href="#">
+<span class="material-symbols-outlined">alternate_email</span>
+</a>
+</div>
+</div>
+<div class="rounded-xl overflow-hidden shadow-2xl h-[400px] border border-tertiary-container">
+<div class="w-full h-full bg-surface-container" data-location="Casablanca" style="">
+<img class="w-full h-full object-cover" data-alt="A detailed, modern map of the Casablanca city center focusing on the Boulevard Yacoub El Mansour district. The map uses a clean, dark-mode inspired color scheme with the Sagman Garage location highlighted by a vibrant red pin. Nearby landmarks are subtly labeled to provide geographical context, emphasizing the workshop's central and accessible location." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWYhAOPh9IG3eLPQAxEge3AurOnDcPNne20J9yQmIkG2S_PJnu7Vkc_HEgxWapHTXYUuVo_4c7Y8-nlRfHsAkeOS7OAPASx6yBmoLR1Aa-r8Sm2QmY52uVnZyk52B16zGECSSEda-j1x_5WBddU8vC7X0cXWCSoVvalxXadooBrWj_E5oOJkRbORFAgH4Qf5o5oa8wCVY5NtfTnAklwZUCEJ1g1LosKcSTNrIw2QI4hz6D7gr_MqIWNA"/>
+</div>
+</div>
+</div>
+<div class="mt-xl pt-lg border-t border-tertiary-container text-center">
+<p class="font-label-sm text-on-tertiary-container">© 2024 Sagman Garage. All rights reserved. Professional Automotive Solutions.</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Urgent Action FAB -->
+<div class="fixed bottom-lg right-lg z-50">
+<button class="bg-secondary text-on-secondary w-14 h-14 rounded-full shadow-2xl flex items-center justify-center group hover:w-48 transition-all duration-300 overflow-hidden">
+<span class="material-symbols-outlined text-3xl">emergency_home</span>
+<span class="max-w-0 group-hover:max-w-xs transition-all duration-300 opacity-0 group-hover:opacity-100 whitespace-nowrap ml-2 font-bold uppercase text-label-sm">Emergency Towing</span>
+</button>
+</div>
+<script>
+        // Smooth scroll for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Sticky Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('shadow-md', 'h-14');
+                header.classList.remove('h-16');
+            } else {
+                header.classList.remove('shadow-md', 'h-14');
+                header.classList.add('h-16');
+            }
+        });
+    </script>
+</body></html>

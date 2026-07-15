@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Cairo, Orbitron } from "next/font/google";
+import { Inter, Cairo } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { isRTL } from "@/i18n/routing";
@@ -17,17 +17,10 @@ const cairo = Cairo({
   display: "swap",
 });
 
-const orbitron = Orbitron({
-  subsets: ["latin"],
-  variable: "--font-orbitron",
-  display: "swap",
-  weight: ["400", "600", "700"],
-});
-
 export const metadata: Metadata = {
-  title: "Sagman — Gestion de Garage",
-  description: "Système de gestion de garage automobile Sagman",
-  icons: { icon: "/favicon.ico" },
+  title: "SAGMAN AUTO",
+  description: "Système de gestion de garage automobile SAGMAN AUTO",
+  icons: { icon: "/images/sagmanLogo.png" },
 };
 
 export default async function RootLayout({
@@ -41,8 +34,11 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} dir={dir} suppressHydrationWarning>
+      <head>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" />
+      </head>
       <body
-        className={`${inter.variable} ${cairo.variable} ${orbitron.variable} font-sans antialiased`}
+        className={`${inter.variable} ${cairo.variable} font-sans antialiased`}
       >
         <NextIntlClientProvider messages={messages} locale={locale}>
           {children}

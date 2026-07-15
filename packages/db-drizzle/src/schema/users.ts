@@ -10,6 +10,9 @@ export const users = sqliteTable('users', {
   phone: text('phone').unique(),
   specialty: text('specialty'),
   status: text('status', { enum: ['active', 'inactive'] }).notNull().default('active'),
+  cin: text('cin'),
+  address: text('address'),
+  imageUrl: text('image_url'),
   createdAt: text('created_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
 });
 
@@ -45,6 +48,7 @@ export const appointments = sqliteTable('appointments', {
   cancellationReason: text('cancellation_reason'),
   createdById: text('created_by').notNull(),
   notes: text('notes'),
+  carImageUrl: text('car_image_url'),
   deletedAt: text('deleted_at'),
   createdAt: text('created_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
 });
@@ -153,6 +157,7 @@ export const stockTransactions = sqliteTable('stock_transactions', {
   repairId: text('repair_id'),
   doneById: text('done_by').notNull(),
   note: text('note'),
+  receiptImageUrl: text('receipt_image_url'),
   createdAt: text('created_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
 }, (table) => ({
   partIdx: index('idx_stock_transactions_part').on(table.partId),
@@ -189,6 +194,8 @@ export const payments = sqliteTable('payments', {
   amountReceived: text('amount_received').notNull(),
   changeDue: text('change_due').notNull(),
   method: text('method').notNull().default('cash'),
+  paymentType: text('payment_type'),
+  checkImageUrl: text('check_image_url'),
   paidByName: text('paid_by_name'),
   receivedById: text('received_by').notNull(),
   invoiceNumber: text('invoice_number').notNull().unique(),
@@ -224,6 +231,16 @@ export const notificationLogs = sqliteTable('notification_logs', {
 export const systemSettings = sqliteTable('system_settings', {
   key: text('key').primaryKey(),
   value: text('value').notNull(),
+});
+
+export const reviews = sqliteTable('reviews', {
+  id: text('id').primaryKey(),
+  clientId: text('client_id').notNull(),
+  clientName: text('client_name').notNull(),
+  rating: text('rating').notNull().default('5'),
+  comment: text('comment'),
+  isVisible: text('is_visible').notNull().default('1'),
+  createdAt: text('created_at').notNull().default(sql`(CURRENT_TIMESTAMP)`),
 });
 
 export const invoiceCounters = sqliteTable('invoice_counters', {

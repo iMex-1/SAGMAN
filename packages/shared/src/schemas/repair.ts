@@ -30,6 +30,7 @@ export const UpdateRepairStatusSchema = z.object({
   note: z.string().max(500).optional(),
   reopenedReason: z.string().max(500).optional(),
   cancellationReason: z.string().max(500).optional(),
+  finalTotal: z.number().positive().optional(),
 });
 
 export const ClientApprovalSchema = z.object({

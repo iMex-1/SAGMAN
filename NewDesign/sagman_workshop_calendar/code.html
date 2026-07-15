@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GaragePro | Workshop Scheduler</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .calendar-grid-cols {
+            display: grid;
+            grid-template-columns: 80px repeat(6, 1fr);
+        }
+        .time-row {
+            height: 100px;
+            border-bottom: 1px solid #e0e3e5;
+        }
+        /* Custom scrollbar for data-heavy sections */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #c5c5d3; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #757682; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#eceef0",
+                        "outline-variant": "#c5c5d3",
+                        "tertiary-container": "#384055",
+                        "tertiary": "#222a3e",
+                        "secondary-container": "#e02928",
+                        "secondary": "#bb0112",
+                        "tertiary-fixed": "#dae2fd",
+                        "on-primary-fixed": "#00164e",
+                        "outline": "#757682",
+                        "tertiary-fixed-dim": "#bec6e0",
+                        "on-secondary-fixed-variant": "#93000b",
+                        "on-error-container": "#93000a",
+                        "surface-container-low": "#f2f4f6",
+                        "surface-container-high": "#e6e8ea",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#e0e3e5",
+                        "surface-bright": "#f7f9fb",
+                        "secondary-fixed": "#ffdad6",
+                        "on-tertiary-fixed-variant": "#3f465c",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed": "#410002",
+                        "surface": "#f7f9fb",
+                        "primary-fixed": "#dce1ff",
+                        "inverse-surface": "#2d3133",
+                        "surface-dim": "#d8dadc",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#90a8ff",
+                        "primary-container": "#1e3a8a",
+                        "primary": "#00236f",
+                        "on-surface": "#191c1e",
+                        "on-primary-fixed-variant": "#264191",
+                        "on-tertiary-fixed": "#131b2e",
+                        "on-tertiary-container": "#a4acc5",
+                        "secondary-fixed-dim": "#ffb4ab",
+                        "surface-tint": "#4059aa",
+                        "on-surface-variant": "#444651",
+                        "on-background": "#191c1e",
+                        "inverse-primary": "#b6c4ff",
+                        "background": "#f7f9fb",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#fffbff",
+                        "on-secondary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface-variant": "#e0e3e5",
+                        "primary-fixed-dim": "#b6c4ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "container-margin": "24px",
+                        "gutter": "16px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "title-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-xl": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "title-md": ["18px", { "lineHeight": "26px", "fontWeight": "600" }],
+                        "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen overflow-hidden">
+<!-- SideNavBar (from JSON) -->
+<aside class="h-screen w-64 fixed left-0 top-0 border-r border-outline-variant bg-surface-container-lowest flex flex-col py-lg px-md z-30">
+<div class="mb-xl">
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary">GaragePro</h1>
+<p class="text-label-sm text-outline">Casablanca Branch</p>
+</div>
+<nav class="flex-1 space-y-sm">
+<div class="flex items-center gap-md p-md rounded transition-colors cursor-pointer hover:bg-surface-container-low text-on-surface-variant">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</div>
+<!-- Active Tab: Calendar -->
+<div class="flex items-center gap-md p-md rounded transition-colors cursor-pointer text-primary font-bold border-r-4 border-primary">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-body-md">Calendar</span>
+</div>
+<div class="flex items-center gap-md p-md rounded transition-colors cursor-pointer hover:bg-surface-container-low text-on-surface-variant">
+<span class="material-symbols-outlined">build</span>
+<span class="font-body-md">Jobs</span>
+</div>
+<div class="flex items-center gap-md p-md rounded transition-colors cursor-pointer hover:bg-surface-container-low text-on-surface-variant">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-body-md">Inventory</span>
+</div>
+<div class="flex items-center gap-md p-md rounded transition-colors cursor-pointer hover:bg-surface-container-low text-on-surface-variant">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-body-md">Billing</span>
+</div>
+</nav>
+<button class="mt-lg mb-xl bg-primary text-on-primary py-sm px-md rounded-lg flex items-center justify-center gap-sm active:opacity-80 transition-all font-title-md">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+            New Appointment
+        </button>
+<div class="pt-lg border-t border-outline-variant space-y-sm">
+<div class="flex items-center gap-md p-md rounded transition-colors cursor-pointer hover:bg-surface-container-low text-on-surface-variant">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md">Settings</span>
+</div>
+<div class="flex items-center gap-md p-md rounded transition-colors cursor-pointer hover:bg-surface-container-low text-on-surface-variant">
+<span class="material-symbols-outlined">help</span>
+<span class="font-body-md">Support</span>
+</div>
+</div>
+</aside>
+<!-- TopAppBar (from JSON) -->
+<header class="fixed top-0 right-0 left-64 h-16 border-b border-outline-variant bg-surface flex justify-between items-center px-lg z-20">
+<div class="flex items-center gap-lg">
+<h2 class="font-headline-lg text-headline-lg font-bold text-primary">Workshop Scheduler</h2>
+<div class="relative w-80">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-xl pr-md py-xs bg-surface-container-low border border-outline-variant rounded-full text-body-md focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Search appointments..." type="text"/>
+</div>
+</div>
+<nav class="flex items-center gap-lg">
+<span class="text-on-surface-variant hover:text-primary transition-colors cursor-pointer active:scale-95">Month</span>
+<span class="text-primary border-b-2 border-primary pb-xs cursor-pointer">Week</span>
+<span class="text-on-surface-variant hover:text-primary transition-colors cursor-pointer active:scale-95">Day</span>
+<span class="text-on-surface-variant hover:text-primary transition-colors cursor-pointer active:scale-95">Agenda</span>
+</nav>
+<div class="flex items-center gap-md">
+<button class="bg-primary text-on-primary px-md py-xs rounded font-title-md flex items-center gap-xs">
+                Add Entry
+            </button>
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined p-xs hover:bg-surface-container-low rounded-full cursor-pointer text-on-surface-variant">notifications</span>
+<div class="flex items-center gap-sm cursor-pointer p-xs hover:bg-surface-container-low rounded">
+<span class="material-symbols-outlined text-outline">account_circle</span>
+<span class="text-on-surface font-title-md">Manager</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Layout -->
+<main class="pl-64 pt-16 h-screen flex overflow-hidden">
+<!-- Calendar Core Area -->
+<div class="flex-1 flex flex-col h-full bg-surface-bright">
+<!-- Calendar Controls -->
+<div class="p-md flex items-center justify-between border-b border-outline-variant">
+<div class="flex items-center gap-md">
+<h3 class="font-headline-lg text-primary">October 21 - 27, 2024</h3>
+<div class="flex border border-outline-variant rounded">
+<button class="p-xs hover:bg-surface-container border-r border-outline-variant"><span class="material-symbols-outlined">chevron_left</span></button>
+<button class="px-md py-xs font-title-md hover:bg-surface-container">Today</button>
+<button class="p-xs hover:bg-surface-container border-l border-outline-variant"><span class="material-symbols-outlined">chevron_right</span></button>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<div class="flex items-center gap-xs px-md py-xs bg-white border border-outline-variant rounded-full text-label-sm">
+<span class="w-3 h-3 rounded-full bg-primary"></span> Scheduled
+                    </div>
+<div class="flex items-center gap-xs px-md py-xs bg-white border border-outline-variant rounded-full text-label-sm">
+<span class="w-3 h-3 rounded-full bg-secondary"></span> Urgent
+                    </div>
+<div class="flex items-center gap-xs px-md py-xs bg-white border border-outline-variant rounded-full text-label-sm">
+<span class="w-3 h-3 rounded-full bg-yellow-500"></span> Awaiting Parts
+                    </div>
+</div>
+</div>
+<!-- Calendar Grid Container -->
+<div class="flex-1 overflow-y-auto overflow-x-hidden relative">
+<!-- Grid Headers -->
+<div class="calendar-grid-cols border-b border-outline-variant sticky top-0 bg-surface z-10">
+<div class="p-md text-outline text-label-sm uppercase tracking-wider text-center border-r border-outline-variant">Time</div>
+<div class="p-md text-on-surface text-center border-r border-outline-variant">
+<p class="text-label-sm uppercase text-outline">Mon</p>
+<p class="text-title-md font-bold">21</p>
+</div>
+<div class="p-md text-on-surface text-center border-r border-outline-variant bg-primary-fixed">
+<p class="text-label-sm uppercase text-primary">Tue</p>
+<p class="text-title-md font-bold text-primary">22</p>
+</div>
+<div class="p-md text-on-surface text-center border-r border-outline-variant">
+<p class="text-label-sm uppercase text-outline">Wed</p>
+<p class="text-title-md font-bold">23</p>
+</div>
+<div class="p-md text-on-surface text-center border-r border-outline-variant">
+<p class="text-label-sm uppercase text-outline">Thu</p>
+<p class="text-title-md font-bold">24</p>
+</div>
+<div class="p-md text-on-surface text-center border-r border-outline-variant">
+<p class="text-label-sm uppercase text-outline">Fri</p>
+<p class="text-title-md font-bold">25</p>
+</div>
+<div class="p-md text-on-surface text-center border-r border-outline-variant">
+<p class="text-label-sm uppercase text-outline">Sat</p>
+<p class="text-title-md font-bold">26</p>
+</div>
+</div>
+<!-- Grid Body -->
+<div class="relative calendar-grid-cols">
+<!-- Column Dividers -->
+<div class="absolute inset-0 grid grid-cols-7 pointer-events-none">
+<div class="border-r border-outline-variant"></div>
+<div class="border-r border-outline-variant"></div>
+<div class="border-r border-outline-variant"></div>
+<div class="border-r border-outline-variant"></div>
+<div class="border-r border-outline-variant"></div>
+<div class="border-r border-outline-variant"></div>
+<div class="border-r border-outline-variant"></div>
+</div>
+<!-- Time Slots & Appointments -->
+<div class="contents">
+<!-- 08:00 Row -->
+<div class="time-row p-md text-label-sm text-outline text-right pr-sm">08:00 AM</div>
+<div class="time-row relative p-xs group">
+<!-- Appointment Card -->
+<div class="bg-primary/10 border-l-4 border-primary rounded-lg p-sm h-full shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+<p class="text-primary font-bold text-label-sm truncate">Dacia Duster</p>
+<p class="text-outline-variant text-[10px]">12345 | A-2</p>
+<span class="bg-primary text-white text-[9px] px-sm py-0.5 rounded-full inline-block mt-xs">Scheduled</span>
+</div>
+</div>
+<div class="time-row relative p-xs"></div>
+<div class="time-row relative p-xs">
+<div class="bg-yellow-50 border-l-4 border-yellow-500 rounded-lg p-sm h-full shadow-sm">
+<p class="text-yellow-800 font-bold text-label-sm">VW Golf 8</p>
+<p class="text-yellow-600/70 text-[10px]">54321 | B-1</p>
+<span class="bg-yellow-500 text-white text-[9px] px-sm py-0.5 rounded-full inline-block mt-xs">Awaiting Parts</span>
+</div>
+</div>
+<div class="time-row relative p-xs"></div>
+<div class="time-row relative p-xs"></div>
+<div class="time-row relative p-xs"></div>
+<!-- 09:00 Row -->
+<div class="time-row p-md text-label-sm text-outline text-right pr-sm">09:00 AM</div>
+<div class="time-row relative p-xs"></div>
+<div class="time-row relative p-xs">
+<div class="bg-primary/10 border-l-4 border-primary rounded-lg p-sm h-full">
+<p class="text-primary font-bold text-label-sm">Range Rover Evoque</p>
+<p class="text-outline-variant text-[10px]">98765 | C-3</p>
+<span class="bg-primary text-white text-[9px] px-sm py-0.5 rounded-full inline-block mt-xs">Scheduled</span>
+</div>
+</div>
+<div class="time-row relative p-xs"></div>
+<div class="time-row relative p-xs"></div>
+<div class="time-row relative p-xs"></div>
+<div class="time-row relative p-xs"></div>
+<!-- 10:00 Row -->
+<div class="time-row p-md text-label-sm text-outline text-right pr-sm">10:00 AM</div>
+<div class="time-row relative p-xs"></div>
+<div class="time-row relative p-xs"></div>
+<div class="time-row relative p-xs">
+<div class="bg-red-50 border-l-4 border-secondary rounded-lg p-sm h-full">
+<p class="text-secondary font-bold text-label-sm">Peugeot 3008</p>
+<p class="text-red-300 text-[10px]">11223 | A-1</p>
+<span class="bg-secondary text-white text-[9px] px-sm py-0.5 rounded-full inline-block mt-xs">Urgent</span>
+</div>
+</div>
+<div class="time-row relative p-xs"></div>
+<div class="time-row relative p-xs"></div>
+<div class="time-row relative p-xs"></div>
+<!-- 11:00 Row -->
+<div class="time-row p-md text-label-sm text-outline text-right pr-sm">11:00 AM</div>
+<div class="time-row relative p-xs"></div>
+<div class="time-row relative p-xs"></div>
+<div class="time-row relative p-xs"></div>
+<div class="time-row relative p-xs"></div>
+<div class="time-row relative p-xs">
+<div class="bg-green-50 border-l-4 border-green-600 rounded-lg p-sm h-full">
+<p class="text-green-800 font-bold text-label-sm">Renault Clio</p>
+<p class="text-green-600/70 text-[10px]">66778 | B-4</p>
+<span class="bg-green-600 text-white text-[9px] px-sm py-0.5 rounded-full inline-block mt-xs">Complete</span>
+</div>
+</div>
+<div class="time-row relative p-xs"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Sidebar: Right Panel -->
+<aside class="w-80 border-l border-outline-variant bg-surface-container-lowest flex flex-col p-md gap-lg overflow-y-auto">
+<!-- Today's Quick Agenda -->
+<section>
+<div class="flex items-center justify-between mb-md">
+<h4 class="text-title-md font-bold text-on-surface">Today's Agenda</h4>
+<span class="bg-surface-container text-outline px-sm py-0.5 rounded-full text-label-sm">5 Total</span>
+</div>
+<div class="space-y-sm">
+<div class="bg-white border border-outline-variant p-md rounded-lg flex gap-md items-start">
+<div class="flex flex-col items-center">
+<span class="text-label-sm font-bold">08:30</span>
+<span class="text-outline text-[10px]">AM</span>
+</div>
+<div class="flex-1">
+<p class="font-bold text-body-md">Engine Checkup</p>
+<p class="text-outline text-label-sm">Toyota Hilux (ABC-123)</p>
+</div>
+</div>
+<div class="bg-white border border-outline-variant p-md rounded-lg flex gap-md items-start">
+<div class="flex flex-col items-center">
+<span class="text-label-sm font-bold">14:00</span>
+<span class="text-outline text-[10px]">PM</span>
+</div>
+<div class="flex-1">
+<p class="font-bold text-body-md">Brake Pad Replacement</p>
+<p class="text-outline text-label-sm">Hyundai i30 (XYZ-987)</p>
+</div>
+</div>
+</div>
+<button class="w-full mt-sm text-primary text-label-sm font-bold hover:underline py-xs">View all tasks →</button>
+</section>
+<!-- Pending Confirmations -->
+<section>
+<h4 class="text-title-md font-bold text-on-surface mb-md">Pending Confirmations</h4>
+<div class="space-y-sm">
+<div class="bg-surface-container-low rounded-lg p-md">
+<div class="flex justify-between items-start mb-sm">
+<div>
+<p class="font-bold text-body-md">Fatima Zahra</p>
+<p class="text-outline text-label-sm">Mercedes A-Class</p>
+</div>
+<span class="text-primary material-symbols-outlined text-md">chat</span>
+</div>
+<div class="flex gap-sm mt-md">
+<button class="flex-1 py-xs border border-outline-variant rounded bg-white text-label-sm font-bold hover:bg-surface-container transition-colors">Decline</button>
+<button class="flex-1 py-xs bg-primary text-on-primary rounded text-label-sm font-bold hover:opacity-90 transition-opacity">Confirm</button>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-lg p-md">
+<div class="flex justify-between items-start mb-sm">
+<div>
+<p class="font-bold text-body-md">Ahmed Alaoui</p>
+<p class="text-outline text-label-sm">Audi Q5</p>
+</div>
+<span class="text-primary material-symbols-outlined text-md">chat</span>
+</div>
+<div class="flex gap-sm mt-md">
+<button class="flex-1 py-xs border border-outline-variant rounded bg-white text-label-sm font-bold">Decline</button>
+<button class="flex-1 py-xs bg-primary text-on-primary rounded text-label-sm font-bold">Confirm</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Workshop Insights Card -->
+<section class="mt-auto">
+<div class="bg-tertiary text-on-tertiary p-lg rounded-xl relative overflow-hidden">
+<div class="relative z-10">
+<h5 class="font-headline-lg mb-xs">84%</h5>
+<p class="text-label-sm opacity-70">Capacity Utilized</p>
+<div class="w-full bg-tertiary-container h-2 rounded-full mt-lg overflow-hidden">
+<div class="bg-primary-container h-full w-[84%]"></div>
+</div>
+<p class="text-[10px] mt-md opacity-60">High demand today. Consider opening Bay 5.</p>
+</div>
+<!-- Subtle pattern -->
+<div class="absolute top-0 right-0 w-32 h-32 opacity-10 pointer-events-none">
+<span class="material-symbols-outlined text-[8rem]">settings</span>
+</div>
+</div>
+</section>
+</aside>
+</main>
+<!-- FAB for New Entry (Global context) -->
+<button class="fixed bottom-lg right-xl bg-secondary text-on-secondary w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:scale-105 active:scale-95 transition-all z-40">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">add</span>
+</button>
+<script>
+        // Simple Interaction logic
+        document.querySelectorAll('.time-row > div').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.classList.add('scale-[1.02]');
+            });
+            card.addEventListener('mouseleave', () => {
+                card.classList.remove('scale-[1.02]');
+            });
+        });
+    </script>
+</body></html>

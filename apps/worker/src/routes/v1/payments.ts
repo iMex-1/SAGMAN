@@ -27,11 +27,34 @@ interface D1PreparedStatement {
 }
 interface D1Result { success: boolean; meta?: any; }
 
+const VALID_PAYMENT_TYPES = ['cash', 'check', 'card', 'transfer'] as const;
+type PaymentType = typeof VALID_PAYMENT_TYPES[number];
+
 const payments = new Hono<AppBindings>();
 payments.use('/*', authenticate);
 
+// POST /payments/check-upload — Upload check image (base64 → R2)
+payments.post('/check-upload', authorize(['manager', 'overseer']), async (c) => {
+  const body = await c.req.json() as { image: string; mimeType?: string };
+
+  if (!body.image) throw Errors.BadRequest('image is required');
+
+  const base64 = body.image.replace(/^data:[^;]+;base64,/, '').replace(/\s/g, '');
+  const buffer = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
+  const key = `payment-checks/${crypto.randomUUID()}`;
+  const mimeType = body.mimeType ?? 'image/png';
+
+  await c.env.UPLOADS.put(key, buffer, {
+    httpMetadata: { contentType: mimeType },
+  });
+
+  const url = `${new URL(c.req.url).origin}/api/v1/uploads/serve/${key}`;
+
+  return c.json({ data: { url, key } }, 201);
+});
+
 // POST /payments
-payments.post('/', authorize(['manager']), async (c) => {
+payments.post('/', authorize(['manager', 'overseer']), async (c) => {
   const user = c.get('user');
   const body = await c.req.json() as any;
 
@@ -50,41 +73,56 @@ payments.post('/', authorize(['manager']), async (c) => {
     throw Errors.Conflict('Payment already registered for this repair');
   }
 
+  const paymentType: string = body.paymentType || 'cash';
+  if (!VALID_PAYMENT_TYPES.includes(paymentType as PaymentType)) {
+    throw Errors.ValidationError(`Invalid paymentType. Must be one of: ${VALID_PAYMENT_TYPES.join(', ')}`);
+  }
+  if (paymentType === 'check' && !body.checkImageUrl) {
+    throw Errors.ValidationError('checkImageUrl is required when paymentType is check');
+  }
+
   const invoiceNumber = await generateInvoiceNumber(c.env.DB as any);
-  const changeDue = body.amountReceived - body.amountBilled;
+  const amountBilled = parseFloat(body.amountBilled) || 0;
+  const amountReceived = parseFloat(body.amountReceived) || 0;
+  const changeDue = Math.max(0, amountReceived - amountBilled);
   const paymentId = crypto.randomUUID();
 
   await c.env.DB.prepare(
-    `INSERT INTO payments (id, repair_id, amount_billed, parts_total, labor_total, discount_amount, final_total, amount_received, change_due, method, paid_by_name, received_by, invoice_number, notes)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'cash', ?, ?, ?, ?)`,
+    `INSERT INTO payments (id, repair_id, amount_billed, parts_total, labor_total, discount_amount, final_total, amount_received, change_due, method, payment_type, check_image_url, paid_by_name, received_by, invoice_number, notes)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).bind(
-    paymentId, body.repairId, String(body.amountBilled),
+    paymentId, body.repairId, String(amountBilled),
     String(repair.parts_total ?? '0'), String(repair.labor_total ?? '0'),
-    String(body.discountAmount ?? 0), String(body.amountBilled),
-    String(body.amountReceived), String(changeDue),
+    String(body.discountAmount ?? 0), String(amountBilled),
+    String(amountReceived), String(changeDue),
+    paymentType,
+    paymentType,
+    body.checkImageUrl ?? null,
     body.paidByName ?? null, user.sub, invoiceNumber, body.notes ?? null,
   ).run();
 
   return c.json({
     data: {
       id: paymentId, repairId: body.repairId, invoiceNumber,
-      amountBilled: body.amountBilled, amountReceived: body.amountReceived, changeDue,
+      amountBilled, amountReceived, changeDue,
+      paymentType, checkImageUrl: body.checkImageUrl ?? null,
       receivedBy: { id: user.sub },
     },
   }, 201);
 });
 
 // GET /payments/invoice/:repairId
-payments.get('/invoice/:repairId', authorize(['manager']), async (c) => {
+payments.get('/invoice/:repairId', authorize(['manager', 'overseer']), async (c) => {
   const { repairId } = c.req.param();
 
   const repair = await c.env.DB.prepare(
     `SELECT rj.*, c.id as c_id, c.matricule, c.make, c.model, c.year, c.color,
             u.id as cl_id, u.name as cl_name, u.phone as cl_phone,
-            pm.id as pm_id, pm.invoice_number, pm.final_total, pm.amount_received,
-            pm.created_at as pm_created_at, pm.amount_billed, pm.parts_total as pm_parts_total,
-            pm.labor_total as pm_labor_total, pm.discount_amount as pm_discount_amount,
-            pm.change_due, pm.method, pm.paid_by_name, pm.notes as pm_notes,
+             pm.id as pm_id, pm.invoice_number, pm.final_total, pm.amount_received,
+             pm.created_at as pm_created_at, pm.amount_billed, pm.parts_total as pm_parts_total,
+             pm.labor_total as pm_labor_total, pm.discount_amount as pm_discount_amount,
+             pm.change_due, pm.method, pm.payment_type, pm.check_image_url,
+             pm.paid_by_name, pm.notes as pm_notes,
             mech.id as mech_id, mech.name as mech_name,
             creator.id as creator_id, creator.name as creator_name
      FROM repair_jobs rj
@@ -129,8 +167,9 @@ payments.get('/invoice/:repairId', authorize(['manager']), async (c) => {
         finalTotal: parseFloat(repair.final_total),
         amountReceived: parseFloat(repair.amount_received),
         changeDue: parseFloat(repair.change_due),
-        method: repair.method, paidByName: repair.paid_by_name,
-        notes: repair.pm_notes, createdAt: repair.pm_created_at,
+        method: repair.method, paymentType: repair.payment_type ?? repair.method,
+        checkImageUrl: repair.check_image_url ?? null,
+        paidByName: repair.paid_by_name, notes: repair.pm_notes, createdAt: repair.pm_created_at,
       },
       repair: { id: repair.id, description: repair.description, status: repair.status },
       car: { id: repair.c_id, matricule: repair.matricule, make: repair.make, model: repair.model, year: repair.year, color: repair.color },
@@ -193,8 +232,9 @@ payments.get('/repair/:repairId', authorize(['manager', 'mechanic']), async (c) 
       finalTotal: parseFloat(payment.final_total),
       amountReceived: parseFloat(payment.amount_received),
       changeDue: parseFloat(payment.change_due),
-      method: payment.method, paidByName: payment.paid_by_name,
-      notes: payment.notes, createdAt: payment.created_at,
+      method: payment.method, paymentType: payment.payment_type ?? payment.method,
+      checkImageUrl: payment.check_image_url ?? null,
+      paidByName: payment.paid_by_name, notes: payment.notes, createdAt: payment.created_at,
       receivedBy: { id: payment.rec_id, name: payment.rec_name },
       repair: {
         id: payment.repair_id, status: payment.status, description: payment.description,
@@ -213,7 +253,7 @@ payments.get('/repair/:repairId', authorize(['manager', 'mechanic']), async (c) 
 });
 
 // GET /payments/:id
-payments.get('/:id', authorize(['manager']), async (c) => {
+payments.get('/:id', authorize(['manager', 'overseer']), async (c) => {
   const { id } = c.req.param();
 
   const payment = await c.env.DB.prepare(
@@ -252,8 +292,9 @@ payments.get('/:id', authorize(['manager']), async (c) => {
       finalTotal: parseFloat(payment.final_total),
       amountReceived: parseFloat(payment.amount_received),
       changeDue: parseFloat(payment.change_due),
-      method: payment.method, paidByName: payment.paid_by_name,
-      notes: payment.notes, createdAt: payment.created_at,
+      method: payment.method, paymentType: payment.payment_type ?? payment.method,
+      checkImageUrl: payment.check_image_url ?? null,
+      paidByName: payment.paid_by_name, notes: payment.notes, createdAt: payment.created_at,
       receivedBy: { id: payment.received_by, name: payment.rec_name },
       repair: {
         id: payment.repair_id, status: payment.status, description: payment.description,

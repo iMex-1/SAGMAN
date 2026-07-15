@@ -5,11 +5,8 @@ import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { api, ApiError } from '@/lib/api-client'
 import { authStorage } from '@/lib/auth'
-import {
-  Car, ArrowLeft, CheckCircle, Clock, AlertTriangle,
-  Phone, MessageCircle, Loader2, FileText,
-  Wrench, Package, User,
-} from 'lucide-react'
+import { Icon } from '@/components/ui/icon'
+import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -58,21 +55,11 @@ interface PortalRepair {
   }
   primaryMechanic: { name: string }
   statusLogs: StatusLog[]
+  carImageUrl?: string
   payment?: { invoiceNumber: string; finalTotal: number; createdAt: string }
 }
 
 // ─── Status labels & step mapping ─────────────────────────────────────────────
-
-const STATUS_LABELS: Record<string, string> = {
-  received:          'Véhicule reçu',
-  diagnosing:        'Diagnostic en cours',
-  awaiting_approval: 'En attente de votre accord',
-  in_progress:       'Réparation en cours',
-  waiting_for_parts: 'En attente de pièces',
-  complete:          '✓ Votre véhicule est prêt !',
-  delivered:         'Véhicule livré',
-  cancelled:         'Réparation annulée',
-}
 
 const STATUS_TO_STEP: Record<string, number> = {
   received:          0,
@@ -86,35 +73,31 @@ const STATUS_TO_STEP: Record<string, number> = {
 }
 
 const SEVERITY_STYLES: Record<string, string> = {
-  Minor:    'bg-green-50 text-green-700 border-green-200',
-  Moderate: 'bg-amber-50 text-amber-700 border-amber-200',
-  Critical: 'bg-red-50 text-red-700 border-red-200',
-}
-
-const SEVERITY_LABELS: Record<string, string> = {
-  Minor:    'Mineur',
-  Moderate: 'Modéré',
-  Critical: 'Critique',
+  Minor:    'bg-success-container text-on-success-container border-success/30',
+  Moderate: 'bg-warning-container text-on-warning-container border-warning/30',
+  Critical: 'bg-error-container text-on-error-container border-error/30',
 }
 
 // ─── Stepper ──────────────────────────────────────────────────────────────────
 
 const REPAIR_STEPS = [
-  { id: 'received',   label: 'Reçu',       icon: Car       },
-  { id: 'diagnosing', label: 'Diagnostic', icon: FileText  },
-  { id: 'in_progress',label: 'Réparation', icon: Wrench    },
-  { id: 'complete',   label: 'Terminé',    icon: CheckCircle },
-  { id: 'delivered',  label: 'Livré',      icon: Package   },
+  { id: 'received',   labelKey: 'received',   icon: 'directions_car' },
+  { id: 'diagnosing', labelKey: 'diagnosing', icon: 'description'    },
+  { id: 'in_progress',labelKey: 'in_progress',icon: 'build'          },
+  { id: 'complete',   labelKey: 'complete',   icon: 'check_circle'   },
+  { id: 'delivered',  labelKey: 'delivered',  icon: 'inventory_2'    },
 ]
 
 function RepairStepper({ status }: { status: string }) {
+  const t = useTranslations()
   const currentStep = STATUS_TO_STEP[status] ?? 0
   const isCancelled = status === 'cancelled'
 
   if (isCancelled) {
     return (
-      <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-center text-sm font-medium text-destructive">
-        ✕ Cette réparation a été annulée
+      <div className="rounded-xl border border-error/30 bg-error-container p-4 text-center text-sm font-medium text-on-error-container">
+        <Icon name="close" size={16} className="inline mr-1" />
+        {t('portal.repairStatus.cancelled')}
       </div>
     )
   }
@@ -122,13 +105,12 @@ function RepairStepper({ status }: { status: string }) {
   return (
     <div className="relative">
       {/* Vertical connector — mobile only */}
-      <div className="absolute left-5 top-5 h-[calc(100%-2.5rem)] w-0.5 bg-border md:hidden" />
+      <div className="absolute left-5 top-5 h-[calc(100%-2.5rem)] w-0.5 bg-outline-variant md:hidden" />
 
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         {REPAIR_STEPS.map((step, i) => {
           const isDone    = i < currentStep
           const isCurrent = i === currentStep
-          const Icon      = step.icon
 
           return (
             <div
@@ -138,12 +120,12 @@ function RepairStepper({ status }: { status: string }) {
               <div
                 className={cn(
                   'relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 transition-all',
-                  isDone    ? 'border-primary bg-primary text-white'        :
-                  isCurrent ? 'border-primary bg-primary/10 text-primary'  :
-                              'border-muted bg-muted text-muted-foreground',
+                  isDone    ? 'border-primary bg-primary text-white'             :
+                  isCurrent ? 'border-primary bg-primary-container text-on-primary-container'  :
+                              'border-outline-variant bg-surface-container-low text-on-surface-variant',
                 )}
               >
-                {isDone ? <CheckCircle className="h-5 w-5" /> : <Icon className="h-4 w-4" />}
+                {isDone ? <Icon name="check_circle" size={20} /> : <Icon name={step.icon} size={16} />}
                 {isCurrent && (
                   <span className="absolute -inset-1 animate-ping rounded-full bg-primary opacity-20" />
                 )}
@@ -151,10 +133,10 @@ function RepairStepper({ status }: { status: string }) {
               <span
                 className={cn(
                   'text-sm font-medium md:text-center',
-                  isDone || isCurrent ? 'text-foreground' : 'text-muted-foreground',
+                  isDone || isCurrent ? 'text-primary' : 'text-on-surface-variant',
                 )}
               >
-                {step.label}
+                {t('repair.status.' + step.labelKey)}
               </span>
             </div>
           )
@@ -166,25 +148,40 @@ function RepairStepper({ status }: { status: string }) {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
+interface GarageSettings {
+  garage_phone?: string
+}
+
+interface GarageSettings {
+  garage_phone?: string
+}
+
 export default function PortalRepairPage() {
+  const t = useTranslations()
   const { id } = useParams() as { id: string }
   const router  = useRouter()
   const [repair,  setRepair]  = useState<PortalRepair | null>(null)
   const [loading, setLoading] = useState(true)
+  const [settings, setSettings] = useState<GarageSettings>({})
   const [error,   setError]   = useState<string | null>(null)
+  const [carImageError, setCarImageError] = useState(false)
 
   const loadRepair = useCallback(async () => {
     const token = authStorage.getAccessToken()
     if (!token) { router.push('/portal/login'); return }
     try {
-      const res = await api.get<{ data: PortalRepair }>(`/portal/repairs/${id}`)
-      setRepair(res.data)
+      const [repairRes, settingsRes] = await Promise.all([
+        api.get<{ data: PortalRepair }>(`/portal/repairs/${id}`),
+        api.get<{ data: GarageSettings }>('/settings/public').catch(() => ({ data: {} })),
+      ])
+      setRepair(repairRes.data)
+      setSettings(settingsRes.data ?? {})
     } catch (err) {
       if (err instanceof ApiError && err.statusCode === 401) {
         authStorage.clear()
         router.push('/portal/login')
       } else {
-        setError('Réparation introuvable')
+        setError(t('portal.repairStatus.notFound'))
       }
     } finally {
       setLoading(false)
@@ -197,7 +194,7 @@ export default function PortalRepairPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <Icon name="sync" size={32} className="animate-spin text-primary" />
       </div>
     )
   }
@@ -206,14 +203,14 @@ export default function PortalRepairPage() {
   if (error || !repair) {
     return (
       <div className="py-20 text-center">
-        <AlertTriangle className="mx-auto mb-3 h-10 w-10 text-muted-foreground/30" />
-        <p className="font-semibold text-foreground">{error ?? 'Réparation introuvable'}</p>
+        <Icon name="warning" size={40} className="mx-auto mb-3 text-on-surface-variant/30" />
+        <p className="font-title-md text-title-md text-primary">{error ?? t('portal.repairStatus.notFound')}</p>
         <Link
           href="/portal/cars"
           className="mt-4 inline-flex items-center gap-1 text-sm text-primary hover:underline"
         >
-          <ArrowLeft className="h-4 w-4" />
-          Retour à mes véhicules
+          <Icon name="arrow_back" size={16} />
+          {t('portal.repairStatus.backToCars')}
         </Link>
       </div>
     )
@@ -226,25 +223,34 @@ export default function PortalRepairPage() {
       {/* Back */}
       <Link
         href="/portal/cars"
-        className="flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+        className="flex items-center gap-1.5 text-sm text-on-surface-variant transition-colors hover:text-primary"
       >
-        <ArrowLeft className="h-4 w-4" />
-        Mes véhicules
+        <Icon name="arrow_back" size={16} />
+        {t('portal.repairStatus.backToCars')}
       </Link>
 
       {/* ── Car header card ─────────────────────────────────────────────── */}
       <div className="rounded-2xl bg-primary p-5 text-white shadow-lg">
         <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/15">
-            <Car className="h-6 w-6" />
-          </div>
+          {repair.carImageUrl && !carImageError ? (
+            <img
+              src={repair.carImageUrl}
+              alt={`${repair.car.make} ${repair.car.model}`}
+              className="h-16 w-16 rounded-xl object-cover"
+              onError={() => setCarImageError(true)}
+            />
+          ) : (
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-on-primary/15">
+              <Icon name="directions_car" size={24} />
+            </div>
+          )}
           <div>
             <p className="text-lg font-black leading-tight">
               {repair.car.make} {repair.car.model}
             </p>
-            <p className="font-mono text-sm text-blue-200">{repair.car.matricule}</p>
+            <p className="font-mono text-sm text-on-primary-container">{repair.car.matricule}</p>
             {repair.car.year && (
-              <p className="text-xs text-blue-300">
+              <p className="text-xs text-on-primary-container/70">
                 {repair.car.year}
                 {repair.car.color ? ` · ${repair.car.color}` : ''}
               </p>
@@ -255,16 +261,17 @@ export default function PortalRepairPage() {
           <div
             className={cn(
               'rounded-full px-3 py-1 text-xs font-bold',
-              repair.status === 'complete'  ? 'bg-emerald-400 text-white' :
-              repair.status === 'cancelled' ? 'bg-red-400 text-white'     :
-                                             'bg-white/20 text-white',
+              repair.status === 'complete'  ? 'bg-success text-on-success' :
+              repair.status === 'cancelled' ? 'bg-error text-on-error'     :
+                                              'bg-on-primary/20 text-on-primary',
             )}
           >
-            {STATUS_LABELS[repair.status] ?? repair.status}
+            {t('repair.status.' + repair.status) ?? repair.status}
           </div>
           {repair.isOverdue && (
-            <div className="overdue-pulse rounded-full bg-red-500 px-3 py-1 text-xs font-bold text-white">
-              ⚠ En retard
+            <div className="overdue-pulse rounded-full bg-error px-3 py-1 text-xs font-bold text-on-error">
+              <Icon name="warning" size={12} className="inline mr-1" />
+              {t('portal.repairStatus.overdue')}
             </div>
           )}
         </div>
@@ -272,40 +279,40 @@ export default function PortalRepairPage() {
 
       {/* ── Ready-for-pickup banner ──────────────────────────────────────── */}
       {isComplete && (
-        <div className="rounded-2xl border-2 border-emerald-300 bg-emerald-50 p-5 text-center">
-          <div className="mb-2 text-3xl">🎉</div>
-          <h2 className="text-lg font-black text-emerald-800">Votre véhicule est prêt !</h2>
-          <p className="mt-1 text-sm text-emerald-700">
-            Vous pouvez venir le récupérer pendant nos heures d&apos;ouverture.
+        <div className="rounded-2xl border-2 border-success/50 bg-success-container p-5 text-center">
+          <Icon name="celebration" size={32} className="mx-auto mb-2 text-on-success-container" />
+          <h2 className="font-headline-lg text-headline-lg text-on-success-container">{t('portal.repairStatus.readyTitle')}</h2>
+          <p className="mt-1 text-body-md font-body-md text-on-success-container/80">
+            {t('portal.repairStatus.readyDesc')}
           </p>
-          {repair.finalTotal > 0 && (
-            <p className="mt-2 text-base font-bold text-emerald-800">
-              Montant à régler : {Number(repair.finalTotal).toFixed(2)} DH
+          {repair.status === "delivered" && repair.finalTotal > 0 && (
+            <p className="mt-2 font-title-md text-title-md text-on-success-container">
+              {t('portal.repairStatus.amountPaid', { amount: Number(repair.finalTotal).toFixed(2) })}
             </p>
           )}
         </div>
       )}
 
       {/* ── Progress stepper ────────────────────────────────────────────── */}
-      <div className="rounded-2xl border bg-white p-5 shadow-card">
-        <h2 className="mb-5 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-          Progression
+      <div className="bg-white border border-outline-variant rounded-xl shadow-sm p-5">
+        <h2 className="mb-5 text-label-sm font-label-sm uppercase tracking-wider text-on-surface-variant">
+          {t('portal.repairStatus.progression')}
         </h2>
         <RepairStepper status={repair.status} />
       </div>
 
       {/* ── Repair details ──────────────────────────────────────────────── */}
-      <div className="space-y-3 rounded-2xl border bg-white p-5 shadow-card">
-        <h2 className="font-bold text-foreground">Détails de la réparation</h2>
+      <div className="space-y-3 bg-white border border-outline-variant rounded-xl shadow-sm p-5">
+        <h2 className="font-title-md text-title-md text-primary">{t('portal.repairStatus.details')}</h2>
         <div className="space-y-3 text-sm">
           <div className="flex justify-between gap-4">
-            <span className="shrink-0 text-muted-foreground">Problème signalé</span>
-            <span className="text-right font-medium">{repair.description}</span>
+            <span className="shrink-0 text-on-surface-variant">{t('portal.repairStatus.reportedProblem')}</span>
+            <span className="text-right font-medium text-primary">{repair.description}</span>
           </div>
           {repair.targetCompletionDate && (
             <div className="flex justify-between gap-4">
-              <span className="shrink-0 text-muted-foreground">Date prévue</span>
-              <span className={cn('font-medium', repair.isOverdue ? 'text-destructive' : '')}>
+              <span className="shrink-0 text-on-surface-variant">{t('portal.repairStatus.expectedDate')}</span>
+              <span className={cn('font-medium', repair.isOverdue ? 'text-error' : '')}>
                 {new Date(repair.targetCompletionDate).toLocaleDateString('fr-FR', {
                   weekday: 'short',
                   day: '2-digit',
@@ -317,8 +324,8 @@ export default function PortalRepairPage() {
           )}
           {repair.actualCompletionDate && (
             <div className="flex justify-between gap-4">
-              <span className="shrink-0 text-muted-foreground">Terminé le</span>
-              <span className="font-medium text-emerald-600">
+              <span className="shrink-0 text-on-surface-variant">{t('portal.repairStatus.completedDate')}</span>
+              <span className="font-medium text-success">
                 {new Date(repair.actualCompletionDate).toLocaleDateString('fr-FR', {
                   day: '2-digit',
                   month: 'short',
@@ -328,15 +335,15 @@ export default function PortalRepairPage() {
             </div>
           )}
           <div className="flex justify-between gap-4">
-            <span className="flex shrink-0 items-center gap-1 text-muted-foreground">
-              <User className="h-3.5 w-3.5" />
-              Mécanicien
+            <span className="flex shrink-0 items-center gap-1 text-on-surface-variant">
+              <Icon name="person" size={14} />
+              {t('portal.repairStatus.mechanic')}
             </span>
-            <span className="font-medium">{repair.primaryMechanic.name}</span>
+            <span className="font-medium text-primary">{repair.primaryMechanic.name}</span>
           </div>
           <div className="flex justify-between gap-4">
-            <span className="shrink-0 text-muted-foreground">Date d&apos;entrée</span>
-            <span className="font-medium">
+            <span className="shrink-0 text-on-surface-variant">{t('portal.repairStatus.entryDate')}</span>
+            <span className="font-medium text-primary">
               {new Date(repair.createdAt).toLocaleDateString('fr-FR', {
                 day: '2-digit',
                 month: 'short',
@@ -349,27 +356,27 @@ export default function PortalRepairPage() {
 
       {/* ── Diagnosis report (if shared) ────────────────────────────────── */}
       {repair.diagnosisShared && repair.diagnosisReport && (
-        <div className="space-y-4 rounded-2xl border bg-white p-5 shadow-card">
-          <h2 className="font-bold text-foreground">Résultat du diagnostic</h2>
+        <div className="space-y-4 bg-white border border-outline-variant rounded-xl shadow-sm p-5">
+          <h2 className="font-title-md text-title-md text-primary">{t('portal.repairStatus.diagnosisTitle')}</h2>
 
           {repair.diagnosisReport.issues.length > 0 && (
             <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Problèmes identifiés
+              <p className="text-label-sm font-label-sm uppercase tracking-wider text-on-surface-variant">
+                {t('portal.repairStatus.issuesIdentified')}
               </p>
               {repair.diagnosisReport.issues.map((issue, i) => (
                 <div
                   key={i}
                   className={cn(
                     'flex items-start gap-2 rounded-lg border px-3 py-2.5 text-sm',
-                    SEVERITY_STYLES[issue.severity] ?? 'bg-muted',
+                    SEVERITY_STYLES[issue.severity] ?? 'bg-surface-container-low',
                   )}
                 >
-                  <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+                  <Icon name="warning" size={16} className="mt-0.5 shrink-0" />
                   <div>
                     <span>{issue.description}</span>
                     <span className="ml-2 text-xs font-semibold">
-                      ({SEVERITY_LABELS[issue.severity] ?? issue.severity})
+                      ({t('repair.diagnosisSections.severity.' + issue.severity) ?? issue.severity})
                     </span>
                   </div>
                 </div>
@@ -379,10 +386,10 @@ export default function PortalRepairPage() {
 
           {repair.diagnosisReport.recommendedRepairs && (
             <div>
-              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Travaux recommandés
+              <p className="mb-2 text-label-sm font-label-sm uppercase tracking-wider text-on-surface-variant">
+                {t('portal.repairStatus.recommendedWork')}
               </p>
-              <p className="rounded-lg bg-muted/40 p-3 text-sm text-foreground">
+              <p className="rounded-lg bg-surface-container-low p-3 text-sm text-primary">
                 {repair.diagnosisReport.recommendedRepairs}
               </p>
             </div>
@@ -390,36 +397,29 @@ export default function PortalRepairPage() {
 
           {repair.diagnosisReport.additionalNotes && (
             <div>
-              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Notes du technicien
+              <p className="mb-2 text-label-sm font-label-sm uppercase tracking-wider text-on-surface-variant">
+                {t('portal.repairStatus.technicianNotes')}
               </p>
-              <p className="rounded-lg bg-muted/40 p-3 text-sm text-muted-foreground">
+              <p className="rounded-lg bg-surface-container-low p-3 text-sm text-on-surface-variant">
                 {repair.diagnosisReport.additionalNotes}
               </p>
             </div>
           )}
 
-          {(repair.estimatedCost ?? 0) > 0 && (
-            <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3">
-              <p className="text-xs text-muted-foreground">Estimation du coût</p>
-              <p className="text-xl font-black text-primary">
-                {Number(repair.estimatedCost).toFixed(2)} DH
-              </p>
-            </div>
-          )}
+          {/* Price estimation hidden from client until final receipt */}
         </div>
       )}
 
       {/* ── Invoice ─────────────────────────────────────────────────────── */}
       {repair.payment && (
-        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 shadow-card">
+        <div className="rounded-2xl border border-success/30 bg-success-container p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-emerald-600">
-                Facture
+              <p className="mb-1 text-label-sm font-label-sm uppercase tracking-wider text-on-success-container/70">
+                {t('portal.repairStatus.invoice')}
               </p>
-              <p className="font-mono font-bold text-foreground">{repair.payment.invoiceNumber}</p>
-              <p className="mt-0.5 text-sm text-muted-foreground">
+              <p className="font-mono font-bold text-primary">{repair.payment.invoiceNumber}</p>
+              <p className="mt-0.5 text-sm text-on-surface-variant">
                 {new Date(repair.payment.createdAt).toLocaleDateString('fr-FR', {
                   day: '2-digit',
                   month: 'short',
@@ -428,12 +428,13 @@ export default function PortalRepairPage() {
               </p>
             </div>
             <div className="text-right">
-              <p className="text-xs text-muted-foreground">Montant</p>
-              <p className="text-xl font-black text-foreground">
+              <p className="text-xs text-on-surface-variant">{t('portal.repairStatus.amount')}</p>
+              <p className="text-xl font-black text-primary">
                 {Number(repair.payment.finalTotal).toFixed(2)} DH
               </p>
-              <span className="mt-1 inline-block rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-bold text-white">
-                ✓ PAYÉ
+              <span className="mt-1 inline-block rounded-full bg-success px-2 py-0.5 text-[10px] font-bold text-on-success">
+                <Icon name="check_circle" size={10} className="inline mr-0.5" />
+                {t('portal.repairStatus.paymentStatus')}
               </span>
             </div>
           </div>
@@ -442,27 +443,27 @@ export default function PortalRepairPage() {
 
       {/* ── Status timeline ──────────────────────────────────────────────── */}
       {repair.statusLogs.length > 0 && (
-        <div className="rounded-2xl border bg-white p-5 shadow-card">
-          <h2 className="mb-4 font-bold text-foreground">Historique</h2>
+        <div className="bg-white border border-outline-variant rounded-xl shadow-sm p-5">
+          <h2 className="mb-4 font-title-md text-title-md text-primary">{t('portal.repairStatus.history')}</h2>
           <div className="space-y-3">
             {[...repair.statusLogs].reverse().map((log, i) => (
               <div key={log.id} className="flex items-start gap-3">
                 <div
                   className={cn(
                     'mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold',
-                    i === 0 ? 'bg-primary text-white' : 'bg-muted text-muted-foreground',
+                    i === 0 ? 'bg-primary text-white' : 'bg-surface-container-low text-on-surface-variant',
                   )}
                 >
                   {repair.statusLogs.length - i}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-foreground">
-                    {STATUS_LABELS[log.toStatus] ?? log.toStatus}
+                  <p className="text-sm font-medium text-primary">
+                    {t('repair.status.' + log.toStatus) ?? log.toStatus}
                   </p>
                   {log.note && (
-                    <p className="mt-0.5 text-xs text-muted-foreground">{log.note}</p>
+                    <p className="mt-0.5 text-xs text-on-surface-variant">{log.note}</p>
                   )}
-                  <p className="mt-0.5 text-xs text-muted-foreground">
+                  <p className="mt-0.5 text-xs text-on-surface-variant">
                     {new Date(log.createdAt).toLocaleString('fr-FR', {
                       day: '2-digit',
                       month: 'short',
@@ -480,24 +481,24 @@ export default function PortalRepairPage() {
       )}
 
       {/* ── Contact garage ───────────────────────────────────────────────── */}
-      <div className="rounded-2xl border bg-white p-5 shadow-card">
-        <h2 className="mb-3 font-bold text-foreground">Une question ?</h2>
+      <div className="bg-white border border-outline-variant rounded-xl shadow-sm p-5">
+        <h2 className="mb-3 font-title-md text-title-md text-primary">{t('portal.repairStatus.question')}</h2>
         <div className="flex gap-3">
           <a
-            href="tel:+212000000000"
-            className="flex flex-1 items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-accent"
+            href={`tel:${settings.garage_phone ?? '+2126947222954'}`}
+            className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-outline-variant px-4 py-3 text-sm font-semibold text-primary transition-colors hover:bg-surface-container"
           >
-            <Phone className="h-4 w-4 text-primary" />
-            Appeler
+            <Icon name="call" size={16} />
+            {t('portal.repairStatus.call')}
           </a>
           <a
-            href="https://wa.me/212000000000"
+            href={`https://wa.me/${(settings.garage_phone ?? '+2126947222954').replace(/\D/g, '')}?text=${encodeURIComponent(t('portal.repairStatus.whatsappMessage', { matricule: repair?.car?.matricule ?? '' }))}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-green-500 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-green-400"
+            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-success px-4 py-3 text-sm font-semibold text-on-success transition-colors hover:bg-success/90"
           >
-            <MessageCircle className="h-4 w-4" />
-            WhatsApp
+            <Icon name="chat" size={16} />
+            {t('portal.repairStatus.whatsapp')}
           </a>
         </div>
       </div>

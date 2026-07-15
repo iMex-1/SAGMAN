@@ -1,4 +1,5 @@
 'use client'
+import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
 
 const PRIORITY_STYLES: Record<string, string> = {
@@ -8,14 +9,8 @@ const PRIORITY_STYLES: Record<string, string> = {
   emergency: 'bg-red-100 text-red-700 font-bold',
 }
 
-const PRIORITY_LABELS: Record<string, string> = {
-  low: 'Low',
-  normal: 'Normal',
-  high: 'High',
-  emergency: '🚨 Emergency',
-}
-
 export function PriorityBadge({ priority }: { priority: string }) {
+  const t = useTranslations()
   return (
     <span
       className={cn(
@@ -23,7 +18,7 @@ export function PriorityBadge({ priority }: { priority: string }) {
         PRIORITY_STYLES[priority] ?? '',
       )}
     >
-      {PRIORITY_LABELS[priority] ?? priority}
+      {t(`repair.priority.${priority}`)}
     </span>
   )
 }

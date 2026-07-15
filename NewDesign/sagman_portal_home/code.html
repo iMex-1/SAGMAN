@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sagman Garage | Professional Automotive Services</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline": "#757682",
+                    "on-secondary-fixed-variant": "#93000b",
+                    "surface-tint": "#4059aa",
+                    "primary-fixed-dim": "#b6c4ff",
+                    "on-secondary-container": "#fffbff",
+                    "surface-variant": "#e0e3e5",
+                    "on-primary-fixed-variant": "#264191",
+                    "on-surface": "#191c1e",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#3f465c",
+                    "tertiary-container": "#384055",
+                    "on-error": "#ffffff",
+                    "primary-fixed": "#dce1ff",
+                    "primary": "#00236f",
+                    "inverse-surface": "#2d3133",
+                    "surface-dim": "#d8dadc",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-primary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "tertiary": "#222a3e",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-primary": "#b6c4ff",
+                    "tertiary-fixed-dim": "#bec6e0",
+                    "surface-container": "#eceef0",
+                    "secondary-fixed": "#ffdad6",
+                    "background": "#f7f9fb",
+                    "on-primary-container": "#90a8ff",
+                    "on-background": "#191c1e",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-container": "#a4acc5",
+                    "secondary": "#bb0112",
+                    "secondary-container": "#e02928",
+                    "on-primary-fixed": "#00164e",
+                    "outline-variant": "#c5c5d3",
+                    "on-surface-variant": "#444651",
+                    "inverse-on-surface": "#eff1f3",
+                    "surface-container-high": "#e6e8ea",
+                    "on-tertiary-fixed": "#131b2e",
+                    "surface-container-low": "#f2f4f6",
+                    "surface": "#f7f9fb",
+                    "primary-container": "#1e3a8a",
+                    "on-secondary-fixed": "#410002",
+                    "surface-bright": "#f7f9fb",
+                    "tertiary-fixed": "#dae2fd",
+                    "secondary-fixed-dim": "#ffb4ab",
+                    "error": "#ba1a1a",
+                    "error-container": "#ffdad6"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "lg": "24px",
+                    "container-margin": "24px",
+                    "gutter": "16px",
+                    "xs": "4px",
+                    "sm": "8px",
+                    "xl": "32px",
+                    "md": "16px",
+                    "base": "4px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "title-md": ["Inter"],
+                    "headline-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-xl": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "title-md": ["18px", {"lineHeight": "26px", "fontWeight": "600"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #f7f9fb 0%, #e0e3e5 100%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(224, 227, 229, 0.5);
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-x-hidden">
+<!-- TopNavBar -->
+<nav class="flex justify-between items-center px-lg py-md w-full sticky top-0 z-50 bg-white dark:bg-surface-container border-b border-outline-variant dark:border-outline">
+<div class="flex items-center gap-md">
+<span class="font-headline-lg text-headline-lg font-black text-primary dark:text-primary-fixed">Sagman Garage</span>
+</div>
+<div class="hidden md:flex items-center gap-xl">
+<a class="text-primary dark:text-primary-fixed-dim font-bold font-title-md text-title-md hover:text-primary transition-colors" href="#">Home</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-title-md text-title-md hover:text-primary transition-colors" href="#services">Services</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-title-md text-title-md hover:text-primary transition-colors" href="#track">Track Repair</a>
+</div>
+<div class="flex items-center gap-md">
+<button class="bg-primary text-on-primary px-lg py-sm rounded-lg font-title-md text-title-md hover:opacity-90 transition-all active:scale-95">
+                New Repair/Appointment
+            </button>
+<div class="flex gap-sm">
+<span class="material-symbols-outlined text-on-surface-variant p-sm hover:bg-surface-container rounded-full cursor-pointer">notifications</span>
+<span class="material-symbols-outlined text-on-surface-variant p-sm hover:bg-surface-container rounded-full cursor-pointer">help</span>
+</div>
+</div>
+</nav>
+<main>
+<!-- Hero Section -->
+<section class="relative min-h-[870px] flex items-center overflow-hidden hero-gradient px-lg">
+<div class="absolute inset-0 z-0 opacity-20">
+<div class="w-full h-full bg-cover bg-center" data-alt="A macro close-up of a high-performance car engine with blue ambient lighting and metallic textures. The shot is clean, modern, and clinical, reflecting a professional automotive garage environment with a shallow depth of field. High-key lighting highlights the precision engineering and clean surfaces." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDps49fRLtPPkOuKyAh4IA4JBoZCi_5V9hS1fuuEk87dTJQKXxdVX2fyySIEJAzzgsrxJZoOLDo05MhO-oiyYonReszxkbZKBZbAIcDIsg97pHa-XuqSrIwp0di1XEfBhUrB_-qMYvzBspns15RzTDaCRKIWAxmGTRu8Ot_3O2Hh5JQQl52R8Tf0Wl_8cP5A8qivGyEsTVw_NrCphAwDTvUAW8dJa1mw7DTC-AKan8_UiGHaUbWnliz4g')"></div>
+</div>
+<div class="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-xl relative z-10">
+<div class="flex flex-col justify-center space-y-lg">
+<div class="inline-flex items-center gap-sm bg-primary/10 text-primary px-md py-xs rounded-full self-start">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider">Premium Garage Management</span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface max-w-xl leading-tight">
+                        Precision Engineering for Your <span class="text-primary">Driving Experience</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg">
+                        Morocco's leading destination for high-end automotive care. From routine maintenance to complex diagnostics, Sagman Garage delivers excellence.
+                    </p>
+<div class="flex flex-wrap gap-md">
+<button class="bg-primary text-on-primary px-xl py-md rounded-lg font-title-md text-title-md flex items-center gap-sm hover:shadow-lg transition-all group">
+                            Book Appointment
+                            <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<button class="bg-white border border-outline-variant text-primary px-xl py-md rounded-lg font-title-md text-title-md hover:bg-surface-container-low transition-all">
+                            View Pricing
+                        </button>
+</div>
+</div>
+<!-- Interactive Repair Tracker Preview -->
+<div class="hidden lg:flex items-center justify-center">
+<div class="glass-card p-xl rounded-xl w-full max-w-md animate-float shadow-xl">
+<div class="flex items-center justify-between mb-xl">
+<h3 class="font-headline-lg text-headline-lg">Repair Tracker</h3>
+<span class="material-symbols-outlined text-primary">location_searching</span>
+</div>
+<div class="space-y-lg">
+<div class="flex gap-md border-l-2 border-primary pl-md relative">
+<div class="absolute -left-[9px] top-0 w-4 h-4 bg-primary rounded-full border-4 border-white"></div>
+<div>
+<p class="font-label-sm text-label-sm text-primary">09:30 AM</p>
+<p class="font-title-md text-title-md">Diagnostic Completed</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Vehicle: Mercedes-Benz E-Class</p>
+</div>
+</div>
+<div class="flex gap-md border-l-2 border-outline-variant pl-md relative opacity-50">
+<div class="absolute -left-[9px] top-0 w-4 h-4 bg-outline-variant rounded-full border-4 border-white"></div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Scheduled</p>
+<p class="font-title-md text-title-md">Part Replacement</p>
+<p class="font-body-md text-body-md">Engine cooling system overhaul</p>
+</div>
+</div>
+</div>
+<div class="mt-xl pt-lg border-t border-outline-variant">
+<div class="flex justify-between items-center">
+<span class="font-body-md text-body-md text-on-surface-variant">Job ID: SG-9921</span>
+<span class="bg-primary-container text-on-primary-container px-sm py-xs rounded text-label-sm">In Progress</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Tracker Section -->
+<section class="py-xl bg-white border-y border-outline-variant" id="track">
+<div class="container mx-auto px-lg">
+<div class="bg-surface-container-lowest p-xl rounded-xl shadow-sm border border-outline-variant max-w-4xl mx-auto -mt-24 relative z-20">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg items-center">
+<div class="md:col-span-1">
+<h2 class="font-headline-lg text-headline-lg">Track Your Repair</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Instant updates on your vehicle status.</p>
+</div>
+<div class="md:col-span-2">
+<form class="flex gap-sm">
+<div class="flex-grow relative">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-xl pr-md py-md rounded-lg border border-outline-variant focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" placeholder="Enter Plate Number or Repair ID" type="text"/>
+</div>
+<button class="bg-primary text-on-primary px-xl py-md rounded-lg font-title-md text-title-md hover:opacity-95 active:scale-95 transition-all" type="submit">
+                                    Track
+                                </button>
+</form>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Services Section -->
+<section class="py-xl px-lg" id="services">
+<div class="container mx-auto">
+<div class="text-center mb-xl">
+<h2 class="font-headline-xl text-headline-xl mb-md">Our Specialized Services</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">
+                        State-of-the-art equipment and certified technicians for every aspect of your vehicle's health.
+                    </p>
+</div>
+<!-- Bento Grid Services -->
+<div class="grid grid-cols-1 md:grid-cols-6 grid-rows-2 gap-gutter max-w-6xl mx-auto">
+<!-- Mechanics -->
+<div class="md:col-span-3 md:row-span-1 group relative overflow-hidden rounded-xl bg-white border border-outline-variant hover:border-primary transition-all duration-300">
+<div class="p-lg flex flex-col h-full justify-between z-10 relative">
+<div>
+<span class="material-symbols-outlined text-primary text-[32px] mb-md">build</span>
+<h3 class="font-headline-lg text-headline-lg mb-sm">Mechanics</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Full engine rebuilds, transmission repairs, and routine servicing.</p>
+</div>
+<button class="mt-lg text-primary font-bold flex items-center gap-xs">Learn more <span class="material-symbols-outlined">chevron_right</span></button>
+</div>
+<div class="absolute right-0 bottom-0 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-[120px]">engineering</span>
+</div>
+</div>
+<!-- Hydraulics -->
+<div class="md:col-span-3 md:row-span-1 group relative overflow-hidden rounded-xl bg-primary text-on-primary transition-all duration-300">
+<div class="p-lg flex flex-col h-full justify-between z-10 relative">
+<div>
+<span class="material-symbols-outlined text-on-primary text-[32px] mb-md">settings_input_component</span>
+<h3 class="font-headline-lg text-headline-lg mb-sm">Hydraulics</h3>
+<p class="font-body-md text-body-md text-primary-fixed-dim">Specialized braking systems and fluid pressure diagnostics.</p>
+</div>
+<button class="mt-lg text-white font-bold flex items-center gap-xs">Learn more <span class="material-symbols-outlined">chevron_right</span></button>
+</div>
+<div class="absolute right-0 bottom-0 opacity-20">
+<span class="material-symbols-outlined text-[120px]">opacity</span>
+</div>
+</div>
+<!-- Electrical -->
+<div class="md:col-span-2 md:row-span-1 group relative overflow-hidden rounded-xl bg-white border border-outline-variant hover:border-primary transition-all duration-300">
+<div class="p-lg flex flex-col h-full z-10 relative">
+<span class="material-symbols-outlined text-primary text-[32px] mb-md">bolt</span>
+<h3 class="font-headline-lg text-headline-lg mb-sm">Electrical</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Modern wiring, battery management, and ECU programming.</p>
+</div>
+</div>
+<!-- Diagnostics -->
+<div class="md:col-span-2 md:row-span-1 group relative overflow-hidden rounded-xl bg-white border border-outline-variant hover:border-primary transition-all duration-300">
+<div class="p-lg flex flex-col h-full z-10 relative">
+<span class="material-symbols-outlined text-primary text-[32px] mb-md">analytics</span>
+<h3 class="font-headline-lg text-headline-lg mb-sm">Diagnostics</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Advanced computer scans to pinpoint complex faults instantly.</p>
+</div>
+</div>
+<!-- Bodywork -->
+<div class="md:col-span-2 md:row-span-1 group relative overflow-hidden rounded-xl bg-white border border-outline-variant hover:border-primary transition-all duration-300">
+<div class="p-lg flex flex-col h-full z-10 relative">
+<span class="material-symbols-outlined text-primary text-[32px] mb-md">format_paint</span>
+<h3 class="font-headline-lg text-headline-lg mb-sm">Bodywork</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Precision dent removal, paint matching, and frame alignment.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- CTA Section -->
+<section class="py-xl bg-primary text-on-primary">
+<div class="container mx-auto px-lg flex flex-col md:flex-row items-center justify-between gap-xl">
+<div class="max-w-xl">
+<h2 class="font-headline-xl text-headline-xl mb-md">Ready to experience the Sagman difference?</h2>
+<p class="font-body-lg text-body-lg opacity-80">Book your appointment today and let our specialists ensure your vehicle performs at its peak.</p>
+</div>
+<button class="bg-white text-primary px-xl py-lg rounded-lg font-headline-lg text-headline-lg font-bold hover:shadow-2xl transition-all active:scale-95 whitespace-nowrap">
+                    Book a Service Now
+                </button>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="flex flex-col md:flex-row justify-between items-center px-lg py-md w-full mt-auto bg-surface-container-lowest dark:bg-surface-container-high border-t border-outline-variant dark:border-outline">
+<div class="flex flex-col items-center md:items-start mb-md md:mb-0">
+<span class="font-title-md text-title-md font-bold text-primary dark:text-primary-fixed">Sagman Garage</span>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-xs">© 2024 Sagman Garage Management System. All rights reserved.</p>
+</div>
+<div class="flex gap-lg">
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:underline decoration-primary transition-all" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:underline decoration-primary transition-all" href="#">Terms of Service</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:underline decoration-primary transition-all" href="#">Support</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:underline decoration-primary transition-all" href="#">Contact</a>
+</div>
+</footer>
+<script>
+        // Micro-interaction for the tracker input
+        const trackForm = document.querySelector('form');
+        trackForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const input = trackForm.querySelector('input');
+            const val = input.value.trim();
+            if(val) {
+                const btn = trackForm.querySelector('button');
+                btn.innerHTML = '<span class="material-symbols-outlined animate-spin">autorenew</span>';
+                setTimeout(() => {
+                    alert(`Searching for record: ${val}... (This is a demo UI)`);
+                    btn.innerHTML = 'Track';
+                }, 1000);
+            }
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body></html>

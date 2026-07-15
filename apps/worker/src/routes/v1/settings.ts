@@ -7,35 +7,38 @@ import { authenticate } from '../../middleware/auth';
 
 const settings = new Hono<AppBindings>();
 
-const PUBLIC_KEYS = [
-  'garage_name',
-  'garage_phone',
-  'garage_address',
-  'garage_hours',
-  'garage_email',
-];
-
 const PUBLIC_DEFAULTS: Record<string, string> = {
   garage_name: 'Garage Sagman',
   garage_phone: '+212 6 XX XX XX XX',
-  garage_address: 'Casablanca, Morocco',
-  garage_hours: 'Lun-Sam: 8h-18h',
-  garage_email: 'contact@sagman.ma',
+  garage_address: 'Casablanca, Maroc',
+  garage_hours: 'Lun–Sam 08:00–18:00',
+  whatsapp_number: '',
+  depannage_number: '',
+  facebook_url: '',
+  instagram_url: '',
+  tiktok_url: '',
 };
 
 // GET /settings/public
 settings.get('/public', async (c) => {
-  const placeholders = PUBLIC_KEYS.map(() => '?').join(',');
   const rows = await c.env.DB.prepare(
-    `SELECT key, value FROM system_settings WHERE key IN (${placeholders})`,
-  ).bind(...PUBLIC_KEYS).all<{ key: string; value: string }>();
+    `SELECT key, value FROM system_settings WHERE key IN ('garage_name', 'garage_phone', 'garage_address', 'working_hours', 'whatsapp_number', 'depannage_number', 'facebook_url', 'instagram_url', 'tiktok_url')`,
+  ).all<{ key: string; value: string }>();
 
-  const settingsMap: Record<string, string> = {};
+  const data: Record<string, string> = { ...PUBLIC_DEFAULTS };
   for (const row of rows.results ?? []) {
-    settingsMap[row.key] = row.value;
+    if (row.key === 'working_hours') {
+      data.garage_hours = row.value;
+    } else {
+      data[row.key] = row.value;
+    }
   }
 
-  return c.json({ data: { ...PUBLIC_DEFAULTS, ...settingsMap } });
+  // Fallback whatsapp/depannage to garage_phone if not set
+  if (!data.whatsapp_number) data.whatsapp_number = data.garage_phone;
+  if (!data.depannage_number) data.depannage_number = data.garage_phone;
+
+  return c.json({ data });
 });
 
 // GET /settings

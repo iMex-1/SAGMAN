@@ -6,13 +6,16 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { PhoneInput } from '@/components/ui/phone-input'
 import { api, ApiError } from '@/lib/api-client'
 import { authStorage } from '@/lib/auth'
 import { Lock, ArrowLeft } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 // ─── Login page ───────────────────────────────────────────────────────────────
 
 export default function PortalLoginPage() {
+  const t = useTranslations()
   const router = useRouter()
   const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
@@ -22,7 +25,7 @@ export default function PortalLoginPage() {
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
     if (!phone.trim() || !password.trim()) {
-      setError('Veuillez remplir tous les champs')
+      setError(t('portal.login.fillAllFields'))
       return
     }
     setError('')
@@ -30,7 +33,7 @@ export default function PortalLoginPage() {
     try {
       const res = await api.post<{
         data: { accessToken: string; client: { id: string; name: string; phone: string } }
-      }>('/auth/portal/login', { phone: phone.trim(), password })
+      }>('/auth/portal/login', { phone, password })
 
       authStorage.setTokens(res.data.accessToken)
       authStorage.setUser({
@@ -41,7 +44,7 @@ export default function PortalLoginPage() {
       })
       router.push('/portal/cars')
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Identifiants invalides')
+      setError(err instanceof ApiError ? err.message : t('portal.login.invalidCredentials'))
     } finally {
       setIsLoading(false)
     }
@@ -56,7 +59,7 @@ export default function PortalLoginPage() {
           className="mb-6 flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft className="h-4 w-4" />
-          Retour à l&apos;accueil
+          {t('portal.login.backToHome')}
         </Link>
 
         <div className="rounded-2xl border bg-white p-8 shadow-card">
@@ -66,10 +69,10 @@ export default function PortalLoginPage() {
               <Lock className="h-7 w-7 text-primary" />
             </div>
             <h1 className="text-xl font-bold text-foreground">
-              Espace client
+              {t('portal.login.title')}
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              Connectez-vous à votre compte
+              {t('portal.login.passwordSubtitle')}
             </p>
           </div>
 
@@ -83,30 +86,24 @@ export default function PortalLoginPage() {
           {/* Login form */}
           <form onSubmit={handleLogin} className="space-y-5">
             <div className="space-y-1.5">
-              <Label htmlFor="phone">Numéro de téléphone</Label>
-              <div className="relative">
-                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm">
-                  🇲🇦
-                </span>
-                <Input
-                  id="phone"
-                  type="tel"
-                  placeholder="+212 6XX XXX XXX"
-                  value={phone}
-                  onChange={e => setPhone(e.target.value)}
-                  required
-                  autoFocus
-                  className="h-12 pl-10 text-base"
-                />
-              </div>
+              <Label htmlFor="phone">{t('portal.login.phoneLabel')}</Label>
+              <PhoneInput
+                id="phone"
+                placeholder={t('portal.login.phonePlaceholder')}
+                value={phone}
+                onChange={setPhone}
+                required
+                autoFocus
+                className="h-12 text-base"
+              />
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="password">Mot de passe</Label>
+              <Label htmlFor="password">{t('portal.login.passwordLabel')}</Label>
               <Input
                 id="password"
                 type="password"
-                placeholder="Entrez votre mot de passe"
+                placeholder={t('portal.login.passwordPlaceholder')}
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 required
@@ -119,24 +116,24 @@ export default function PortalLoginPage() {
               className="h-12 w-full text-base font-semibold"
               isLoading={isLoading}
             >
-              {isLoading ? 'Connexion en cours…' : 'Se connecter'}
+              {isLoading ? t('portal.login.signingIn') : t('portal.login.signIn')}
             </Button>
           </form>
 
           {/* Sign up link */}
           <div className="mt-6 text-center text-sm text-muted-foreground">
-            Pas encore de compte ?{' '}
+            {t('portal.login.noAccount')}{' '}
             <Link href="/portal/register" className="font-medium text-primary hover:underline">
-              S&apos;inscrire
+              {t('portal.login.signUp')}
             </Link>
           </div>
         </div>
 
         {/* Footer note */}
         <p className="mt-4 text-center text-xs text-muted-foreground">
-          En vous connectant, vous acceptez nos{' '}
+          {t('portal.login.termsNotice')}{' '}
           <span className="text-primary hover:underline cursor-pointer">
-            conditions d&apos;utilisation
+            {t('common.termsOfService')}
           </span>
         </p>
       </div>

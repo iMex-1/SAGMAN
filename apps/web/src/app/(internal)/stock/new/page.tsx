@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Loader2, Package } from "lucide-react";
+import { useTranslations } from 'next-intl';
+import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,24 +20,25 @@ import { api, ApiError } from "@/lib/api-client";
 import { useToast } from "@/components/ui/use-toast";
 
 const CATEGORIES = [
-  "Engine",
+  "Moteur",
   "Transmission",
-  "Brakes",
+  "Freins",
   "Suspension",
-  "Electrical",
-  "Body",
-  "Interior",
-  "Fluids",
-  "Filters",
-  "Belts & Hoses",
-  "Tools",
-  "Other",
+  "Électrique",
+  "Carrosserie",
+  "Intérieur",
+  "Fluides",
+  "Filtres",
+  "Courroies & Durites",
+  "Outils",
+  "Autre",
 ];
 
 interface CreatePartForm {
   name: string;
   reference: string;
   category: string;
+  customCategory: string;
   unitCost: string;
   minThreshold: string;
   supplier: string;
@@ -52,11 +54,13 @@ function formatCurrency(amount: number) {
 export default function CreatePartPage() {
   const router = useRouter();
   const { success, error: toastError } = useToast();
+  const t = useTranslations();
 
   const [form, setForm] = useState<CreatePartForm>({
     name: "",
     reference: "",
     category: "",
+    customCategory: "",
     unitCost: "",
     minThreshold: "5",
     supplier: "",
@@ -67,7 +71,6 @@ export default function CreatePartPage() {
 
   function updateForm(field: keyof CreatePartForm, value: string) {
     setForm(prev => ({ ...prev, [field]: value }));
-    // Clear error for this field
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: undefined }));
     }
@@ -77,25 +80,25 @@ export default function CreatePartPage() {
     const newErrors: Partial<CreatePartForm> = {};
 
     if (!form.name.trim()) {
-      newErrors.name = "Part name is required";
+      newErrors.name = t('stock.validation.nameRequired');
     }
 
     if (!form.reference.trim()) {
-      newErrors.reference = "Reference number is required";
+      newErrors.reference = t('stock.validation.refRequired');
     }
 
     if (!form.category) {
-      newErrors.category = "Category is required";
+      newErrors.category = t('stock.validation.categoryRequired');
     }
 
     const unitCost = parseFloat(form.unitCost);
     if (!form.unitCost || isNaN(unitCost) || unitCost <= 0) {
-      newErrors.unitCost = "Valid unit cost is required";
+      newErrors.unitCost = t('stock.validation.priceRequired');
     }
 
     const minThreshold = parseInt(form.minThreshold);
     if (!form.minThreshold || isNaN(minThreshold) || minThreshold < 0) {
-      newErrors.minThreshold = "Valid minimum threshold is required";
+      newErrors.minThreshold = t('stock.validation.minStockRequired');
     }
 
     setErrors(newErrors);
@@ -111,10 +114,16 @@ export default function CreatePartPage() {
 
     setIsSubmitting(true);
     try {
+      const category = form.category === "Autre" ? form.customCategory.trim() : form.category;
+      if (form.category === "Autre" && !category) {
+        setErrors(prev => ({ ...prev, category: t('stock.validation.customCategoryRequired') }));
+        setIsSubmitting(false);
+        return;
+      }
       const payload = {
         name: form.name.trim(),
         reference: form.reference.trim(),
-        category: form.category,
+        category,
         unitCost: parseFloat(form.unitCost),
         minThreshold: parseInt(form.minThreshold),
         supplier: form.supplier.trim() || undefined,
@@ -122,12 +131,11 @@ export default function CreatePartPage() {
 
       const response = await api.post<{ data: { id: string } }>("/parts", payload);
       
-      success("Part created successfully");
+      success(t('stock.toasts.created'));
       router.push(`/stock/${response.data.id}`);
     } catch (err) {
       if (err instanceof ApiError) {
         if (err.details && typeof err.details === "object") {
-          // Handle field-specific validation errors
           const apiErrors = err.details as Record<string, string>;
           const formErrors: Partial<CreatePartForm> = {};
           
@@ -140,13 +148,13 @@ export default function CreatePartPage() {
           if (Object.keys(formErrors).length > 0) {
             setErrors(formErrors);
           } else {
-            toastError("Creation failed", err.message);
+            toastError(t('stock.toasts.errorTitle'), err.message);
           }
         } else {
-          toastError("Creation failed", err.message);
+          toastError(t('stock.toasts.errorTitle'), err.message);
         }
       } else {
-        toastError("Creation failed", "An unexpected error occurred.");
+        toastError(t('stock.toasts.errorTitle'), t('stock.toasts.error'));
       }
     } finally {
       setIsSubmitting(false);
@@ -161,19 +169,19 @@ export default function CreatePartPage() {
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" asChild>
           <Link href="/stock">
-            <ArrowLeft className="h-4 w-4" />
-            Back to Stock
+            <Icon name="arrow_back" size={16} />
+            {t('stock.create.backLink')}
           </Link>
         </Button>
-        <h1 className="text-xl font-bold">Create New Part</h1>
+        <h1 className="text-xl font-bold">{t('stock.create.title')}</h1>
       </div>
 
       {/* Form Card */}
-      <Card>
+      <Card className="bg-white border border-outline-variant rounded-xl shadow-sm">
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Package className="h-5 w-5" />
-            <CardTitle>Part Information</CardTitle>
+            <Icon name="package" size={20} />
+            <CardTitle className="font-headline-lg text-headline-lg">{t('stock.create.partInfo')}</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
@@ -182,13 +190,13 @@ export default function CreatePartPage() {
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="name">
-                  Part Name <span className="text-destructive">*</span>
+                  {t('stock.fields.name')} <span className="text-destructive">*</span>
                 </Label>
                 <Input
                   id="name"
                   value={form.name}
                   onChange={(e) => updateForm("name", e.target.value)}
-                  placeholder="e.g., Brake Pad Set"
+                  placeholder={t('stock.placeholders.name')}
                   className={errors.name ? "border-destructive" : ""}
                 />
                 {errors.name && (
@@ -198,13 +206,13 @@ export default function CreatePartPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="reference">
-                  Reference Number <span className="text-destructive">*</span>
+                  {t('stock.fields.reference')} <span className="text-destructive">*</span>
                 </Label>
                 <Input
                   id="reference"
                   value={form.reference}
                   onChange={(e) => updateForm("reference", e.target.value.toUpperCase())}
-                  placeholder="e.g., BP-001"
+                  placeholder={t('stock.placeholders.reference')}
                   className={errors.reference ? "border-destructive" : ""}
                 />
                 {errors.reference && (
@@ -216,20 +224,30 @@ export default function CreatePartPage() {
             {/* Category */}
             <div className="space-y-2">
               <Label htmlFor="category">
-                Category <span className="text-destructive">*</span>
+                {t('stock.fields.category')} <span className="text-destructive">*</span>
               </Label>
               <Select value={form.category} onValueChange={(value) => updateForm("category", value)}>
                 <SelectTrigger className={errors.category ? "border-destructive" : ""}>
-                  <SelectValue placeholder="Select a category" />
+                  <SelectValue placeholder={t('stock.placeholders.category')} />
                 </SelectTrigger>
                 <SelectContent>
                   {CATEGORIES.map((category) => (
                     <SelectItem key={category} value={category}>
-                      {category}
+                      {t('stock.categoriesMap.' + category)}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
+              {form.category === "Autre" && (
+                <div className="mt-2">
+                  <Input
+                    id="customCategory"
+                    placeholder={t('stock.placeholders.customCategory')}
+                    value={form.customCategory}
+                    onChange={(e) => setForm(prev => ({ ...prev, customCategory: e.target.value }))}
+                  />
+                </div>
+              )}
               {errors.category && (
                 <p className="text-sm text-destructive">{errors.category}</p>
               )}
@@ -239,7 +257,7 @@ export default function CreatePartPage() {
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="unitCost">
-                  Unit Cost (MAD) <span className="text-destructive">*</span>
+                  {t('stock.fields.unitPrice')} <span className="text-destructive">*</span>
                 </Label>
                 <Input
                   id="unitCost"
@@ -263,7 +281,7 @@ export default function CreatePartPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="minThreshold">
-                  Minimum Stock Threshold <span className="text-destructive">*</span>
+                  {t('stock.fields.minStock')} <span className="text-destructive">*</span>
                 </Label>
                 <Input
                   id="minThreshold"
@@ -275,7 +293,7 @@ export default function CreatePartPage() {
                   className={errors.minThreshold ? "border-destructive" : ""}
                 />
                 <p className="text-sm text-muted-foreground">
-                  Alert when stock falls below this level
+                  {t('stock.fields.stockAlert')}
                 </p>
                 {errors.minThreshold && (
                   <p className="text-sm text-destructive">{errors.minThreshold}</p>
@@ -285,12 +303,12 @@ export default function CreatePartPage() {
 
             {/* Supplier (Optional) */}
             <div className="space-y-2">
-              <Label htmlFor="supplier">Supplier (Optional)</Label>
+              <Label htmlFor="supplier">{t('stock.fields.supplier')}</Label>
               <Input
                 id="supplier"
                 value={form.supplier}
                 onChange={(e) => updateForm("supplier", e.target.value)}
-                placeholder="e.g., ABC Auto Parts"
+                placeholder={t('stock.placeholders.supplier')}
               />
             </div>
 
@@ -301,12 +319,13 @@ export default function CreatePartPage() {
                 variant="outline"
                 onClick={() => router.push("/stock")}
                 disabled={isSubmitting}
+                className="border border-outline-variant text-on-surface-variant"
               >
-                Cancel
+                {t('common.cancel')}
               </Button>
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
-                Create Part
+              <Button type="submit" disabled={isSubmitting} className="bg-primary text-on-primary rounded-lg px-lg py-sm font-title-md text-title-md">
+                {isSubmitting && <Icon name="sync" size={16} className="animate-spin" />}
+                {isSubmitting ? t('stock.create.submitting') : t('stock.create.submit')}
               </Button>
             </div>
           </form>
@@ -315,45 +334,45 @@ export default function CreatePartPage() {
 
       {/* Preview Card */}
       {(form.name || form.reference || form.category || form.unitCost) && (
-        <Card>
+        <Card className="bg-white border border-outline-variant rounded-xl shadow-sm">
           <CardHeader>
-            <CardTitle className="text-base">Preview</CardTitle>
+            <CardTitle className="font-body-lg text-body-lg">{t('stock.preview.title')}</CardTitle>
           </CardHeader>
           <CardContent className="text-sm">
             <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2">
               {form.name && (
                 <>
-                  <dt className="text-muted-foreground">Name</dt>
+                  <dt className="text-muted-foreground">{t('stock.preview.name')}</dt>
                   <dd className="font-medium">{form.name}</dd>
                 </>
               )}
               {form.reference && (
                 <>
-                  <dt className="text-muted-foreground">Reference</dt>
+                  <dt className="text-muted-foreground">{t('stock.preview.reference')}</dt>
                   <dd className="font-mono">{form.reference}</dd>
                 </>
               )}
-              {form.category && (
+              {(form.category || form.customCategory) && (
                 <>
-                  <dt className="text-muted-foreground">Category</dt>
-                  <dd>{form.category}</dd>
+                  <dt className="text-muted-foreground">{t('stock.preview.category')}</dt>
+                  <dd>{form.category === "Autre" ? form.customCategory : form.category}</dd>
                 </>
               )}
               {previewUnitCost > 0 && (
                 <>
-                  <dt className="text-muted-foreground">Unit Cost</dt>
+                  <dt className="text-muted-foreground">{t('stock.preview.unitPrice')}</dt>
                   <dd className="font-medium">{formatCurrency(previewUnitCost)}</dd>
                 </>
               )}
               {form.minThreshold && (
                 <>
-                  <dt className="text-muted-foreground">Min Threshold</dt>
-                  <dd>{form.minThreshold} units</dd>
+                  <dt className="text-muted-foreground">{t('stock.preview.minStock')}</dt>
+                  <dd>{form.minThreshold} {t('stock.preview.units')}</dd>
                 </>
               )}
               {form.supplier && (
                 <>
-                  <dt className="text-muted-foreground">Supplier</dt>
+                  <dt className="text-muted-foreground">{t('stock.preview.supplier')}</dt>
                   <dd>{form.supplier}</dd>
                 </>
               )}

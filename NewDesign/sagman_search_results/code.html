@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Search Results - AutoGarage Pro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-surface": "#2d3133",
+                    "background": "#f7f9fb",
+                    "tertiary-fixed": "#dae2fd",
+                    "surface": "#f7f9fb",
+                    "on-error-container": "#93000a",
+                    "on-secondary-container": "#fffbff",
+                    "on-primary-fixed-variant": "#264191",
+                    "tertiary-container": "#384055",
+                    "error": "#ba1a1a",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed": "#00164e",
+                    "surface-bright": "#f7f9fb",
+                    "surface-container-highest": "#e0e3e5",
+                    "primary-container": "#1e3a8a",
+                    "on-secondary": "#ffffff",
+                    "secondary": "#bb0112",
+                    "on-tertiary-fixed-variant": "#3f465c",
+                    "inverse-on-surface": "#eff1f3",
+                    "on-surface-variant": "#444651",
+                    "secondary-container": "#e02928",
+                    "surface-variant": "#e0e3e5",
+                    "on-tertiary-container": "#a4acc5",
+                    "on-secondary-fixed-variant": "#93000b",
+                    "on-secondary-fixed": "#410002",
+                    "on-error": "#ffffff",
+                    "on-background": "#191c1e",
+                    "outline-variant": "#c5c5d3",
+                    "surface-dim": "#d8dadc",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed": "#ffdad6",
+                    "tertiary-fixed-dim": "#bec6e0",
+                    "surface-container-high": "#e6e8ea",
+                    "on-primary": "#ffffff",
+                    "primary": "#00236f",
+                    "primary-fixed-dim": "#b6c4ff",
+                    "tertiary": "#222a3e",
+                    "surface-container": "#eceef0",
+                    "on-primary-container": "#90a8ff",
+                    "primary-fixed": "#dce1ff",
+                    "surface-container-low": "#f2f4f6",
+                    "outline": "#757682",
+                    "on-surface": "#191c1e",
+                    "on-tertiary-fixed": "#131b2e",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed-dim": "#ffb4ab",
+                    "surface-tint": "#4059aa",
+                    "inverse-primary": "#b6c4ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "sm": "8px",
+                    "xl": "32px",
+                    "gutter": "16px",
+                    "xs": "4px",
+                    "lg": "24px",
+                    "container-margin": "24px",
+                    "base": "4px",
+                    "md": "16px"
+            },
+            "fontFamily": {
+                    "title-md": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg-mobile": ["Inter"]
+            },
+            "fontSize": {
+                    "title-md": ["18px", {"lineHeight": "26px", "fontWeight": "600"}],
+                    "headline-xl": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- TopNavBar Implementation -->
+<header class="bg-surface-container-lowest dark:bg-inverse-surface border-b border-outline-variant dark:border-outline flex justify-between items-center w-full px-lg py-sm sticky top-0 z-50">
+<div class="flex items-center gap-md">
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary dark:text-primary-fixed-dim">AutoGarage Pro</span>
+</div>
+<div class="flex-1 max-w-xl mx-lg hidden md:block">
+<div class="relative flex items-center focus-within:ring-2 focus-within:ring-primary rounded-lg transition-all">
+<span class="material-symbols-outlined absolute left-3 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-high border-none rounded-lg py-2 pl-10 pr-4 text-body-md focus:ring-0" placeholder="Search components, jobs, or customers..." type="text" value="Brake"/>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<button class="p-sm rounded-full hover:bg-surface-container-high dark:hover:bg-tertiary-container transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-sm rounded-full hover:bg-surface-container-high dark:hover:bg-tertiary-container transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden ml-sm border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="Professional headshot of a senior automotive technician in a clean workshop setting, wearing a branded AutoGarage Pro navy uniform, softly lit with cool industrial lighting to convey expertise and reliability." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBupFziBDbkk32q8nHX5FPpjcKoBnzzOozVK-vNk4qrow8svktug_KHSrOE70XI7T_wBsl3OJOHt8F_FdLELHPQwAcY7ABrpUS-Kakb8zzTE7KpdyxbHH7A9PTbeBxwRm7_OCVASgCSpkdJZLlI0B3hQKBneI3BZA9RitUjP8Ti9MbtOsW38-WpOeXQI496QiZKYD02FpwoNRsWlaWZaJaq_Ga7RXC_yNE2bi1Gx5wRjGVxMuIF-OE6_Q"/>
+</div>
+</div>
+</header>
+<div class="flex">
+<!-- SideNavBar Implementation -->
+<aside class="bg-surface-container-low dark:bg-inverse-surface border-r border-outline-variant dark:border-outline h-[calc(100vh-64px)] w-16 md:w-64 sticky top-[64px] flex flex-col py-lg transition-all duration-200 ease-in-out z-40">
+<div class="px-md mb-lg hidden md:block">
+<p class="font-title-md text-title-md font-bold text-primary">Main Garage</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Casablanca Branch</p>
+</div>
+<nav class="flex-1 px-sm space-y-1">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="hidden md:block font-label-sm text-label-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="build">build</span>
+<span class="hidden md:block font-label-sm text-label-sm">Repairs</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="hidden md:block font-label-sm text-label-sm">Customers</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="hidden md:block font-label-sm text-label-sm">Inventory</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="badge">badge</span>
+<span class="hidden md:block font-label-sm text-label-sm">Staff</span>
+</a>
+</nav>
+<div class="px-sm mt-auto pt-lg border-t border-outline-variant space-y-1">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="hidden md:block font-label-sm text-label-sm">Help</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="hidden md:block font-label-sm text-label-sm">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 p-lg max-w-7xl mx-auto">
+<div class="flex flex-col md:flex-row gap-lg">
+<!-- Filters Sidebar -->
+<div class="w-full md:w-72 shrink-0">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md sticky top-[88px]">
+<div class="flex items-center justify-between mb-md">
+<h3 class="font-title-md text-title-md text-on-surface">Filters</h3>
+<button class="text-primary font-label-sm text-label-sm hover:underline">Reset All</button>
+</div>
+<!-- Category Filter -->
+<div class="mb-lg">
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-sm">Category</label>
+<div class="space-y-sm">
+<label class="flex items-center gap-sm cursor-pointer group">
+<input checked="" class="text-primary focus:ring-primary w-4 h-4 rounded-full border-outline" name="cat" type="radio"/>
+<span class="font-body-md text-body-md text-on-surface group-hover:text-primary">All Results</span>
+</label>
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="text-primary focus:ring-primary w-4 h-4 rounded-full border-outline" name="cat" type="radio"/>
+<span class="font-body-md text-body-md text-on-surface group-hover:text-primary">Repairs &amp; Jobs</span>
+</label>
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="text-primary focus:ring-primary w-4 h-4 rounded-full border-outline" name="cat" type="radio"/>
+<span class="font-body-md text-body-md text-on-surface group-hover:text-primary">Inventory Items</span>
+</label>
+</div>
+</div>
+<!-- Date Range -->
+<div class="mb-lg">
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-sm">Date Range</label>
+<select class="w-full bg-surface-container-low border border-outline-variant rounded-lg text-body-md px-sm py-2 outline-none focus:ring-2 focus:ring-primary">
+<option>Last 30 Days</option>
+<option>Last 6 Months</option>
+<option>Year to Date</option>
+<option>Custom Range</option>
+</select>
+</div>
+<!-- Status Filter -->
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-sm">Status</label>
+<div class="grid grid-cols-2 gap-xs">
+<button class="px-sm py-xs bg-primary-container text-on-primary-container font-label-sm text-label-sm rounded-lg">Active</button>
+<button class="px-sm py-xs bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm rounded-lg hover:bg-surface-container-highest transition-colors">Pending</button>
+<button class="px-sm py-xs bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm rounded-lg hover:bg-surface-container-highest transition-colors">Completed</button>
+<button class="px-sm py-xs bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm rounded-lg hover:bg-surface-container-highest transition-colors">Out of Stock</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Results Section -->
+<div class="flex-1 min-w-0">
+<div class="mb-lg flex items-center justify-between">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Results for "Brake"</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Showing 12 matches across Repairs and Inventory</p>
+</div>
+<div class="flex items-center gap-sm">
+<button class="p-sm bg-surface-container-lowest border border-outline-variant rounded-lg hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="sort">sort</span>
+</button>
+<button class="p-sm bg-surface-container-lowest border border-outline-variant rounded-lg hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="grid_view">grid_view</span>
+</button>
+</div>
+</div>
+<!-- Repair Jobs Category -->
+<section class="mb-xl">
+<div class="flex items-center gap-sm mb-md pb-xs border-b border-outline-variant">
+<span class="material-symbols-outlined text-primary" data-icon="build">build</span>
+<h2 class="font-title-md text-title-md text-on-surface">Repairs &amp; Jobs (4)</h2>
+</div>
+<div class="space-y-md">
+<!-- Repair Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex items-center gap-md hover:border-primary transition-all group relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary"></div>
+<div class="h-16 w-16 bg-surface-container-high rounded-lg flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="directions_car">directions_car</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between mb-xs">
+<h4 class="font-title-md text-title-md text-on-surface truncate">Brake Pad Replacement &amp; Rotor Grinding</h4>
+<span class="px-sm py-xs bg-error-container text-on-error-container font-label-sm text-label-sm rounded-full">Urgent</span>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-md">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Vehicle</span>
+<span class="font-body-md text-body-md text-on-surface">Toyota Camry 2021 (ABC-123)</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Customer</span>
+<span class="font-body-md text-body-md text-on-surface">Omar El Fassi</span>
+</div>
+<div class="flex flex-col hidden md:flex">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Date</span>
+<span class="font-body-md text-body-md text-on-surface">Oct 24, 2023</span>
+</div>
+</div>
+</div>
+<button class="p-sm rounded-lg hover:bg-surface-container-high text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+<!-- Repair Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex items-center gap-md hover:border-primary transition-all group relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="h-16 w-16 bg-surface-container-high rounded-lg flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="directions_car">directions_car</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between mb-xs">
+<h4 class="font-title-md text-title-md text-on-surface truncate">Brake Fluid Flush &amp; System Check</h4>
+<span class="px-sm py-xs bg-primary-container text-on-primary-container font-label-sm text-label-sm rounded-full">In Progress</span>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-md">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Vehicle</span>
+<span class="font-body-md text-body-md text-on-surface">Dacia Logan 2019 (XYZ-789)</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Customer</span>
+<span class="font-body-md text-body-md text-on-surface">Sarah Mansouri</span>
+</div>
+<div class="flex flex-col hidden md:flex">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Date</span>
+<span class="font-body-md text-body-md text-on-surface">Oct 25, 2023</span>
+</div>
+</div>
+</div>
+<button class="p-sm rounded-lg hover:bg-surface-container-high text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Inventory Category -->
+<section>
+<div class="flex items-center gap-sm mb-md pb-xs border-b border-outline-variant">
+<span class="material-symbols-outlined text-primary" data-icon="inventory_2">inventory_2</span>
+<h2 class="font-title-md text-title-md text-on-surface">Inventory Items (8)</h2>
+</div>
+<div class="space-y-md">
+<!-- Inventory Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex items-center gap-md hover:border-primary transition-all group">
+<div class="h-16 w-16 bg-surface-container-high rounded-lg flex items-center justify-center shrink-0 border border-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="High-quality close-up photograph of a heavy-duty ceramic brake pad set on a clean white laboratory surface. The lighting is crisp and detailed, highlighting the texture and precision engineering of the automotive component in a modern, technical UI style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkBI-7yp8dsSRbGOHwobbCAk3-NWCWAMJRsiiu5HQ5beIgQvhfwOr4N6fld04pPOYr8Sb0m61bdjwE5kwvGz0gjWhp1EeuiMTEtE5ZTsf5wdYYfVrd4k8adr6EU0RCcV8zAJgS5hbPOIgqmNnWFFEupvlZNSsnCf6m5xXOoyfeihcg77GuS9C8ul_l_MbjV2syq_6Yq5Hvux5E2wmcErnl9nT0_RG3ymI69JXnddO2Rgo5PhsfUOxCXA"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between mb-xs">
+<h4 class="font-title-md text-title-md text-on-surface truncate">Brembo Ceramic Front Brake Pads</h4>
+<span class="px-sm py-xs bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-sm text-label-sm rounded-full">8 in Stock</span>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-md">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Part Number</span>
+<span class="font-body-md text-body-md text-on-surface">BRK-CER-F-001</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">OEM Compatible</span>
+<span class="font-body-md text-body-md text-on-surface">Toyota, Lexus</span>
+</div>
+<div class="flex flex-col hidden md:flex">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Price</span>
+<span class="font-body-md text-body-md text-on-surface">850 MAD</span>
+</div>
+<div class="flex flex-col hidden md:flex">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Location</span>
+<span class="font-body-md text-body-md text-on-surface">Shelf A-12</span>
+</div>
+</div>
+</div>
+<button class="px-md py-sm bg-primary text-on-primary font-label-sm text-label-sm rounded-lg hover:bg-primary-container transition-colors shrink-0">
+                                    Order More
+                                </button>
+</div>
+<!-- Inventory Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex items-center gap-md hover:border-primary transition-all group">
+<div class="h-16 w-16 bg-surface-container-high rounded-lg flex items-center justify-center shrink-0 border border-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Technical macro photography of a bottle of premium synthetic DOT 4 brake fluid. The container is translucent, showing the golden liquid, placed against a clean gray gradient background. The aesthetic is professional, modern, and aligned with industrial workshop standards." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOwxDxtIenkPwwHmVQKa1mB1ChBM8UcslyoSnWhcdLdZab-TwEBSZf0a_j7k9P0cazueJV5OnXUny21iyrjPVCu4Gv0VZZZy4TZ6Z7RhxVutvgU7_TnJHEfslWoW6pTTAw4qWn39su96NmtTFggfZM-S5RQcIv9v9csFfp96f0Ews9okat3bS_asJEoi884uqGbL0fO-YfqkE-8kEdCF77Gxp64Ln1BIiFOtK7f2Ja09BcrNO5JOmXgw"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between mb-xs">
+<h4 class="font-title-md text-title-md text-on-surface truncate">Castrol DOT 4 Brake Fluid (500ml)</h4>
+<span class="px-sm py-xs bg-error-container text-on-error-container font-label-sm text-label-sm rounded-full">Low Stock (2)</span>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-md">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Part Number</span>
+<span class="font-body-md text-body-md text-on-surface">FL-BRK-4-CAS</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Brand</span>
+<span class="font-body-md text-body-md text-on-surface">Castrol</span>
+</div>
+<div class="flex flex-col hidden md:flex">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Price</span>
+<span class="font-body-md text-body-md text-on-surface">120 MAD</span>
+</div>
+<div class="flex flex-col hidden md:flex">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Location</span>
+<span class="font-body-md text-body-md text-on-surface">Shelf B-04</span>
+</div>
+</div>
+</div>
+<button class="px-md py-sm bg-primary text-on-primary font-label-sm text-label-sm rounded-lg hover:bg-primary-container transition-colors shrink-0">
+                                    Order More
+                                </button>
+</div>
+</div>
+</section>
+<!-- Pagination -->
+<div class="mt-xl flex items-center justify-center gap-sm">
+<button class="p-sm rounded-lg border border-outline-variant hover:bg-surface-container-high transition-colors disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-10 h-10 rounded-lg bg-primary text-on-primary font-label-sm text-label-sm">1</button>
+<button class="w-10 h-10 rounded-lg border border-outline-variant font-label-sm text-label-sm hover:bg-surface-container-high transition-colors">2</button>
+<button class="w-10 h-10 rounded-lg border border-outline-variant font-label-sm text-label-sm hover:bg-surface-container-high transition-colors">3</button>
+<button class="p-sm rounded-lg border border-outline-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Empty State Template (Hidden by default, shown for empty queries via JS) -->
+<div class="hidden fixed inset-0 z-[60] bg-background flex flex-col items-center justify-center p-xl" id="no-results">
+<div class="w-24 h-24 bg-surface-container-high rounded-full flex items-center justify-center mb-lg">
+<span class="material-symbols-outlined text-outline text-5xl" data-icon="search_off">search_off</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-sm">No results found</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant text-center max-w-md mb-xl">
+            We couldn't find anything matching your search. Please try a different keyword or check your filters.
+        </p>
+<div class="flex gap-md">
+<button class="px-lg py-md border border-outline-variant rounded-lg font-title-md text-title-md hover:bg-surface-container-high transition-colors" onclick="location.reload()">Clear All Filters</button>
+<button class="px-lg py-md bg-primary text-on-primary rounded-lg font-title-md text-title-md hover:bg-primary-container transition-colors">Go to Dashboard</button>
+</div>
+</div>
+<script>
+        // Simple Interaction logic
+        const searchInput = document.querySelector('input[type="text"]');
+        const resultsArea = document.querySelector('main');
+        const emptyState = document.getElementById('no-results');
+
+        searchInput.addEventListener('input', (e) => {
+            const val = e.target.value.trim();
+            if (val === '') {
+                resultsArea.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+            } else {
+                resultsArea.classList.remove('hidden');
+                emptyState.classList.add('hidden');
+            }
+        });
+
+        // Hover effects for cards
+        const cards = document.querySelectorAll('.group');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-2px)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0px)';
+            });
+        });
+    </script>
+</body></html>

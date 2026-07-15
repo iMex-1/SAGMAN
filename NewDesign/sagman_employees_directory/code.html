@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Employee Directory | AutoPro Garage</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "background": "#f7f9fb",
+                    "surface-bright": "#f7f9fb",
+                    "surface-container-highest": "#e0e3e5",
+                    "surface-container": "#eceef0",
+                    "surface-variant": "#e0e3e5",
+                    "tertiary": "#222a3e",
+                    "tertiary-fixed": "#dae2fd",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-on-surface": "#eff1f3",
+                    "on-primary-fixed-variant": "#264191",
+                    "inverse-surface": "#2d3133",
+                    "on-secondary-fixed-variant": "#93000b",
+                    "surface": "#f7f9fb",
+                    "error-container": "#ffdad6",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-container": "#90a8ff",
+                    "surface-container-high": "#e6e8ea",
+                    "on-tertiary-fixed": "#131b2e",
+                    "on-primary": "#ffffff",
+                    "surface-dim": "#d8dadc",
+                    "tertiary-container": "#384055",
+                    "on-tertiary-fixed-variant": "#3f465c",
+                    "on-surface": "#191c1e",
+                    "on-error-container": "#93000a",
+                    "on-secondary-fixed": "#410002",
+                    "on-background": "#191c1e",
+                    "secondary-container": "#e02928",
+                    "primary-fixed-dim": "#b6c4ff",
+                    "on-tertiary-container": "#a4acc5",
+                    "outline-variant": "#c5c5d3",
+                    "surface-tint": "#4059aa",
+                    "primary-fixed": "#dce1ff",
+                    "secondary-fixed-dim": "#ffb4ab",
+                    "surface-container-low": "#f2f4f6",
+                    "inverse-primary": "#b6c4ff",
+                    "error": "#ba1a1a",
+                    "primary-container": "#1e3a8a",
+                    "primary": "#00236f",
+                    "tertiary-fixed-dim": "#bec6e0",
+                    "on-surface-variant": "#444651",
+                    "on-error": "#ffffff",
+                    "on-secondary-container": "#fffbff",
+                    "secondary": "#bb0112",
+                    "outline": "#757682",
+                    "secondary-fixed": "#ffdad6",
+                    "on-primary-fixed": "#00164e",
+                    "on-secondary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "base": "4px",
+                    "gutter": "16px",
+                    "md": "16px",
+                    "lg": "24px",
+                    "sm": "8px",
+                    "container-margin": "24px",
+                    "xs": "4px",
+                    "xl": "32px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "title-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-xl": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "title-md": ["18px", {"lineHeight": "26px", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e0e3e5; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- SideNavBar Anchor -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container-lowest border-r border-outline-variant flex flex-col py-lg z-50">
+<div class="px-lg mb-xl">
+<h1 class="text-headline-lg font-headline-lg text-primary">AutoPro Garage</h1>
+<p class="text-label-sm text-on-surface-variant">Casablanca Branch</p>
+</div>
+<nav class="flex-1 px-md space-y-sm">
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-body-md text-body-md">Appointments</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">build</span>
+<span class="font-body-md text-body-md">Job Cards</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-body-md text-body-md">Inventory</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-body-md text-body-md">Invoicing</span>
+</a>
+<!-- Active State: Employee Directory (Sub-page or inferred from prompt) -->
+<a class="flex items-center gap-md px-md py-sm text-primary font-bold border-r-4 border-primary bg-surface-container-low transition-colors rounded-l-lg" href="#">
+<span class="material-symbols-outlined">badge</span>
+<span class="font-body-md text-body-md">Staff Directory</span>
+</a>
+</nav>
+<div class="mt-auto px-md pt-lg border-t border-outline-variant space-y-sm">
+<button class="w-full bg-primary text-on-primary py-md rounded-lg font-title-md flex items-center justify-center gap-sm active:scale-95 duration-150 shadow-sm">
+<span class="material-symbols-outlined">add</span>
+                New Repair Order
+            </button>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg mt-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-body-md text-body-md">Support</span>
+</a>
+</div>
+</aside>
+<!-- TopNavBar Anchor -->
+<header class="fixed top-0 right-0 left-64 h-16 bg-surface border-b border-outline-variant flex justify-between items-center px-lg z-40">
+<div class="flex items-center gap-lg flex-1">
+<div class="relative w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-full text-body-md focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Search employees by name, role or ID..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="hover:bg-surface-container-high rounded-full p-2 transition-all">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+</button>
+<button class="hover:bg-surface-container-high rounded-full p-2 transition-all">
+<span class="material-symbols-outlined text-on-surface-variant">history</span>
+</button>
+<div class="h-8 w-px bg-outline-variant mx-2"></div>
+<button class="bg-surface-container-highest px-md py-1.5 rounded-full text-label-sm font-bold text-on-surface hover:bg-outline-variant transition-colors">
+                Quick Action
+            </button>
+<div class="flex items-center gap-sm ml-4">
+<img class="w-8 h-8 rounded-full border border-outline-variant" data-alt="A professional headshot of a workshop manager in a modern automotive office environment. The person is wearing a clean branded polo shirt, smiling confidently. Soft, warm indoor lighting with a blurred background showing a high-tech garage bay through a glass partition." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOlNHnpq44SQ-x0Sxuuj1ZhyQV3xx8p7rYFygzwicq7993oLcxbA7HuTupLbOX650fgAfeuixbTNwRmmx-bBrOWiVogBlKB7wbHSuszu8nJJrrQpQq-nvSBV1LboVivhnlRY-Ql53pOYdpSEEAvpORb0zW7AnzUk84ZiuE8_XZS2Gn-VFbhglN1aDPw-HNFfcBh0A3FKzhx-0_o6gBq9mCRNdOxdMWB1pfoTUDtS3aclfuWbaUC7GzeQ"/>
+<div class="hidden lg:block">
+<p class="text-label-sm font-bold leading-tight">Yassine Amrani</p>
+<p class="text-[10px] text-on-surface-variant leading-tight">Workshop Manager</p>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-24 pb-12 px-lg">
+<!-- Header Section -->
+<div class="flex justify-between items-end mb-lg">
+<div>
+<h2 class="font-headline-xl text-headline-xl text-on-surface">Staff Directory</h2>
+<p class="text-body-lg text-on-surface-variant">Manage your workshop team and track operational efficiency.</p>
+</div>
+<button class="bg-primary text-on-primary px-lg py-md rounded-lg font-title-md flex items-center gap-sm shadow-md hover:bg-primary-container transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person_add</span>
+                Add New Employee
+            </button>
+</div>
+<!-- KPI Cards Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg mb-xl">
+<div class="bg-surface-container-lowest border border-outline-variant p-lg rounded-xl flex items-center gap-lg">
+<div class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[32px]">groups</span>
+</div>
+<div>
+<p class="text-label-sm text-on-surface-variant uppercase tracking-wider">Total Employees</p>
+<p class="text-headline-xl font-headline-xl">24</p>
+<p class="text-label-sm text-primary font-bold mt-1">+2 this month</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant p-lg rounded-xl flex items-center gap-lg">
+<div class="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center text-green-700">
+<span class="material-symbols-outlined text-[32px]">check_circle</span>
+</div>
+<div>
+<p class="text-label-sm text-on-surface-variant uppercase tracking-wider">Active Now</p>
+<p class="text-headline-xl font-headline-xl">18</p>
+<p class="text-label-sm text-on-surface-variant mt-1">75% of workforce</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant p-lg rounded-xl flex items-center gap-lg">
+<div class="w-14 h-14 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[32px]">bolt</span>
+</div>
+<div>
+<p class="text-label-sm text-on-surface-variant uppercase tracking-wider">Avg. Efficiency</p>
+<p class="text-headline-xl font-headline-xl">92%</p>
+<p class="text-label-sm text-secondary font-bold mt-1">+4.2% vs last week</p>
+</div>
+</div>
+</div>
+<!-- Filter & Table Section -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+<!-- Filter Bar -->
+<div class="px-lg py-md border-b border-outline-variant flex flex-wrap items-center justify-between gap-md">
+<div class="flex items-center gap-md">
+<div class="flex items-center gap-sm">
+<label class="text-label-sm font-bold text-on-surface-variant">Role:</label>
+<select class="bg-surface border border-outline-variant text-body-md rounded-lg px-md py-1.5 focus:ring-1 focus:ring-primary outline-none cursor-pointer">
+<option>All Roles</option>
+<option>Manager</option>
+<option>Lead Mechanic</option>
+<option>Junior Mechanic</option>
+<option>Front Desk</option>
+</select>
+</div>
+<div class="flex items-center gap-sm">
+<label class="text-label-sm font-bold text-on-surface-variant">Status:</label>
+<select class="bg-surface border border-outline-variant text-body-md rounded-lg px-md py-1.5 focus:ring-1 focus:ring-primary outline-none cursor-pointer">
+<option>All Status</option>
+<option>Active</option>
+<option>On Break</option>
+<option>Off-duty</option>
+</select>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<button class="flex items-center gap-sm text-on-surface-variant hover:text-primary transition-colors text-label-sm font-bold p-2">
+<span class="material-symbols-outlined">filter_list</span>
+                        More Filters
+                    </button>
+<button class="flex items-center gap-sm text-on-surface-variant hover:text-primary transition-colors text-label-sm font-bold p-2 border-l border-outline-variant pl-4">
+<span class="material-symbols-outlined">download</span>
+                        Export CSV
+                    </button>
+</div>
+</div>
+<!-- Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low">
+<th class="px-lg py-md text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">Employee</th>
+<th class="px-lg py-md text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">Role</th>
+<th class="px-lg py-md text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">Status</th>
+<th class="px-lg py-md text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">Contact Info</th>
+<th class="px-lg py-md text-label-sm font-bold text-on-surface-variant uppercase tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Employee Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<img class="w-10 h-10 rounded-full object-cover border border-outline-variant" data-alt="A clean, minimalist portrait of a lead mechanic in his late 40s. He is wearing a professional navy blue garage uniform with 'AutoPro' logo. The background is a brightly lit, organized workshop with tools in soft focus. High-key lighting, modern corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDY07xpRLeMaOfSX2T_Sk-FEy2JtLJIvqmvJ8AQcX4g9Nx-AaKLCoNzsfIowqBC_iOE9wWa-52rC96mDxxSq4i924jhOPPq9quOShGGRquq59qXs2_RsGzkG-kNm0AomdDUkx6oCJlLUvqB0obKJEVdVWM8k22uYgJ6Zrl_Isdgt4pTk3W6OrnfqrS4g95XJ9C6Cuts8bUt36IC3x5uMe9_xHfiASQIAz3k36w53qiq3KeMscfutSkbng"/>
+<div>
+<p class="text-body-md font-bold text-on-surface">Ahmed Mansouri</p>
+<p class="text-label-sm text-on-surface-variant">ID: #STF-0922</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<span class="text-body-md text-on-surface">Lead Mechanic</span>
+</td>
+<td class="px-lg py-md">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-label-sm font-bold bg-green-100 text-green-700">
+<span class="w-1.5 h-1.5 rounded-full bg-green-700 mr-2"></span>
+                                    Active
+                                </span>
+</td>
+<td class="px-lg py-md">
+<div>
+<p class="text-body-md text-on-surface">ahmed.m@autopro.ma</p>
+<p class="text-label-sm text-on-surface-variant">+212 6 55 44 33 22</p>
+</div>
+</td>
+<td class="px-lg py-md text-right">
+<button class="p-2 hover:bg-surface-container-high rounded-full transition-all text-outline">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Employee Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<img class="w-10 h-10 rounded-full object-cover border border-outline-variant" data-alt="A professional headshot of a young Moroccan woman working as a service advisor at an automotive garage. She is wearing a crisp white shirt and a blue blazer. The office setting behind her is clean and modern, lit with natural window light. Modern professional portrait style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuApz1AEerDJa8LN-78iJxqygDFeVCB3NVMCBvJWiZaDKCBHjYsq40UEbEwF-9ZnhrCdsG93BbB6jsSoNNNHZlHBGUKemcT2AEBMW8OdZ24xGzSn5IJdnzF6ObbJPfWJWHFP9boLl9JDW1fv7rl4joWdsM69tOvOhrWO_Nne-fGOrx0dkz-Xcj3SLpmyYrawYjpS-xNfeTuBtaar0fWL__v9DJxQzqp3oY46sZK3c8W6on1d7PUMXMx-sA"/>
+<div>
+<p class="text-body-md font-bold text-on-surface">Leila El Amrani</p>
+<p class="text-label-sm text-on-surface-variant">ID: #STF-1044</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<span class="text-body-md text-on-surface">Front Desk</span>
+</td>
+<td class="px-lg py-md">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-label-sm font-bold bg-orange-100 text-orange-700">
+<span class="w-1.5 h-1.5 rounded-full bg-orange-700 mr-2"></span>
+                                    On Break
+                                </span>
+</td>
+<td class="px-lg py-md">
+<div>
+<p class="text-body-md text-on-surface">leila.a@autopro.ma</p>
+<p class="text-label-sm text-on-surface-variant">+212 6 11 22 33 44</p>
+</div>
+</td>
+<td class="px-lg py-md text-right">
+<button class="p-2 hover:bg-surface-container-high rounded-full transition-all text-outline">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Employee Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<img class="w-10 h-10 rounded-full object-cover border border-outline-variant" data-alt="A detailed portrait of a senior automotive shop foreman with graying hair and a confident expression. He is standing in front of a digital diagnostic station in a high-tech workshop. The lighting is focused and clear, highlighting the professional, reliable atmosphere of the garage. Vibrant colors and high resolution." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3-SpqV6-2SnLY0Z4SfbvOGXL3YwZd-eYpRpUXnag1r39plY78f0GYowupSJaAsZpo7xNmbz_Cu7GZQO3vY2eMca7J7Ujr2IfmuBuEpDNDz5YpI-iblTT1XR3PN5qO1MqtBHM6hhxdRbZejOjQq0wdzCpwmKF_miTqmTNQAUAYkHO6XcTEnT3K6u-bTQ5wth9ujU-a5IXs_wM26PbfsiIQOBVNHbJHHPDe-EISDm2iIroK3Pj9CMrRzQ"/>
+<div>
+<p class="text-body-md font-bold text-on-surface">Karim Bennani</p>
+<p class="text-label-sm text-on-surface-variant">ID: #STF-0811</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<span class="text-body-md text-on-surface">Manager</span>
+</td>
+<td class="px-lg py-md">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-label-sm font-bold bg-green-100 text-green-700">
+<span class="w-1.5 h-1.5 rounded-full bg-green-700 mr-2"></span>
+                                    Active
+                                </span>
+</td>
+<td class="px-lg py-md">
+<div>
+<p class="text-body-md text-on-surface">karim.b@autopro.ma</p>
+<p class="text-label-sm text-on-surface-variant">+212 6 99 88 77 66</p>
+</div>
+</td>
+<td class="px-lg py-md text-right">
+<button class="p-2 hover:bg-surface-container-high rounded-full transition-all text-outline">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Employee Row 4 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-lg py-md">
+<div class="flex items-center gap-md">
+<img class="w-10 h-10 rounded-full object-cover border border-outline-variant" data-alt="A portrait of a young junior mechanic, wearing a charcoal gray garage jumpsuit, holding a wrench. The scene is set in a modern garage with bright LED lighting overhead. The aesthetic is clean and focused, emphasizing the technician's role in a high-performance environment. Minimalist and corporate styling." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgzcGPvUIsTM-1m2DZNVZTSpZImp-qg30kpt-H-9OhS1EgLCWSa1uQmxDMpEcOU8gFHSPsqqCj4EYYMxjsRrYxqjpbfgd9mjGngUHnTEnNCiRLewIRCQkYBQGtNoz4_vyLFitYOncG6eDEvdJV82knbbvKTj_HZo-F04EOms3-6MSIqB0PZqA-k6du235E-UHYbHCCWdsdj1vQ9bA4oWieksf3JqBt7YZtVofazySmgzs1Ow5xYE5hfg"/>
+<div>
+<p class="text-body-md font-bold text-on-surface">Omar Zahidi</p>
+<p class="text-label-sm text-on-surface-variant">ID: #STF-1102</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-md">
+<span class="text-body-md text-on-surface">Junior Mechanic</span>
+</td>
+<td class="px-lg py-md">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-label-sm font-bold bg-surface-container-highest text-on-surface-variant">
+<span class="w-1.5 h-1.5 rounded-full bg-on-surface-variant mr-2"></span>
+                                    Off-duty
+                                </span>
+</td>
+<td class="px-lg py-md">
+<div>
+<p class="text-body-md text-on-surface">omar.z@autopro.ma</p>
+<p class="text-label-sm text-on-surface-variant">+212 6 00 11 22 33</p>
+</div>
+</td>
+<td class="px-lg py-md text-right">
+<button class="p-2 hover:bg-surface-container-high rounded-full transition-all text-outline">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="px-lg py-md border-t border-outline-variant flex items-center justify-between">
+<p class="text-body-md text-on-surface-variant">Showing 1 to 4 of 24 employees</p>
+<div class="flex items-center gap-sm">
+<button class="p-2 border border-outline-variant rounded-lg hover:bg-surface-container-low disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-10 h-10 bg-primary text-on-primary rounded-lg font-bold">1</button>
+<button class="w-10 h-10 border border-outline-variant hover:bg-surface-container-low rounded-lg font-bold">2</button>
+<button class="w-10 h-10 border border-outline-variant hover:bg-surface-container-low rounded-lg font-bold">3</button>
+<button class="p-2 border border-outline-variant rounded-lg hover:bg-surface-container-low">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Recent Activity / Logs (Extra Detail) -->
+<div class="mt-xl grid grid-cols-1 lg:grid-cols-3 gap-lg">
+<div class="lg:col-span-2 bg-surface-container-lowest border border-outline-variant rounded-xl p-lg">
+<h3 class="font-title-md text-title-md text-on-surface mb-lg">Efficiency Trends</h3>
+<div class="h-64 flex items-end justify-between gap-base px-lg">
+<!-- Simple CSS Graph Representation -->
+<div class="w-12 bg-primary/20 rounded-t-lg relative group cursor-pointer" style="height: 60%;">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">78%</div>
+<div class="absolute bottom-full mb-2 w-full text-center text-label-sm font-bold text-on-surface-variant">Mon</div>
+</div>
+<div class="w-12 bg-primary/40 rounded-t-lg relative group cursor-pointer" style="height: 75%;">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">82%</div>
+<div class="absolute bottom-full mb-2 w-full text-center text-label-sm font-bold text-on-surface-variant">Tue</div>
+</div>
+<div class="w-12 bg-primary/60 rounded-t-lg relative group cursor-pointer" style="height: 90%;">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">94%</div>
+<div class="absolute bottom-full mb-2 w-full text-center text-label-sm font-bold text-on-surface-variant">Wed</div>
+</div>
+<div class="w-12 bg-primary rounded-t-lg relative group cursor-pointer" style="height: 95%;">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">98%</div>
+<div class="absolute bottom-full mb-2 w-full text-center text-label-sm font-bold text-on-surface-variant">Thu</div>
+</div>
+<div class="w-12 bg-primary/80 rounded-t-lg relative group cursor-pointer" style="height: 85%;">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">88%</div>
+<div class="absolute bottom-full mb-2 w-full text-center text-label-sm font-bold text-on-surface-variant">Fri</div>
+</div>
+<div class="w-12 bg-secondary/30 rounded-t-lg relative group cursor-pointer" style="height: 40%;">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">52%</div>
+<div class="absolute bottom-full mb-2 w-full text-center text-label-sm font-bold text-on-surface-variant">Sat</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg">
+<h3 class="font-title-md text-title-md text-on-surface mb-lg">Recent Clock-ins</h3>
+<div class="space-y-lg overflow-y-auto max-h-64 custom-scrollbar pr-2">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-700 shrink-0">
+<span class="material-symbols-outlined">login</span>
+</div>
+<div>
+<p class="text-body-md font-bold leading-none">Ahmed Mansouri</p>
+<p class="text-label-sm text-on-surface-variant">Clocked in at 08:02 AM</p>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 shrink-0">
+<span class="material-symbols-outlined">coffee</span>
+</div>
+<div>
+<p class="text-body-md font-bold leading-none">Leila El Amrani</p>
+<p class="text-label-sm text-on-surface-variant">Started break at 10:30 AM</p>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-700 shrink-0">
+<span class="material-symbols-outlined">login</span>
+</div>
+<div>
+<p class="text-body-md font-bold leading-none">Karim Bennani</p>
+<p class="text-label-sm text-on-surface-variant">Clocked in at 07:45 AM</p>
+</div>
+</div>
+<div class="flex items-center gap-md opacity-60">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-outline shrink-0">
+<span class="material-symbols-outlined">logout</span>
+</div>
+<div>
+<p class="text-body-md font-bold leading-none">Omar Zahidi</p>
+<p class="text-label-sm text-on-surface-variant">Clocked out yesterday 06:15 PM</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Simple Micro-interaction for table rows
+        document.querySelectorAll('tbody tr').forEach(row => {
+            row.addEventListener('click', () => {
+                console.log('Row clicked - Open employee profile details');
+                // Potential modal trigger would go here
+            });
+        });
+
+        // Search Bar Focus Effect
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('ring-2', 'ring-primary/20');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('ring-2', 'ring-primary/20');
+        });
+    </script>
+</body></html>

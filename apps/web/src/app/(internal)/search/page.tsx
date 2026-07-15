@@ -3,20 +3,12 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  Search,
-  Loader2,
-  AlertCircle,
-  Car,
-  User,
-  Wrench,
-  FileText,
-  ArrowRight,
-} from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 import { api, ApiError } from "@/lib/api-client";
 
 interface SearchResult {
@@ -49,21 +41,21 @@ interface SearchResult {
 }
 
 const STATUS_VARIANTS: Record<string, string> = {
-  received: "bg-blue-100 text-blue-700",
-  diagnosing: "bg-purple-100 text-purple-700",
-  awaiting_approval: "bg-amber-100 text-amber-700",
-  in_progress: "bg-orange-100 text-orange-700",
-  waiting_for_parts: "bg-red-100 text-red-700",
-  complete: "bg-emerald-100 text-emerald-700",
-  delivered: "bg-slate-100 text-slate-700",
-  cancelled: "bg-gray-100 text-gray-700",
+  received: "bg-surface-container-low text-on-surface-variant",
+  diagnosing: "bg-surface-container text-primary",
+  awaiting_approval: "bg-surface-container-low text-on-surface-variant",
+  in_progress: "bg-surface-container text-primary",
+  waiting_for_parts: "bg-surface-container-low text-on-surface-variant",
+  complete: "bg-surface-container text-primary",
+  delivered: "bg-surface-container-low text-on-surface-variant",
+  cancelled: "bg-surface-container-low text-on-surface-variant",
 };
 
 const PRIORITY_VARIANTS: Record<string, string> = {
-  low: "bg-green-100 text-green-700",
-  normal: "bg-blue-100 text-blue-700",
-  high: "bg-orange-100 text-orange-700",
-  emergency: "bg-red-100 text-red-700",
+  low: "bg-surface-container-low text-on-surface-variant",
+  normal: "bg-surface-container text-primary",
+  high: "bg-surface-container-low text-on-surface-variant",
+  emergency: "bg-surface-container text-primary",
 };
 
 function formatDate(dateStr: string) {
@@ -75,6 +67,7 @@ function formatCurrency(amount: number) {
 }
 
 export default function SearchPage() {
+  const t = useTranslations();
   const searchParams = useSearchParams();
   const router = useRouter();
   const [query, setQuery] = useState(searchParams.get("q") || "");
@@ -110,7 +103,7 @@ export default function SearchPage() {
       setResults(res.data);
     } catch (err) {
       setError(
-        err instanceof ApiError ? err.message : "Erreur lors de la recherche.",
+        err instanceof ApiError ? err.message : t('search.error'),
       );
     } finally {
       setLoading(false);
@@ -136,13 +129,17 @@ export default function SearchPage() {
     <div className="space-y-6">
       {/* Header & Search */}
       <div className="space-y-4">
-        <h1 className="text-2xl font-bold">Recherche globale</h1>
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-md">
+          <div>
+            <h2 className="font-headline-xl text-headline-xl">{t('search.title')}</h2>
+          </div>
+        </div>
         
         <form onSubmit={handleSearch} className="max-w-xl">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Icon name="search" size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" />
             <Input
-              placeholder="Rechercher véhicules, clients, réparations, factures..."
+              placeholder={t('search.placeholder')}
               className="pl-9 pr-20"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -154,45 +151,45 @@ export default function SearchPage() {
               disabled={!query.trim() || loading}
             >
               {loading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Icon name="progress_activity" size={16} className="animate-spin" />
               ) : (
-                "Chercher"
+                t('search.button')
               )}
             </Button>
           </div>
         </form>
 
         {query && !loading && results && (
-          <p className="text-sm text-muted-foreground">
-            {resultCount} résultat{resultCount !== 1 ? "s" : ""} pour &quot;{query}&quot;
+          <p className="font-body-md text-body-md text-on-surface-variant">
+            {t('search.results', { count: resultCount })} &quot;{query}&quot;
           </p>
         )}
       </div>
 
       {/* Error */}
       {error && (
-        <div className="flex items-center gap-3 rounded-md border border-destructive/50 bg-destructive/10 p-4 text-destructive">
-          <AlertCircle className="h-5 w-5 shrink-0" />
-          <p className="text-sm">{error}</p>
+        <div className="flex items-center gap-3 rounded-lg border border-outline-variant bg-surface p-4">
+          <Icon name="error" size={20} className="shrink-0 text-primary" />
+          <p className="font-body-md text-body-md text-primary">{error}</p>
         </div>
       )}
 
       {/* Loading */}
       {loading && (
         <div className="flex items-center justify-center py-16">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          <Icon name="progress_activity" size={32} className="animate-spin text-on-surface-variant" />
         </div>
       )}
 
       {/* No results */}
       {query && !loading && results && !hasResults && (
-        <div className="rounded-lg border bg-card p-12 text-center">
-          <Search className="mx-auto h-12 w-12 text-muted-foreground/40" />
-          <p className="mt-4 text-muted-foreground">
-            Aucun résultat trouvé pour &quot;{query}&quot;
+        <div className="bg-white border border-outline-variant rounded-xl shadow-sm p-12 text-center">
+          <Icon name="search" size={48} className="text-on-surface-variant/40" />
+          <p className="mt-4 font-body-lg text-body-lg text-on-surface-variant">
+            {t('search.noResults')} &quot;{query}&quot;
           </p>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Essayez avec d&apos;autres mots-clés ou vérifiez l&apos;orthographe
+          <p className="mt-2 font-body-md text-body-md text-on-surface-variant">
+            {t('search.noResultsHint')}
           </p>
         </div>
       )}
@@ -204,9 +201,9 @@ export default function SearchPage() {
           {results.cars.length > 0 && (
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-base">
-                  <Car className="h-4 w-4" />
-                  Véhicules ({results.cars.length})
+                <CardTitle className="flex items-center gap-2 font-title-md text-title-md">
+                  <Icon name="directions_car" size={16} />
+                  {t('search.vehicles', { count: results.cars.length })}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
@@ -214,15 +211,15 @@ export default function SearchPage() {
                   <Link
                     key={car.id}
                     href={`/cars/${car.id}`}
-                    className="flex items-center justify-between rounded-lg border p-3 transition-colors hover:bg-muted/50"
+                    className="flex items-center justify-between rounded-lg border border-outline-variant p-3 transition-colors hover:bg-surface-container-low"
                   >
                     <div>
-                      <p className="font-semibold">{car.matricule}</p>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="font-title-md text-title-md">{car.matricule}</p>
+                      <p className="font-body-md text-body-md text-on-surface-variant">
                         {car.make} {car.model} ({car.year})
                       </p>
                     </div>
-                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                    <Icon name="arrow_forward" size={16} className="text-on-surface-variant" />
                   </Link>
                 ))}
               </CardContent>
@@ -233,26 +230,21 @@ export default function SearchPage() {
           {results.clients.length > 0 && (
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-base">
-                  <User className="h-4 w-4" />
-                  Clients ({results.clients.length})
+                <CardTitle className="flex items-center gap-2 font-title-md text-title-md">
+                  <Icon name="person" size={16} />
+                  {t('search.clients', { count: results.clients.length })}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 {results.clients.map((client) => (
-                  <Link
-                    key={client.id}
-                    href={`/clients/${client.id}`}
-                    className="flex items-center justify-between rounded-lg border p-3 transition-colors hover:bg-muted/50"
-                  >
+                  <div className="rounded-lg border border-outline-variant p-3">
                     <div>
-                      <p className="font-semibold">{client.name}</p>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="font-title-md text-title-md">{client.name}</p>
+                      <p className="font-body-md text-body-md text-on-surface-variant">
                         {client.phone}
                       </p>
                     </div>
-                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                  </Link>
+                  </div>
                 ))}
               </CardContent>
             </Card>
@@ -262,9 +254,9 @@ export default function SearchPage() {
           {results.repairs.length > 0 && (
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-base">
-                  <Wrench className="h-4 w-4" />
-                  Réparations ({results.repairs.length})
+                <CardTitle className="flex items-center gap-2 font-title-md text-title-md">
+                  <Icon name="build" size={16} />
+                  {t('search.repairs', { count: results.repairs.length })}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
@@ -272,36 +264,38 @@ export default function SearchPage() {
                   <Link
                     key={repair.id}
                     href={`/repairs/${repair.id}`}
-                    className="rounded-lg border p-3 transition-colors hover:bg-muted/50 block"
+                    className="rounded-lg border border-outline-variant p-3 transition-colors hover:bg-surface-container-low block"
                   >
                     <div className="flex items-start justify-between">
                       <div className="space-y-1 flex-1">
                         <div className="flex items-center gap-2">
-                          <p className="font-semibold">#{repair.id.slice(0, 8)}</p>
-                          <Badge
-                            className={
+                          <p className="font-title-md text-title-md">#{repair.id.slice(0, 8)}</p>
+                          <span
+                            className={cn(
+                              "inline-flex items-center px-sm py-xs rounded-full font-label-sm text-label-sm font-bold",
                               STATUS_VARIANTS[repair.status] ||
-                              "bg-slate-100 text-slate-700"
-                            }
+                                "bg-surface-container-low text-on-surface-variant",
+                            )}
                           >
-                            {repair.status}
-                          </Badge>
-                          <Badge
-                            className={
+                            {t('repair.status.' + repair.status) ?? repair.status}
+                          </span>
+                          <span
+                            className={cn(
+                              "inline-flex items-center px-sm py-xs rounded-full font-label-sm text-label-sm font-bold",
                               PRIORITY_VARIANTS[repair.priority] ||
-                              "bg-slate-100 text-slate-700"
-                            }
+                                "bg-surface-container-low text-on-surface-variant",
+                            )}
                           >
                             {repair.priority}
-                          </Badge>
+                          </span>
                         </div>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="font-body-md text-body-md text-on-surface-variant">
                           {repair.car.matricule} — {repair.car.make}{" "}
                           {repair.car.model}
                         </p>
-                        <p className="text-sm">{repair.description}</p>
+                        <p className="font-body-md text-body-md">{repair.description}</p>
                       </div>
-                      <ArrowRight className="h-4 w-4 text-muted-foreground mt-1" />
+                      <Icon name="arrow_forward" size={16} className="text-on-surface-variant mt-1" />
                     </div>
                   </Link>
                 ))}
@@ -313,9 +307,9 @@ export default function SearchPage() {
           {results.invoices.length > 0 && (
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-base">
-                  <FileText className="h-4 w-4" />
-                  Factures ({results.invoices.length})
+                <CardTitle className="flex items-center gap-2 font-title-md text-title-md">
+                  <Icon name="description" size={16} />
+                  {t('search.invoices', { count: results.invoices.length })}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
@@ -323,19 +317,19 @@ export default function SearchPage() {
                   <Link
                     key={invoice.id}
                     href={`/repairs/${invoice.repair.id}#payment`}
-                    className="flex items-center justify-between rounded-lg border p-3 transition-colors hover:bg-muted/50"
+                    className="flex items-center justify-between rounded-lg border border-outline-variant p-3 transition-colors hover:bg-surface-container-low"
                   >
                     <div>
-                      <p className="font-semibold">{invoice.invoiceNumber}</p>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="font-title-md text-title-md">{invoice.invoiceNumber}</p>
+                      <p className="font-body-md text-body-md text-on-surface-variant">
                         {invoice.repair.car.matricule} —{" "}
                         {formatDate(invoice.createdAt)}
                       </p>
-                      <p className="text-sm font-medium text-emerald-600">
+                      <p className="font-title-md text-title-md text-primary">
                         {formatCurrency(invoice.finalTotal)}
                       </p>
                     </div>
-                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                    <Icon name="arrow_forward" size={16} className="text-on-surface-variant" />
                   </Link>
                 ))}
               </CardContent>
@@ -346,27 +340,27 @@ export default function SearchPage() {
 
       {/* Empty state */}
       {!query && !loading && (
-        <div className="rounded-lg border bg-card p-12 text-center">
-          <Search className="mx-auto h-12 w-12 text-muted-foreground/40" />
-          <p className="mt-4 text-lg font-medium">Recherche globale</p>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Recherchez dans tous les véhicules, clients, réparations et factures
+        <div className="bg-white border border-outline-variant rounded-xl shadow-sm p-12 text-center">
+          <Icon name="search" size={48} className="text-on-surface-variant/40" />
+          <p className="mt-4 font-headline-lg text-headline-lg">{t('search.title')}</p>
+          <p className="mt-2 font-body-lg text-body-lg text-on-surface-variant">
+            {t('search.welcome')}
           </p>
-          <div className="mt-6 grid grid-cols-2 gap-4 text-left max-w-md mx-auto text-sm text-muted-foreground">
+          <div className="mt-6 grid grid-cols-2 gap-4 text-left max-w-md mx-auto font-body-md text-body-md text-on-surface-variant">
             <div>
-              <p className="font-medium">Exemples de recherche :</p>
+              <p className="font-title-md text-title-md">{t('search.examples')}</p>
               <ul className="mt-2 space-y-1">
-                <li>• Plaque d&apos;immatriculation</li>
-                <li>• Nom du client</li>
-                <li>• Numéro de téléphone</li>
+                <li>• {t('search.plateHint')}</li>
+                <li>• {t('search.clientNameHint')}</li>
+                <li>• {t('search.phoneHint')}</li>
               </ul>
             </div>
             <div>
-              <p className="font-medium">&nbsp;</p>
+              <p className="font-title-md text-title-md">&nbsp;</p>
               <ul className="mt-2 space-y-1">
-                <li>• ID de réparation</li>
-                <li>• Numéro de facture</li>
-                <li>• Marque de véhicule</li>
+                <li>• {t('search.repairIdHint')}</li>
+                <li>• {t('search.invoiceHint')}</li>
+                <li>• {t('search.brandHint')}</li>
               </ul>
             </div>
           </div>

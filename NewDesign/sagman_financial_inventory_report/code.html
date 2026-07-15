@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sagman Garage - Financial &amp; Inventory Report</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+        .chart-gradient {
+            background: linear-gradient(180deg, rgba(0, 35, 111, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
+        }
+        .zebra-row:nth-child(even) {
+            background-color: #f8fafc;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-error-container": "#93000a",
+                      "error": "#ba1a1a",
+                      "surface-bright": "#f7f9fb",
+                      "on-secondary-fixed-variant": "#93000b",
+                      "on-primary": "#ffffff",
+                      "outline": "#757682",
+                      "on-secondary-container": "#fffbff",
+                      "primary": "#00236f",
+                      "tertiary": "#222a3e",
+                      "outline-variant": "#c5c5d3",
+                      "on-secondary": "#ffffff",
+                      "on-primary-container": "#90a8ff",
+                      "surface-dim": "#d8dadc",
+                      "primary-fixed-dim": "#b6c4ff",
+                      "on-primary-fixed-variant": "#264191",
+                      "tertiary-container": "#384055",
+                      "inverse-primary": "#b6c4ff",
+                      "surface-container": "#eceef0",
+                      "surface-container-highest": "#e0e3e5",
+                      "surface-container-high": "#e6e8ea",
+                      "primary-container": "#1e3a8a",
+                      "tertiary-fixed": "#dae2fd",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-fixed-dim": "#ffb4ab",
+                      "on-tertiary-container": "#a4acc5",
+                      "on-error": "#ffffff",
+                      "secondary": "#bb0112",
+                      "on-background": "#191c1e",
+                      "inverse-surface": "#2d3133",
+                      "surface-variant": "#e0e3e5",
+                      "on-tertiary": "#ffffff",
+                      "inverse-on-surface": "#eff1f3",
+                      "surface-container-low": "#f2f4f6",
+                      "on-surface-variant": "#444651",
+                      "error-container": "#ffdad6",
+                      "secondary-fixed": "#ffdad6",
+                      "surface": "#f7f9fb",
+                      "background": "#f7f9fb",
+                      "surface-tint": "#4059aa",
+                      "primary-fixed": "#dce1ff",
+                      "on-tertiary-fixed": "#131b2e",
+                      "on-secondary-fixed": "#410002",
+                      "on-tertiary-fixed-variant": "#3f465c",
+                      "on-primary-fixed": "#00164e",
+                      "tertiary-fixed-dim": "#bec6e0",
+                      "on-surface": "#191c1e",
+                      "secondary-container": "#e02928"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "sm": "8px",
+                      "xs": "4px",
+                      "xl": "32px",
+                      "gutter": "16px",
+                      "lg": "24px",
+                      "container-margin": "24px",
+                      "md": "16px",
+                      "base": "4px"
+              },
+              "fontFamily": {
+                      "label-sm": ["Inter"],
+                      "body-md": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-xl": ["Inter"],
+                      "title-md": ["Inter"]
+              },
+              "fontSize": {
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-xl": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "title-md": ["18px", {"lineHeight": "26px", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="flex">
+<!-- Sidebar -->
+<aside class="w-64 h-screen sticky top-0 left-0 bg-surface dark:bg-surface-dim border-r border-outline-variant flex flex-col py-lg z-40 hidden md:flex">
+<div class="px-lg mb-xl">
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary">Sagman Garage</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Management Hub</p>
+</div>
+<nav class="flex-1 space-y-base px-sm">
+<!-- Navigation Items Mapping from JSON -->
+<a class="flex items-center gap-md px-md py-sm transition-colors hover:bg-surface-container-high text-on-surface-variant font-medium" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm transition-colors hover:bg-surface-container-high text-on-surface-variant font-medium" href="#">
+<span class="material-symbols-outlined">build</span>
+<span class="font-body-md text-body-md">Repairs</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm transition-colors hover:bg-surface-container-high text-on-surface-variant font-medium" href="#">
+<span class="material-symbols-outlined">event</span>
+<span class="font-body-md text-body-md">Appointments</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm transition-colors hover:bg-surface-container-high text-on-surface-variant font-medium" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-body-md text-body-md">Inventory</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm transition-colors hover:bg-surface-container-high text-on-surface-variant font-medium" href="#">
+<span class="material-symbols-outlined">badge</span>
+<span class="font-body-md text-body-md">Employees</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm transition-colors hover:bg-surface-container-high text-on-surface-variant font-medium" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="font-body-md text-body-md">Calendar</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm transition-colors text-primary font-bold border-r-4 border-primary bg-primary-container/10 active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">bar_chart</span>
+<span class="font-body-md text-body-md">Reports</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm transition-colors hover:bg-surface-container-high text-on-surface-variant font-medium" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-body-md text-body-md">Notifications</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm transition-colors hover:bg-surface-container-high text-on-surface-variant font-medium" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</nav>
+<div class="px-lg mt-auto">
+<button class="w-full bg-primary text-on-primary font-title-md text-title-md py-sm rounded transition-opacity hover:opacity-90">
+                New Repair Order
+            </button>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 min-w-0 flex flex-col">
+<!-- Top Navigation -->
+<header class="flex justify-between items-center px-lg py-md w-full sticky top-0 z-50 bg-white border-b border-outline-variant">
+<div class="flex items-center gap-xl flex-1">
+<div class="md:hidden">
+<span class="material-symbols-outlined text-primary">menu</span>
+</div>
+<div class="hidden md:flex bg-surface-container-low border border-outline-variant px-md py-xs rounded flex items-center gap-sm min-w-[300px]">
+<span class="material-symbols-outlined text-on-surface-variant">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md w-full" placeholder="Search inventory, parts, invoices..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-sm">
+<button class="p-xs hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-xs hover:text-primary transition-colors">
+<span class="material-symbols-outlined">help</span>
+</button>
+</div>
+<div class="h-8 w-[1px] bg-outline-variant"></div>
+<div class="flex items-center gap-sm">
+<div class="text-right hidden sm:block">
+<p class="font-body-md text-body-md font-bold text-on-surface">Ahmed Sagman</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Administrator</p>
+</div>
+<div class="w-10 h-10 rounded bg-primary-container flex items-center justify-center text-on-primary-container font-bold">
+                        AS
+                    </div>
+</div>
+</div>
+</header>
+<!-- Content Area -->
+<div class="p-lg lg:p-xl space-y-lg max-w-[1600px] mx-auto w-full">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-md mb-lg">
+<div>
+<h2 class="font-headline-xl text-headline-xl text-primary mb-xs">Financial &amp; Inventory Analysis</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Performance metrics and stock valuation for Q3 2024.</p>
+</div>
+<div class="flex gap-sm">
+<button class="flex items-center gap-xs px-md py-sm bg-white border border-outline-variant text-body-md font-medium hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-body-md">calendar_today</span>
+                        Last 30 Days
+                    </button>
+<button class="flex items-center gap-xs px-md py-sm bg-primary text-on-primary text-body-md font-medium hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-body-md">download</span>
+                        Export PDF
+                    </button>
+</div>
+</div>
+<!-- Top Section: Stats Cards (Bento Style) -->
+<div class="bento-grid">
+<div class="col-span-12 md:col-span-6 lg:col-span-3 bg-white border border-outline-variant p-lg flex flex-col justify-between">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-xs">TOTAL INVENTORY VALUE</p>
+<h3 class="font-headline-lg text-headline-lg font-black text-primary">MAD 1,452,800</h3>
+</div>
+<div class="mt-md flex items-center gap-xs text-secondary font-bold text-label-sm">
+<span class="material-symbols-outlined text-[16px]">trending_up</span>
+<span>+4.2% vs last month</span>
+</div>
+</div>
+<div class="col-span-12 md:col-span-6 lg:col-span-3 bg-white border border-outline-variant p-lg flex flex-col justify-between">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-xs">PARTS MARKUP % (AVG)</p>
+<h3 class="font-headline-lg text-headline-lg font-black text-primary">32.4%</h3>
+</div>
+<div class="mt-md flex items-center gap-xs text-primary font-bold text-label-sm">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+<span>Within target range (30-35%)</span>
+</div>
+</div>
+<div class="col-span-12 md:col-span-6 lg:col-span-3 bg-white border border-outline-variant p-lg flex flex-col justify-between">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-xs">MOST PROFITABLE PART</p>
+<h3 class="font-headline-lg text-headline-lg font-black text-primary">Brake Rotors (OEM)</h3>
+</div>
+<div class="mt-md flex items-center gap-xs text-on-surface-variant font-medium text-label-sm">
+<span class="material-symbols-outlined text-[16px]">info</span>
+<span>48% gross margin contribution</span>
+</div>
+</div>
+<div class="col-span-12 md:col-span-6 lg:col-span-3 bg-white border border-outline-variant p-lg flex flex-col justify-between">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-xs">STOCK TURNOVER RATE</p>
+<h3 class="font-headline-lg text-headline-lg font-black text-primary">4.2x</h3>
+</div>
+<div class="mt-md flex items-center gap-xs text-secondary font-bold text-label-sm">
+<span class="material-symbols-outlined text-[16px]">warning</span>
+<span>Slow moving engine components</span>
+</div>
+</div>
+</div>
+<!-- Middle Section: Chart -->
+<div class="bg-white border border-outline-variant p-lg lg:p-xl">
+<div class="flex justify-between items-center mb-xl">
+<div>
+<h4 class="font-title-md text-title-md text-primary">Parts Consumption vs Revenue</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Correlation between material costs and workshop billing.</p>
+</div>
+<div class="flex gap-md">
+<div class="flex items-center gap-xs">
+<div class="w-3 h-3 bg-primary"></div>
+<span class="font-label-sm text-label-sm">Revenue</span>
+</div>
+<div class="flex items-center gap-xs">
+<div class="w-3 h-3 bg-secondary"></div>
+<span class="font-label-sm text-label-sm">Consumption Cost</span>
+</div>
+</div>
+</div>
+<!-- Mock Chart Visual -->
+<div class="h-[300px] w-full flex items-end gap-sm md:gap-lg px-md relative">
+<!-- Grid Lines -->
+<div class="absolute inset-x-0 top-0 h-[1px] bg-outline-variant/30"></div>
+<div class="absolute inset-x-0 top-1/4 h-[1px] bg-outline-variant/30"></div>
+<div class="absolute inset-x-0 top-2/4 h-[1px] bg-outline-variant/30"></div>
+<div class="absolute inset-x-0 top-3/4 h-[1px] bg-outline-variant/30"></div>
+<!-- Month Columns -->
+<div class="flex-1 flex flex-col justify-end items-center gap-xs h-full group">
+<div class="w-full flex gap-1 items-end h-full">
+<div class="flex-1 bg-primary/20 h-[60%] group-hover:bg-primary transition-all duration-300"></div>
+<div class="flex-1 bg-secondary/20 h-[40%] group-hover:bg-secondary transition-all duration-300"></div>
+</div>
+<span class="font-label-sm text-label-sm mt-xs">MAR</span>
+</div>
+<div class="flex-1 flex flex-col justify-end items-center gap-xs h-full group">
+<div class="w-full flex gap-1 items-end h-full">
+<div class="flex-1 bg-primary/20 h-[75%] group-hover:bg-primary transition-all duration-300"></div>
+<div class="flex-1 bg-secondary/20 h-[50%] group-hover:bg-secondary transition-all duration-300"></div>
+</div>
+<span class="font-label-sm text-label-sm mt-xs">APR</span>
+</div>
+<div class="flex-1 flex flex-col justify-end items-center gap-xs h-full group">
+<div class="w-full flex gap-1 items-end h-full">
+<div class="flex-1 bg-primary/20 h-[90%] group-hover:bg-primary transition-all duration-300"></div>
+<div class="flex-1 bg-secondary/20 h-[55%] group-hover:bg-secondary transition-all duration-300"></div>
+</div>
+<span class="font-label-sm text-label-sm mt-xs">MAY</span>
+</div>
+<div class="flex-1 flex flex-col justify-end items-center gap-xs h-full group">
+<div class="w-full flex gap-1 items-end h-full">
+<div class="flex-1 bg-primary/20 h-[80%] group-hover:bg-primary transition-all duration-300"></div>
+<div class="flex-1 bg-secondary/20 h-[45%] group-hover:bg-secondary transition-all duration-300"></div>
+</div>
+<span class="font-label-sm text-label-sm mt-xs">JUN</span>
+</div>
+<div class="flex-1 flex flex-col justify-end items-center gap-xs h-full group">
+<div class="w-full flex gap-1 items-end h-full">
+<div class="flex-1 bg-primary/20 h-[95%] group-hover:bg-primary transition-all duration-300"></div>
+<div class="flex-1 bg-secondary/20 h-[60%] group-hover:bg-secondary transition-all duration-300"></div>
+</div>
+<span class="font-label-sm text-label-sm mt-xs">JUL</span>
+</div>
+<div class="flex-1 flex flex-col justify-end items-center gap-xs h-full group">
+<div class="w-full flex gap-1 items-end h-full">
+<div class="flex-1 bg-primary/20 h-[70%] group-hover:bg-primary transition-all duration-300"></div>
+<div class="flex-1 bg-secondary/20 h-[42%] group-hover:bg-secondary transition-all duration-300"></div>
+</div>
+<span class="font-label-sm text-label-sm mt-xs">AUG</span>
+</div>
+</div>
+</div>
+<!-- Bottom Section: Table & Receivables -->
+<div class="grid grid-cols-12 gap-lg">
+<!-- High Value Parts Table -->
+<div class="col-span-12 lg:col-span-8 bg-white border border-outline-variant p-lg overflow-hidden">
+<h4 class="font-title-md text-title-md text-primary mb-lg">Top 10 High-Value Parts</h4>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="px-md py-sm font-label-sm text-label-sm text-on-surface-variant">PART SKU</th>
+<th class="px-md py-sm font-label-sm text-label-sm text-on-surface-variant">DESCRIPTION</th>
+<th class="px-md py-sm font-label-sm text-label-sm text-on-surface-variant">UNIT COST</th>
+<th class="px-md py-sm font-label-sm text-label-sm text-on-surface-variant">STOCK VAL.</th>
+<th class="px-md py-sm font-label-sm text-label-sm text-on-surface-variant">STATUS</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md">
+<tr class="zebra-row hover:bg-surface-container transition-colors border-b border-outline-variant/30">
+<td class="px-md py-sm font-bold">TRB-882-V6</td>
+<td class="px-md py-sm">V6 Turbocharger Kit (OEM)</td>
+<td class="px-md py-sm">MAD 12,400</td>
+<td class="px-md py-sm font-bold text-primary">MAD 62,000</td>
+<td class="px-md py-sm">
+<span class="bg-blue-100 text-primary px-xs py-1 rounded text-label-sm font-bold uppercase tracking-wider">In Stock (5)</span>
+</td>
+</tr>
+<tr class="zebra-row hover:bg-surface-container transition-colors border-b border-outline-variant/30">
+<td class="px-md py-sm font-bold">ECM-HYB-24</td>
+<td class="px-md py-sm">Engine Control Module (Hybrid)</td>
+<td class="px-md py-sm">MAD 8,950</td>
+<td class="px-md py-sm font-bold text-primary">MAD 26,850</td>
+<td class="px-md py-sm">
+<span class="bg-orange-100 text-secondary px-xs py-1 rounded text-label-sm font-bold uppercase tracking-wider">Low Stock (3)</span>
+</td>
+</tr>
+<tr class="zebra-row hover:bg-surface-container transition-colors border-b border-outline-variant/30">
+<td class="px-md py-sm font-bold">BAT-95AH-AGM</td>
+<td class="px-md py-sm">AGM Battery 95Ah (Elite)</td>
+<td class="px-md py-sm">MAD 2,200</td>
+<td class="px-md py-sm font-bold text-primary">MAD 55,000</td>
+<td class="px-md py-sm">
+<span class="bg-blue-100 text-primary px-xs py-1 rounded text-label-sm font-bold uppercase tracking-wider">In Stock (25)</span>
+</td>
+</tr>
+<tr class="zebra-row hover:bg-surface-container transition-colors border-b border-outline-variant/30">
+<td class="px-md py-sm font-bold">TIR-PIL-SPORT</td>
+<td class="px-md py-sm">Pilot Sport 4S (Set of 4)</td>
+<td class="px-md py-sm">MAD 7,800</td>
+<td class="px-md py-sm font-bold text-primary">MAD 31,200</td>
+<td class="px-md py-sm">
+<span class="bg-red-100 text-error px-xs py-1 rounded text-label-sm font-bold uppercase tracking-wider">Out of Stock</span>
+</td>
+</tr>
+<tr class="zebra-row hover:bg-surface-container transition-colors border-b border-outline-variant/30">
+<td class="px-md py-sm font-bold">AL-800-R</td>
+<td class="px-md py-sm">High-Output Alternator 180A</td>
+<td class="px-md py-sm">MAD 3,450</td>
+<td class="px-md py-sm font-bold text-primary">MAD 41,400</td>
+<td class="px-md py-sm">
+<span class="bg-blue-100 text-primary px-xs py-1 rounded text-label-sm font-bold uppercase tracking-wider">In Stock (12)</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Financial Health: Pending & Overdue -->
+<div class="col-span-12 lg:col-span-4 space-y-lg">
+<!-- Overdue Payments -->
+<div class="bg-white border-l-4 border-l-secondary border-y border-r border-outline-variant p-lg">
+<div class="flex justify-between items-start mb-md">
+<div>
+<h4 class="font-title-md text-title-md text-secondary">Overdue Payments</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">30+ Days Outstanding</p>
+</div>
+<span class="material-symbols-outlined text-secondary">warning</span>
+</div>
+<div class="space-y-sm">
+<div class="p-sm bg-error-container/20 border border-error-container rounded">
+<div class="flex justify-between font-bold text-body-md text-error">
+<span>Inv #8922 - El Alami Transport</span>
+<span>MAD 14,200</span>
+</div>
+<p class="text-label-sm text-on-error-container mt-xs">Due: 15/07/2024 (42 Days Overdue)</p>
+</div>
+<div class="p-sm bg-error-container/20 border border-error-container rounded">
+<div class="flex justify-between font-bold text-body-md text-error">
+<span>Inv #9011 - Karim Logistics</span>
+<span>MAD 8,850</span>
+</div>
+<p class="text-label-sm text-on-error-container mt-xs">Due: 28/07/2024 (31 Days Overdue)</p>
+</div>
+</div>
+<button class="w-full mt-lg text-secondary font-bold text-label-sm py-sm border border-secondary hover:bg-secondary hover:text-white transition-all">
+                            SEND REMINDERS
+                        </button>
+</div>
+<!-- Pending Invoices -->
+<div class="bg-white border border-outline-variant p-lg">
+<div class="flex justify-between items-start mb-md">
+<div>
+<h4 class="font-title-md text-title-md text-primary">Pending Invoices</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Current Week Drafts</p>
+</div>
+<span class="material-symbols-outlined text-primary">pending_actions</span>
+</div>
+<div class="space-y-sm">
+<div class="flex justify-between items-center p-sm hover:bg-surface-container transition-colors cursor-pointer border-b border-outline-variant/30">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-body-md">description</span>
+</div>
+<div>
+<p class="font-bold text-body-md text-on-surface">#9240 - Sarah Mansouri</p>
+<p class="text-label-sm text-on-surface-variant">Engine Service + Parts</p>
+</div>
+</div>
+<span class="font-bold text-body-md text-primary">MAD 4,120</span>
+</div>
+<div class="flex justify-between items-center p-sm hover:bg-surface-container transition-colors cursor-pointer border-b border-outline-variant/30">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-body-md">description</span>
+</div>
+<div>
+<p class="font-bold text-body-md text-on-surface">#9245 - Othmane B.</p>
+<p class="text-label-sm text-on-surface-variant">Brake Replacement</p>
+</div>
+</div>
+<span class="font-bold text-body-md text-primary">MAD 1,850</span>
+</div>
+</div>
+<div class="mt-lg pt-md border-t border-outline-variant">
+<div class="flex justify-between text-title-md font-black text-primary">
+<span>Total Pending</span>
+<span>MAD 32,450</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="flex flex-col md:flex-row justify-between items-center px-lg py-md w-full mt-auto bg-surface-container-lowest border-t border-outline-variant">
+<div class="mb-sm md:mb-0">
+<span class="font-title-md text-title-md font-bold text-primary">Sagman Garage</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant ml-md">© 2024 Management System. All rights reserved.</span>
+</div>
+<div class="flex gap-lg">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:underline decoration-primary" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:underline decoration-primary" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:underline decoration-primary" href="#">Support</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:underline decoration-primary" href="#">Contact</a>
+</div>
+</footer>
+</main>
+<script>
+        // Micro-interaction for table rows
+        document.querySelectorAll('.zebra-row').forEach(row => {
+            row.addEventListener('click', () => {
+                row.classList.toggle('bg-primary-container/5');
+            });
+        });
+
+        // Simple animation for the stats bars on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const bars = document.querySelectorAll('.flex-1.bg-primary\\/20, .flex-1.bg-secondary\\/20');
+            bars.forEach(bar => {
+                const targetHeight = bar.style.height || getComputedStyle(bar).height;
+                bar.style.height = '0px';
+                setTimeout(() => {
+                    bar.style.transition = 'height 1s cubic-bezier(0.16, 1, 0.3, 1)';
+                    bar.style.height = targetHeight;
+                }, 100);
+            });
+        });
+    </script>
+</body></html>

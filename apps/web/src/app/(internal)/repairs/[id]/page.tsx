@@ -3,28 +3,8 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  Loader2,
-  AlertCircle,
-  Plus,
-  Trash2,
-  Clock,
-  Search,
-  User,
-  Car,
-  Phone,
-  MessageSquare,
-  CheckCircle2,
-  XCircle,
-  ChevronRight,
-  FileText,
-  Wrench,
-  Package,
-  DollarSign,
-  History,
-  CreditCard,
-} from "lucide-react";
+import { useTranslations } from "next-intl";
+import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -48,7 +28,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { api, ApiError } from "@/lib/api-client";
 import { useToast } from "@/components/ui/use-toast";
-import { StatusBadge, STATUS_LABELS } from "@/components/repairs/StatusBadge";
+import { StatusBadge } from "@/components/repairs/StatusBadge";
 import { PriorityBadge } from "@/components/repairs/PriorityBadge";
 
 // ─── Interfaces ──────────────────────────────────────────────────────────────
@@ -94,7 +74,7 @@ interface RepairDetail {
     color?: string;
     client?: { id: string; name: string; phone: string };
   };
-  appointment?: { id: string; status: string; purpose: string };
+  appointment?: { id: string; status: string; purpose: string; carImageUrl?: string };
   createdBy: { id: string; name: string };
   primaryMechanic: { id: string; name: string; specialty?: string };
   mechanics: Array<{
@@ -144,6 +124,9 @@ interface RepairDetail {
     amountReceived: number;
     changeDue: number;
     invoiceNumber: string;
+    paymentType: string;
+    checkImageUrl?: string;
+    paidByName?: string;
     createdAt: string;
   };
   photos: Array<{
@@ -174,7 +157,7 @@ interface MechanicEmployee {
 
 function formatDate(dateString?: string) {
   if (!dateString) return "—";
-  return new Date(dateString).toLocaleDateString("en-GB", {
+  return new Date(dateString).toLocaleDateString("fr-FR", {
     day: "2-digit",
     month: "short",
     year: "numeric",
@@ -182,7 +165,7 @@ function formatDate(dateString?: string) {
 }
 
 function formatDateTime(dateString: string) {
-  return new Date(dateString).toLocaleString("en-GB", {
+  return new Date(dateString).toLocaleString("fr-FR", {
     day: "2-digit",
     month: "short",
     year: "numeric",
@@ -192,7 +175,8 @@ function formatDateTime(dateString: string) {
 }
 
 function money(value: number) {
-  return Number(value).toFixed(2);
+  const n = Number(value);
+  return isNaN(n) ? "0.00" : n.toFixed(2);
 }
 
 const SEVERITY_STYLES: Record<string, string> = {
@@ -212,6 +196,7 @@ function RepairHeader({
   repair: RepairDetail;
   onRefresh: () => void;
 }) {
+  const t = useTranslations();
   const { toast } = useToast();
   const [busy, setBusy] = useState(false);
 
@@ -223,8 +208,17 @@ function RepairHeader({
   const [reopenOpen, setReopenOpen] = useState(false);
   const [reopenReason, setReopenReason] = useState("");
 
+  // Complete dialog (set final price)
+  const [completeOpen, setCompleteOpen] = useState(false);
+  const [completeFinalPrice, setCompleteFinalPrice] = useState("");
+
   // Deliver dialog (just a confirm — checks payment)
   const [deliverOpen, setDeliverOpen] = useState(false);
+
+  // Time estimation dialog (before moving to in_progress)
+  const [timeEstOpen, setTimeEstOpen] = useState(false);
+  const [estHours, setEstHours] = useState("");
+  const [targetDate, setTargetDate] = useState("");
 
   async function changeStatus(
     status: string,
@@ -232,20 +226,21 @@ function RepairHeader({
       note?: string;
       cancellationReason?: string;
       reopenedReason?: string;
+      finalTotal?: number;
     },
   ) {
     setBusy(true);
     try {
       await api.patch(`/repairs/${repair.id}/status`, { status, ...extra });
       toast({
-        title: `Status updated to "${STATUS_LABELS[status] ?? status}"`,
+        title: `${t('common.status')} ${t('repair.updatedTo')} "${t(`repair.status.${status}`)}"`,
       });
       onRefresh();
     } catch (err) {
       toast({
-        title: "Status change failed",
+        title: t('common.error'),
         description:
-          err instanceof ApiError ? err.message : "An error occurred.",
+          err instanceof ApiError ? err.message : t('common.error'),
         variant: "error",
       });
     } finally {
@@ -269,6 +264,65 @@ function RepairHeader({
     setReopenReason("");
   }
 
+  async function handleStartRepair() {
+    setBusy(true);
+    try {
+      // Save time estimation first
+      if (estHours || targetDate) {
+        await api.patch(`/repairs/${repair.id}`, {
+          estimatedDurationHours: estHours ? Number(estHours) : undefined,
+          targetCompletionDate: targetDate || undefined,
+        });
+      }
+      // Transition to in_progress
+      await api.patch(`/repairs/${repair.id}/status`, { status: "in_progress" });
+      toast({ title: `${t('common.status')} ${t('repair.updatedTo')} "${t('repair.status.in_progress')}"` });
+      setTimeEstOpen(false);
+      setEstHours("");
+      setTargetDate("");
+      onRefresh();
+
+      // Notify client via WhatsApp
+      const client = repair.car.client;
+      if (client?.phone) {
+        const phone = client.phone.replace(/[^0-9]/g, "");
+        const durationText = estHours ? `${estHours}h` : "";
+        const dateText = targetDate
+          ? new Date(targetDate).toLocaleDateString("fr-FR", {
+              day: "2-digit",
+              month: "long",
+              year: "numeric",
+            })
+          : "";
+        let msg = t('repair.smsTemplates.inRepair', { name: client.name, matricule: repair.car.matricule });
+        if (durationText || dateText) {
+          msg += ` ${t('repair.smsTemplates.estimatedDuration')} ${durationText}${durationText && dateText ? " — " : ""}${dateText ? `${t('repair.smsTemplates.targetDate')} ${dateText}` : ""}.`;
+        }
+        msg += " Cordialement, Sagman Garage.";
+        window.open(
+          `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,
+          "_blank",
+        );
+      }
+    } catch (err) {
+      toast({
+        title: t('common.error'),
+        description:
+          err instanceof ApiError ? err.message : t('common.error'),
+        variant: "error",
+      });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleComplete() {
+    const price = completeFinalPrice ? Number(completeFinalPrice) : undefined;
+    await changeStatus("complete", price != null ? { finalTotal: price } : undefined);
+    setCompleteOpen(false);
+    setCompleteFinalPrice("");
+  }
+
   async function handleDeliver() {
     await changeStatus("delivered");
     setDeliverOpen(false);
@@ -282,8 +336,8 @@ function RepairHeader({
       <div className="flex items-start gap-4">
         <Button variant="ghost" size="sm" asChild>
           <Link href="/repairs">
-            <ArrowLeft className="h-4 w-4" />
-            Repairs
+            <Icon name="arrow_back" size={16} />
+            {t('nav.repairs')}
           </Link>
         </Button>
         <div>
@@ -310,37 +364,44 @@ function RepairHeader({
                 onClick={() => changeStatus("diagnosing")}
                 disabled={busy}
                 isLoading={busy}
+                className="bg-primary text-on-primary rounded-lg px-lg py-sm font-title-md text-title-md"
               >
-                Start Diagnosis
+                {t('repair.actions.startDiagnosis')}
               </Button>
               <Button
                 size="sm"
                 variant="destructive"
                 onClick={() => setCancelOpen(true)}
                 disabled={busy}
+                className="bg-destructive text-destructive-foreground rounded-lg px-lg py-sm font-title-md text-title-md"
               >
-                Cancel
+                {t('common.cancel')}
               </Button>
             </>
           )}
 
-          {repair.status === "diagnosing" && (
+          {(repair.status === "diagnosing" || repair.status === "awaiting_approval") && (
             <>
               <Button
                 size="sm"
-                onClick={() => changeStatus("awaiting_approval")}
+                onClick={() => {
+                  setEstHours(repair.estimatedDurationHours?.toString() ?? "");
+                  setTargetDate(repair.targetCompletionDate?.slice(0, 10) ?? "");
+                  setTimeEstOpen(true);
+                }}
                 disabled={busy}
-                isLoading={busy}
+                className="bg-primary text-on-primary rounded-lg px-lg py-sm font-title-md text-title-md"
               >
-                Submit for Approval
+                {t('repair.actions.startRepair')}
               </Button>
               <Button
                 size="sm"
                 variant="destructive"
                 onClick={() => setCancelOpen(true)}
                 disabled={busy}
+                className="bg-destructive text-destructive-foreground rounded-lg px-lg py-sm font-title-md text-title-md"
               >
-                Cancel
+                {t('common.cancel')}
               </Button>
             </>
           )}
@@ -353,24 +414,29 @@ function RepairHeader({
                 onClick={() => changeStatus("waiting_for_parts")}
                 disabled={busy}
                 isLoading={busy}
+                className="border border-outline-variant text-on-surface-variant"
               >
-                Waiting for Parts
+                {t('repair.actions.waitingForParts')}
               </Button>
               <Button
                 size="sm"
-                onClick={() => changeStatus("complete")}
+                onClick={() => {
+                  setCompleteFinalPrice(repair.finalTotal?.toString() ?? "");
+                  setCompleteOpen(true);
+                }}
                 disabled={busy}
-                isLoading={busy}
+                className="bg-primary text-on-primary rounded-lg px-lg py-sm font-title-md text-title-md"
               >
-                Mark Complete
+                {t('repair.actions.markComplete')}
               </Button>
               <Button
                 size="sm"
                 variant="destructive"
                 onClick={() => setCancelOpen(true)}
                 disabled={busy}
+                className="bg-destructive text-destructive-foreground rounded-lg px-lg py-sm font-title-md text-title-md"
               >
-                Cancel
+                {t('common.cancel')}
               </Button>
             </>
           )}
@@ -382,16 +448,18 @@ function RepairHeader({
                 onClick={() => changeStatus("in_progress")}
                 disabled={busy}
                 isLoading={busy}
+                className="bg-primary text-on-primary rounded-lg px-lg py-sm font-title-md text-title-md"
               >
-                Resume Repair
+                {t('repair.actions.resume')}
               </Button>
               <Button
                 size="sm"
                 variant="destructive"
                 onClick={() => setCancelOpen(true)}
                 disabled={busy}
+                className="bg-destructive text-destructive-foreground rounded-lg px-lg py-sm font-title-md text-title-md"
               >
-                Cancel
+                {t('common.cancel')}
               </Button>
             </>
           )}
@@ -403,9 +471,8 @@ function RepairHeader({
                 onClick={() => {
                   if (!hasPayment) {
                     toast({
-                      title: "Payment required",
-                      description:
-                        "Register payment before marking as delivered.",
+                      title: t('common.error'),
+                      description: t('repair.noPaymentWarning'),
                       variant: "error",
                     });
                     return;
@@ -413,16 +480,18 @@ function RepairHeader({
                   setDeliverOpen(true);
                 }}
                 disabled={busy}
+                className="bg-primary text-on-primary rounded-lg px-lg py-sm font-title-md text-title-md"
               >
-                Mark Delivered
+                {t('repair.actions.markDelivered')}
               </Button>
               <Button
                 size="sm"
                 variant="outline"
                 onClick={() => setReopenOpen(true)}
                 disabled={busy}
+                className="border border-outline-variant text-on-surface-variant"
               >
-                Reopen
+                {t('repair.actions.reopen')}
               </Button>
             </>
           )}
@@ -433,33 +502,33 @@ function RepairHeader({
       <Dialog open={cancelOpen} onOpenChange={setCancelOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Cancel Repair</DialogTitle>
+            <DialogTitle>{t('repair.dialogs.cancel.title')}</DialogTitle>
             <DialogDescription>
-              Please provide a reason for cancelling this repair. This action
-              cannot be undone.
+              {t('repair.dialogs.cancel.description')}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-2">
-            <Label>Cancellation Reason *</Label>
+            <Label>{t('repair.dialogs.cancel.reasonLabel')}</Label>
             <textarea
               className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
               rows={3}
-              placeholder="Enter reason for cancellation..."
+              placeholder={t('repair.dialogs.cancel.reasonPlaceholder')}
               value={cancelReason}
               onChange={(e) => setCancelReason(e.target.value)}
             />
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Back</Button>
+              <Button variant="outline" className="border border-outline-variant text-on-surface-variant">{t('common.back')}</Button>
             </DialogClose>
             <Button
               variant="destructive"
               onClick={handleCancel}
               disabled={!cancelReason.trim() || busy}
               isLoading={busy}
+              className="bg-destructive text-destructive-foreground rounded-lg px-lg py-sm font-title-md text-title-md"
             >
-              Confirm Cancel
+              {t('common.confirm')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -469,31 +538,124 @@ function RepairHeader({
       <Dialog open={reopenOpen} onOpenChange={setReopenOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Reopen Repair</DialogTitle>
+            <DialogTitle>{t('repair.dialogs.reopen.title')}</DialogTitle>
             <DialogDescription>
-              Provide a reason for reopening this repair.
+              {t('repair.dialogs.reopen.description')}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-2">
-            <Label>Reason *</Label>
+            <Label>{t('repair.dialogs.reopen.reasonLabel')}</Label>
             <textarea
               className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
               rows={3}
-              placeholder="Why is this repair being reopened?"
+              placeholder={t('repair.dialogs.reopen.reasonPlaceholder')}
               value={reopenReason}
               onChange={(e) => setReopenReason(e.target.value)}
             />
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Back</Button>
+              <Button variant="outline" className="border border-outline-variant text-on-surface-variant">{t('common.back')}</Button>
             </DialogClose>
             <Button
               onClick={handleReopen}
               disabled={!reopenReason.trim() || busy}
               isLoading={busy}
+              className="bg-primary text-on-primary rounded-lg px-lg py-sm font-title-md text-title-md"
             >
-              Reopen
+              {t('repair.actions.reopen')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Time Estimation Dialog (before moving to in_progress) */}
+      <Dialog open={timeEstOpen} onOpenChange={setTimeEstOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('repair.dialogs.timeEstimation.title')}</DialogTitle>
+            <DialogDescription>
+              {t('repair.dialogs.timeEstimation.description')}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label htmlFor="est-hours">{t('repair.dialogs.timeEstimation.duration')}</Label>
+              <Input
+                id="est-hours"
+                type="number"
+                min="0"
+                step="0.5"
+                value={estHours}
+                onChange={(e) => setEstHours(e.target.value)}
+                placeholder={t('repair.dialogs.timeEstimation.durationPlaceholder')}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="target-date">{t('repair.dialogs.timeEstimation.targetDate')}</Label>
+              <Input
+                id="target-date"
+                type="date"
+                value={targetDate}
+                onChange={(e) => setTargetDate(e.target.value)}
+              />
+            </div>
+            {repair.car.client?.phone && (
+              <div className="rounded-md bg-primary/5 border border-primary/20 px-3 py-2 text-sm text-primary">
+                <Icon name="info" size={14} className="mr-1 inline" />
+                {t('repair.dialogs.timeEstimation.whatsappHint')}
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline" className="border border-outline-variant text-on-surface-variant">{t('common.cancel')}</Button>
+            </DialogClose>
+            <Button onClick={handleStartRepair} disabled={busy} isLoading={busy} className="bg-primary text-on-primary rounded-lg px-lg py-sm font-title-md text-title-md">
+              {t('repair.actions.sendToClient')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Complete Dialog (set final price) */}
+      <Dialog open={completeOpen} onOpenChange={setCompleteOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('repair.dialogs.complete.title')}</DialogTitle>
+            <DialogDescription>
+              {t('repair.dialogs.complete.description')}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="rounded-lg bg-surface-container-low p-4">
+              <p className="font-body-md text-body-md text-on-surface-variant mb-1">{t('repair.dialogs.complete.currentPrice')}</p>
+              <p className="font-headline-lg text-headline-lg text-primary">
+                {money(repair.finalTotal)} DH
+              </p>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="final-price">{t('repair.dialogs.complete.finalPrice')}</Label>
+              <Input
+                id="final-price"
+                type="number"
+                min="0"
+                step="0.01"
+                value={completeFinalPrice}
+                onChange={(e) => setCompleteFinalPrice(e.target.value)}
+                placeholder={money(repair.finalTotal).toString()}
+              />
+              <p className="font-body-sm text-body-sm text-on-surface-variant">
+                {t('repair.dialogs.complete.hint')}
+              </p>
+            </div>
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline" className="border border-outline-variant text-on-surface-variant">{t('common.cancel')}</Button>
+            </DialogClose>
+            <Button onClick={handleComplete} disabled={busy} isLoading={busy} className="bg-primary text-on-primary rounded-lg px-lg py-sm font-title-md text-title-md">
+              {t('common.confirm')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -503,17 +665,17 @@ function RepairHeader({
       <Dialog open={deliverOpen} onOpenChange={setDeliverOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Mark as Delivered</DialogTitle>
+            <DialogTitle>{t('repair.dialogs.deliver.title')}</DialogTitle>
             <DialogDescription>
-              Confirm that the vehicle has been delivered to the client.
+              {t('repair.dialogs.deliver.description')}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Back</Button>
+              <Button variant="outline" className="border border-outline-variant text-on-surface-variant">{t('common.back')}</Button>
             </DialogClose>
-            <Button onClick={handleDeliver} disabled={busy} isLoading={busy}>
-              Confirm Delivery
+            <Button onClick={handleDeliver} disabled={busy} isLoading={busy} className="bg-primary text-on-primary rounded-lg px-lg py-sm font-title-md text-title-md">
+              {t('repair.actions.confirmDelivery')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -531,6 +693,7 @@ function OverdueBanner({
   repairId: string;
   onReported: () => void;
 }) {
+  const t = useTranslations();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState("");
@@ -545,16 +708,16 @@ function OverdueBanner({
         reason: reason.trim(),
         evidenceNote: evidenceNote.trim() || undefined,
       });
-      toast({ title: "Delay report submitted" });
+      toast({ title: t('repair.delay.submitted') });
       setOpen(false);
       setReason("");
       setEvidenceNote("");
       onReported();
     } catch (err) {
       toast({
-        title: "Failed to submit report",
+        title: t('repair.delay.failed'),
         description:
-          err instanceof ApiError ? err.message : "An error occurred.",
+          err instanceof ApiError ? err.message : t('common.error'),
         variant: "error",
       });
     } finally {
@@ -565,9 +728,9 @@ function OverdueBanner({
   return (
     <>
       <div className="flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-700">
-        <AlertCircle className="h-5 w-5 shrink-0" />
+        <Icon name="info" size={20} className="shrink-0" />
         <span className="text-sm font-medium">
-          ⚠️ This repair is overdue! File a delay report to continue.
+          ⚠️ {t('repair.overdueWarning')}
         </span>
         <Button
           size="sm"
@@ -575,36 +738,35 @@ function OverdueBanner({
           className="ml-auto shrink-0"
           onClick={() => setOpen(true)}
         >
-          File Delay Report
+          {t('repair.actions.fileDelayReport')}
         </Button>
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>File Delay Report</DialogTitle>
+            <DialogTitle>{t('repair.actions.fileDelayReport')}</DialogTitle>
             <DialogDescription>
-              Document the reason for the delay. This will be recorded in the
-              repair history.
+              {t('repair.delay.documentReason')}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label>Reason *</Label>
+              <Label>{t('repair.delay.reasonLabel')}</Label>
               <textarea
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
                 rows={3}
-                placeholder="Explain why the repair is delayed..."
+                placeholder={t('repair.delay.reasonPlaceholder')}
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
               />
             </div>
             <div className="space-y-2">
-              <Label>Evidence / Additional Notes</Label>
+              <Label>{t('repair.delay.evidenceLabel')}</Label>
               <textarea
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
                 rows={2}
-                placeholder="Any supporting evidence or notes..."
+                placeholder={t('repair.delay.evidencePlaceholder')}
                 value={evidenceNote}
                 onChange={(e) => setEvidenceNote(e.target.value)}
               />
@@ -612,7 +774,7 @@ function OverdueBanner({
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline">{t('common.cancel')}</Button>
             </DialogClose>
             <Button
               variant="destructive"
@@ -620,7 +782,7 @@ function OverdueBanner({
               disabled={!reason.trim() || busy}
               isLoading={busy}
             >
-              Submit Report
+              {t('repair.delay.submit')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -632,20 +794,21 @@ function OverdueBanner({
 // ── RepairInfoCard ────────────────────────────────────────────────────────────
 
 function RepairInfoCard({ repair }: { repair: RepairDetail }) {
+  const t = useTranslations();
   const isOverdue = repair.isOverdue;
 
   return (
-    <Card>
+    <Card className="bg-white border border-outline-variant rounded-xl shadow-sm">
       <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-base">
-          <FileText className="h-4 w-4" />
-          Repair Info
+        <CardTitle className="flex items-center gap-2 font-title-md text-title-md">
+          <Icon name="description" size={16} />
+          {t('repair.info.title')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3 text-sm">
         <div>
           <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-            Description
+            {t('repair.info.description')}
           </p>
           <p className="mt-1">{repair.description}</p>
         </div>
@@ -653,7 +816,7 @@ function RepairInfoCard({ repair }: { repair: RepairDetail }) {
         {repair.internalNotes && (
           <div>
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-              Internal Notes
+              {t('repair.info.internalNotes')}
             </p>
             <p className="mt-1 text-muted-foreground">{repair.internalNotes}</p>
           </div>
@@ -662,7 +825,7 @@ function RepairInfoCard({ repair }: { repair: RepairDetail }) {
         {repair.cancellationReason && (
           <div>
             <p className="text-xs font-medium text-red-500 uppercase tracking-wide">
-              Cancellation Reason
+              {t('repair.info.cancellationReason')}
             </p>
             <p className="mt-1 text-red-600">{repair.cancellationReason}</p>
           </div>
@@ -671,7 +834,7 @@ function RepairInfoCard({ repair }: { repair: RepairDetail }) {
         {repair.reopenedReason && (
           <div>
             <p className="text-xs font-medium text-amber-500 uppercase tracking-wide">
-              Reopened Reason
+              {t('repair.info.reopenedReason')}
             </p>
             <p className="mt-1 text-amber-600">{repair.reopenedReason}</p>
           </div>
@@ -681,15 +844,15 @@ function RepairInfoCard({ repair }: { repair: RepairDetail }) {
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <p className="text-xs text-muted-foreground">Created by</p>
-            <p className="font-medium">{repair.createdBy.name}</p>
+            <p className="text-xs text-muted-foreground">{t('repair.info.createdBy')}</p>
+            <p className="font-medium">{repair.createdBy?.name ?? "—"}</p>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">Created</p>
+            <p className="text-xs text-muted-foreground">{t('repair.info.createdAt')}</p>
             <p className="font-medium">{formatDate(repair.createdAt)}</p>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">Target Date</p>
+            <p className="text-xs text-muted-foreground">{t('repair.fields.targetDate')}</p>
             <p className={`font-medium ${isOverdue ? "text-red-600" : ""}`}>
               {formatDate(repair.targetCompletionDate)}
               {isOverdue && " 🔴"}
@@ -697,7 +860,7 @@ function RepairInfoCard({ repair }: { repair: RepairDetail }) {
           </div>
           {repair.actualCompletionDate && (
             <div>
-              <p className="text-xs text-muted-foreground">Completed</p>
+              <p className="text-xs text-muted-foreground">{t('repair.info.completedAt')}</p>
               <p className="font-medium">
                 {formatDate(repair.actualCompletionDate)}
               </p>
@@ -705,7 +868,7 @@ function RepairInfoCard({ repair }: { repair: RepairDetail }) {
           )}
           {repair.estimatedDurationHours && (
             <div>
-              <p className="text-xs text-muted-foreground">Est. Duration</p>
+              <p className="text-xs text-muted-foreground">{t('repair.fields.estimatedHours')}</p>
               <p className="font-medium">{repair.estimatedDurationHours}h</p>
             </div>
           )}
@@ -718,19 +881,29 @@ function RepairInfoCard({ repair }: { repair: RepairDetail }) {
 // ── CarClientCard ─────────────────────────────────────────────────────────────
 
 function CarClientCard({ repair }: { repair: RepairDetail }) {
+  const t = useTranslations();
   const { car } = repair;
   const client = car.client;
+  const [carImageError, setCarImageError] = useState(false);
+  const carImageUrl = repair.appointment?.carImageUrl;
 
   return (
-    <Card>
+    <Card className="bg-white border border-outline-variant rounded-xl shadow-sm">
       <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-base">
-          <Car className="h-4 w-4" />
-          Car &amp; Client
+        <CardTitle className="flex items-center gap-2 font-title-md text-title-md">
+          <Icon name="directions_car" size={16} />
+          {t('repair.vehicle.title')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4 text-sm">
-        <div className="space-y-1">
+        {carImageUrl && !carImageError && (
+          <img
+            src={carImageUrl}
+            alt={`${car.make} ${car.model}`}
+            className="w-full h-40 object-cover rounded-lg border"
+            onError={() => setCarImageError(true)}
+          />
+        )}
           <Link
             href={`/cars/${car.id}`}
             className="font-semibold text-primary hover:underline text-base"
@@ -743,29 +916,28 @@ function CarClientCard({ repair }: { repair: RepairDetail }) {
           </p>
           {car.color && (
             <p className="text-muted-foreground capitalize">
-              Color: {car.color}
+              {t('repair.vehicle.color')} : {car.color}
             </p>
           )}
-        </div>
 
         {client ? (
           <>
             <Separator />
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <User className="h-4 w-4 text-muted-foreground" />
+                <Icon name="person" size={16} className="text-muted-foreground" />
                 <span className="font-medium">{client.name}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Phone className="h-4 w-4 text-muted-foreground" />
+                <Icon name="phone" size={16} className="text-muted-foreground" />
                 <span className="text-muted-foreground">{client.phone}</span>
                 <a
-                  href={`https://wa.me/${client.phone.replace(/\D/g, "")}`}
+                  href={`https://wa.me/${client.phone.replace(/\D/g, "")}?text=${encodeURIComponent(t('repair.whatsapp', { matricule: car.matricule, make: car.make, model: car.model }))}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="ml-auto flex items-center gap-1 rounded-md bg-green-50 px-2 py-0.5 text-xs text-green-700 hover:bg-green-100"
                 >
-                  <MessageSquare className="h-3 w-3" />
+                  <Icon name="chat" size={12} />
                   WhatsApp
                 </a>
               </div>
@@ -773,7 +945,7 @@ function CarClientCard({ repair }: { repair: RepairDetail }) {
           </>
         ) : (
           <p className="text-xs text-muted-foreground">
-            No client linked to this car.
+            {t('repair.vehicle.noClient')}
           </p>
         )}
       </CardContent>
@@ -790,17 +962,18 @@ function MechanicsCard({
   repair: RepairDetail;
   onUpdate: () => void;
 }) {
+  const t = useTranslations();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [available, setAvailable] = useState<MechanicEmployee[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
-  const [primaryId, setPrimaryId] = useState(repair.primaryMechanic.id);
+  const [primaryId, setPrimaryId] = useState(repair.primaryMechanic?.id ?? "");
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
 
   function openDialog() {
     setSelected(repair.mechanics.map((m) => m.mechanicId));
-    setPrimaryId(repair.primaryMechanic.id);
+    setPrimaryId(repair.primaryMechanic?.id ?? "");
     setOpen(true);
     setLoading(true);
     api
@@ -820,11 +993,11 @@ function MechanicsCard({
 
   async function handleSave() {
     if (selected.length === 0) {
-      toast({ title: "Select at least one mechanic", variant: "error" });
+      toast({ title: t('common.error'), variant: "error" });
       return;
     }
     if (!selected.includes(primaryId)) {
-      toast({ title: "Primary mechanic must be selected", variant: "error" });
+      toast({ title: t('common.error'), variant: "error" });
       return;
     }
     setBusy(true);
@@ -834,14 +1007,14 @@ function MechanicsCard({
         primaryMechanicId: primaryId,
         secondaryMechanicIds,
       });
-      toast({ title: "Mechanics updated" });
+      toast({ title: t('common.save') });
       setOpen(false);
       onUpdate();
     } catch (err) {
       toast({
-        title: "Failed to update mechanics",
+        title: t('common.error'),
         description:
-          err instanceof ApiError ? err.message : "An error occurred.",
+          err instanceof ApiError ? err.message : t('common.error'),
         variant: "error",
       });
     } finally {
@@ -850,25 +1023,25 @@ function MechanicsCard({
   }
 
   return (
-    <Card>
+    <Card className="bg-white border border-outline-variant rounded-xl shadow-sm">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Wrench className="h-4 w-4" />
-            Mechanics
+          <CardTitle className="flex items-center gap-2 font-title-md text-title-md">
+            <Icon name="build" size={16} />
+            {t('repair.mechanics')}
           </CardTitle>
-          <Button variant="ghost" size="sm" onClick={openDialog}>
-            Reassign
+          <Button variant="outline" size="sm" onClick={openDialog} className="border-primary text-primary hover:bg-primary/10">
+            {t('repair.reassign')}
           </Button>
         </div>
       </CardHeader>
       <CardContent className="space-y-2 text-sm">
         {repair.mechanics.length === 0 ? (
-          <p className="text-muted-foreground">No mechanics assigned.</p>
+          <p className="text-muted-foreground">            {t('repair.noMechanics')}</p>
         ) : (
           repair.mechanics.map((m) => (
             <div key={m.mechanicId} className="flex items-center gap-2">
-              <User className="h-4 w-4 text-muted-foreground shrink-0" />
+              <Icon name="person" size={16} className="text-muted-foreground shrink-0" />
               <span className="font-medium">{m.mechanic.name}</span>
               {m.mechanic.specialty && (
                 <span className="text-xs text-muted-foreground">
@@ -877,7 +1050,7 @@ function MechanicsCard({
               )}
               {m.isPrimary && (
                 <span className="ml-auto rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                  Primary
+                  {t('repair.primary')}
                 </span>
               )}
             </div>
@@ -888,15 +1061,15 @@ function MechanicsCard({
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Reassign Mechanics</DialogTitle>
+            <DialogTitle>{t('repair.reassignDialog.title')}</DialogTitle>
             <DialogDescription>
-              Select mechanics and set the primary mechanic.
+              {t('repair.reassignDialog.description')}
             </DialogDescription>
           </DialogHeader>
 
           {loading ? (
             <div className="flex justify-center py-6">
-              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+              <Icon name="sync" size={24} className="animate-spin text-muted-foreground" />
             </div>
           ) : (
             <div className="space-y-4">
@@ -924,10 +1097,10 @@ function MechanicsCard({
 
               {selected.length > 0 && (
                 <div className="space-y-2">
-                  <Label>Primary Mechanic</Label>
+                  <Label>{t('repair.reassignDialog.selectPrimary')}</Label>
                   <Select value={primaryId} onValueChange={setPrimaryId}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select primary..." />
+                      <SelectValue placeholder={t('repair.reassignDialog.selectPrimaryPlaceholder')} />
                     </SelectTrigger>
                     <SelectContent>
                       {available
@@ -946,14 +1119,15 @@ function MechanicsCard({
 
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline" className="border border-outline-variant text-on-surface-variant">{t('common.cancel')}</Button>
             </DialogClose>
             <Button
               onClick={handleSave}
               disabled={busy || loading}
               isLoading={busy}
+              className="bg-primary text-on-primary rounded-lg px-lg py-sm font-title-md text-title-md"
             >
-              Save
+              {t('common.save')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -976,6 +1150,7 @@ function DiagnosisPanel({
   repair: RepairDetail;
   onUpdate: () => void;
 }) {
+  const t = useTranslations();
   const { toast } = useToast();
   const [formOpen, setFormOpen] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -988,12 +1163,7 @@ function DiagnosisPanel({
   const [additionalNotes, setAdditionalNotes] = useState("");
   const [estimatedHours, setEstimatedHours] = useState("");
 
-  // Approval state
-  const [approvalBusy, setApprovalBusy] = useState(false);
-  const [rejectReason, setRejectReason] = useState("");
-  const [rejectOpen, setRejectOpen] = useState(false);
-  const [bypassReason, setBypassReason] = useState("");
-  const [bypassOpen, setBypassOpen] = useState(false);
+
 
   function openForm() {
     const existing = repair.diagnosisReport;
@@ -1038,7 +1208,7 @@ function DiagnosisPanel({
   async function handleSubmitDiagnosis() {
     const validIssues = issues.filter((i) => i.description.trim());
     if (validIssues.length === 0) {
-      toast({ title: "Add at least one issue", variant: "error" });
+      toast({ title: t('common.error'), variant: "error" });
       return;
     }
     setBusy(true);
@@ -1051,14 +1221,14 @@ function DiagnosisPanel({
           ? Number(estimatedHours)
           : undefined,
       });
-      toast({ title: "Diagnosis saved" });
+      toast({ title: t('repair.diagnosisSections.saved') });
       setFormOpen(false);
       onUpdate();
     } catch (err) {
       toast({
-        title: "Failed to save diagnosis",
+        title: t('repair.diagnosisSections.saveFailed'),
         description:
-          err instanceof ApiError ? err.message : "An error occurred.",
+          err instanceof ApiError ? err.message : t('common.error'),
         variant: "error",
       });
     } finally {
@@ -1066,92 +1236,41 @@ function DiagnosisPanel({
     }
   }
 
-  async function handleShareDiagnosis() {
-    setBusy(true);
-    try {
-      await api.patch(`/repairs/${repair.id}/share-diagnosis`);
-      toast({ title: "Diagnosis shared with client" });
-      onUpdate();
-    } catch (err) {
-      toast({
-        title: "Failed to share diagnosis",
-        description:
-          err instanceof ApiError ? err.message : "An error occurred.",
-        variant: "error",
-      });
-    } finally {
-      setBusy(false);
-    }
-  }
 
-  async function handleApproval(
-    status: "approved" | "rejected" | "bypassed",
-    extra?: { bypassReason?: string; rejectionReason?: string },
-  ) {
-    setApprovalBusy(true);
-    try {
-      await api.patch(`/repairs/${repair.id}/client-approval`, {
-        status,
-        ...extra,
-      });
-      toast({ title: `Client approval: ${status}` });
-      onUpdate();
-    } catch (err) {
-      toast({
-        title: "Approval action failed",
-        description:
-          err instanceof ApiError ? err.message : "An error occurred.",
-        variant: "error",
-      });
-    } finally {
-      setApprovalBusy(false);
-    }
-  }
 
   const canEdit = !["delivered", "cancelled"].includes(repair.status);
 
   return (
-    <Card>
+    <Card className="bg-white border border-outline-variant rounded-xl shadow-sm">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Search className="h-4 w-4" />
-            Diagnosis
+          <CardTitle className="flex items-center gap-2 font-title-md text-title-md">
+            <Icon name="search" size={16} />
+            {t('repair.fields.diagnosis')}
             {repair.diagnosisShared && (
               <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs text-blue-700">
-                Shared with Client
+                {t('repair.diagnosisSections.shared')}
               </span>
             )}
           </CardTitle>
           <div className="flex items-center gap-2">
             {canEdit && (
-              <Button size="sm" variant="outline" onClick={openForm}>
-                {repair.diagnosisReport ? "Edit Diagnosis" : "Fill Diagnosis"}
+              <Button size="sm" variant="outline" onClick={openForm} className="border border-outline-variant text-on-surface-variant">
+                {repair.diagnosisReport ? t('repair.diagnosisSections.editDiagnosis') : t('repair.diagnosisSections.fillDiagnosis')}
               </Button>
             )}
-            {repair.diagnosisReport &&
-              repair.status === "diagnosing" &&
-              !repair.diagnosisShared && (
-                <Button
-                  size="sm"
-                  onClick={handleShareDiagnosis}
-                  disabled={busy}
-                  isLoading={busy}
-                >
-                  Share with Client
-                </Button>
-              )}
+
           </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-4 text-sm">
         {!repair.diagnosisReport ? (
-          <p className="text-muted-foreground">No diagnosis report yet.</p>
+          <p className="text-muted-foreground">{t('repair.diagnosisSections.noDiagnosis')}</p>
         ) : (
           <>
             {/* Issues */}
             <div className="space-y-2">
-              <p className="font-medium">Issues Found</p>
+              <p className="font-medium">{t('repair.diagnosisSections.issues')}</p>
               {repair.diagnosisReport.issues.map((issue, idx) => (
                 <div
                   key={idx}
@@ -1160,7 +1279,7 @@ function DiagnosisPanel({
                   <span
                     className={`mt-0.5 shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${SEVERITY_STYLES[issue.severity] ?? ""}`}
                   >
-                    {issue.severity}
+                    {t(`repair.diagnosisSections.severity.${issue.severity}`)}
                   </span>
                   <span>{issue.description}</span>
                 </div>
@@ -1169,7 +1288,7 @@ function DiagnosisPanel({
 
             {repair.diagnosisReport.recommendedRepairs && (
               <div>
-                <p className="font-medium">Recommended Repairs</p>
+                <p className="font-medium">{t('repair.diagnosisSections.recommendations')}</p>
                 <p className="mt-1 text-muted-foreground">
                   {repair.diagnosisReport.recommendedRepairs}
                 </p>
@@ -1178,7 +1297,7 @@ function DiagnosisPanel({
 
             {repair.diagnosisReport.estimatedDurationHours && (
               <p className="text-muted-foreground">
-                Estimated:{" "}
+                {t('repair.diagnosisSections.estimated')}{" "}
                 <span className="font-medium text-foreground">
                   {repair.diagnosisReport.estimatedDurationHours}h
                 </span>
@@ -1187,7 +1306,7 @@ function DiagnosisPanel({
 
             {repair.diagnosisReport.additionalNotes && (
               <div>
-                <p className="font-medium">Additional Notes</p>
+                <p className="font-medium">{t('repair.diagnosisSections.additionalNotes')}</p>
                 <p className="mt-1 text-muted-foreground">
                   {repair.diagnosisReport.additionalNotes}
                 </p>
@@ -1196,57 +1315,7 @@ function DiagnosisPanel({
           </>
         )}
 
-        {/* Client approval section */}
-        {repair.diagnosisShared && repair.status === "awaiting_approval" && (
-          <>
-            <Separator />
-            <div className="space-y-3">
-              <p className="font-medium">Client Approval</p>
-              <p className="text-xs text-muted-foreground">
-                Current status:{" "}
-                <span className="font-medium capitalize">
-                  {repair.clientApprovalStatus}
-                </span>
-              </p>
-              {repair.clientApprovalStatus === "pending" && (
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    size="sm"
-                    onClick={() => handleApproval("approved")}
-                    disabled={approvalBusy}
-                    isLoading={approvalBusy}
-                    className="bg-green-600 hover:bg-green-700"
-                  >
-                    <CheckCircle2 className="h-4 w-4" />
-                    Approve
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    onClick={() => setRejectOpen(true)}
-                    disabled={approvalBusy}
-                  >
-                    <XCircle className="h-4 w-4" />
-                    Reject
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => setBypassOpen(true)}
-                    disabled={approvalBusy}
-                  >
-                    Bypass Approval
-                  </Button>
-                </div>
-              )}
-              {repair.clientApprovalBypassReason && (
-                <p className="text-xs text-amber-600">
-                  Bypassed: {repair.clientApprovalBypassReason}
-                </p>
-              )}
-            </div>
-          </>
-        )}
+
       </CardContent>
 
       {/* Diagnosis Form Dialog */}
@@ -1254,21 +1323,22 @@ function DiagnosisPanel({
         <DialogContent className="max-w-xl">
           <DialogHeader>
             <DialogTitle>
-              {repair.diagnosisReport ? "Edit Diagnosis" : "Fill Diagnosis"}
+              {repair.diagnosisReport ? t('repair.diagnosisSections.editDiagnosis') : t('repair.diagnosisSections.fillDiagnosis')}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <Label>Issues Found *</Label>
+                <Label>{t('repair.diagnosisSections.issues')} *</Label>
                 <Button
                   type="button"
                   size="sm"
                   variant="outline"
                   onClick={addIssue}
+                  className="border border-outline-variant text-on-surface-variant"
                 >
-                  <Plus className="h-3 w-3" />
-                  Add Issue
+                  <Icon name="add" size={12} />
+                  {t('repair.diagnosisSections.addIssue')}
                 </Button>
               </div>
               {issues.map((issue, idx) => (
@@ -1278,7 +1348,7 @@ function DiagnosisPanel({
                 >
                   <div className="flex-1 space-y-2">
                     <Input
-                      placeholder="Describe the issue..."
+                      placeholder={t('repair.diagnosisSections.issuesPlaceholder')}
                       value={issue.description}
                       onChange={(e) =>
                         updateIssue(idx, "description", e.target.value)
@@ -1292,9 +1362,9 @@ function DiagnosisPanel({
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Minor">Minor</SelectItem>
-                        <SelectItem value="Moderate">Moderate</SelectItem>
-                        <SelectItem value="Critical">Critical</SelectItem>
+                        <SelectItem value="Minor">{t('repair.diagnosisSections.severity.Minor')}</SelectItem>
+                        <SelectItem value="Moderate">{t('repair.diagnosisSections.severity.Moderate')}</SelectItem>
+                        <SelectItem value="Critical">{t('repair.diagnosisSections.severity.Critical')}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -1306,7 +1376,7 @@ function DiagnosisPanel({
                       onClick={() => removeIssue(idx)}
                       className="text-destructive hover:text-destructive"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Icon name="delete" size={16} />
                     </Button>
                   )}
                 </div>
@@ -1314,34 +1384,34 @@ function DiagnosisPanel({
             </div>
 
             <div className="space-y-2">
-              <Label>Recommended Repairs</Label>
+              <Label>{t('repair.diagnosisSections.recommendations')}</Label>
               <textarea
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
                 rows={2}
-                placeholder="What repairs are recommended?"
+                placeholder={t('repair.diagnosisSections.recommendationsPlaceholder')}
                 value={recommendedRepairs}
                 onChange={(e) => setRecommendedRepairs(e.target.value)}
               />
             </div>
 
             <div className="space-y-2">
-              <Label>Estimated Duration (hours)</Label>
+              <Label>{t('repair.diagnosisSections.estimatedDuration')}</Label>
               <Input
                 type="number"
                 min="0"
                 step="0.5"
-                placeholder="e.g. 6"
+                placeholder={t('common.example') + " 6"}
                 value={estimatedHours}
                 onChange={(e) => setEstimatedHours(e.target.value)}
               />
             </div>
 
             <div className="space-y-2">
-              <Label>Additional Notes</Label>
+              <Label>{t('repair.diagnosisSections.additionalNotes')}</Label>
               <textarea
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
                 rows={2}
-                placeholder="Any additional notes..."
+                placeholder={t('repair.diagnosisSections.additionalNotesPlaceholder')}
                 value={additionalNotes}
                 onChange={(e) => setAdditionalNotes(e.target.value)}
               />
@@ -1349,97 +1419,21 @@ function DiagnosisPanel({
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline" className="border border-outline-variant text-on-surface-variant">{t('common.cancel')}</Button>
             </DialogClose>
             <Button
               onClick={handleSubmitDiagnosis}
               disabled={busy}
               isLoading={busy}
+              className="bg-primary text-on-primary rounded-lg px-lg py-sm font-title-md text-title-md"
             >
-              Save Diagnosis
+              {t('repair.diagnosisSections.saveDiagnosis')}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Reject Dialog */}
-      <Dialog open={rejectOpen} onOpenChange={setRejectOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Reject Diagnosis</DialogTitle>
-            <DialogDescription>
-              Provide the reason for rejection.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-2">
-            <Label>Rejection Reason *</Label>
-            <textarea
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
-              rows={3}
-              value={rejectReason}
-              onChange={(e) => setRejectReason(e.target.value)}
-              placeholder="Reason for rejection..."
-            />
-          </div>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline">Back</Button>
-            </DialogClose>
-            <Button
-              variant="destructive"
-              onClick={() => {
-                handleApproval("rejected", {
-                  rejectionReason: rejectReason.trim(),
-                });
-                setRejectOpen(false);
-                setRejectReason("");
-              }}
-              disabled={!rejectReason.trim() || approvalBusy}
-            >
-              Confirm Rejection
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
-      {/* Bypass Dialog */}
-      <Dialog open={bypassOpen} onOpenChange={setBypassOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Bypass Client Approval</DialogTitle>
-            <DialogDescription>
-              Explain why you are bypassing the client approval process.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-2">
-            <Label>Bypass Reason *</Label>
-            <textarea
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
-              rows={3}
-              value={bypassReason}
-              onChange={(e) => setBypassReason(e.target.value)}
-              placeholder="Reason for bypassing approval..."
-            />
-          </div>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline">Back</Button>
-            </DialogClose>
-            <Button
-              onClick={() => {
-                handleApproval("bypassed", {
-                  bypassReason: bypassReason.trim(),
-                });
-                setBypassOpen(false);
-                setBypassReason("");
-              }}
-              disabled={!bypassReason.trim() || approvalBusy}
-            >
-              Bypass Approval
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </Card>
   );
 }
@@ -1453,6 +1447,7 @@ function PartsPanel({
   repair: RepairDetail;
   onUpdate: () => void;
 }) {
+  const t = useTranslations();
   const { toast } = useToast();
   const [addOpen, setAddOpen] = useState(false);
   const [partQuery, setPartQuery] = useState("");
@@ -1498,7 +1493,7 @@ function PartsPanel({
         quantityUsed: Number(quantity),
         stockOverride,
       });
-      toast({ title: "Part added" });
+      toast({ title: t('repair.parts.added') });
       setAddOpen(false);
       setSelectedPart(null);
       setPartQuery("");
@@ -1508,9 +1503,9 @@ function PartsPanel({
       onUpdate();
     } catch (err) {
       toast({
-        title: "Failed to add part",
+        title: t('repair.parts.addFailed'),
         description:
-          err instanceof ApiError ? err.message : "An error occurred.",
+          err instanceof ApiError ? err.message : t('common.error'),
         variant: "error",
       });
     } finally {
@@ -1522,13 +1517,13 @@ function PartsPanel({
     setRemoveId(partId);
     try {
       await api.delete(`/repairs/${repair.id}/parts/${partId}`);
-      toast({ title: "Part removed" });
+      toast({ title: t('repair.parts.removed') });
       onUpdate();
     } catch (err) {
       toast({
-        title: "Failed to remove part",
+        title: t('repair.parts.removeFailed'),
         description:
-          err instanceof ApiError ? err.message : "An error occurred.",
+          err instanceof ApiError ? err.message : t('common.error'),
         variant: "error",
       });
     } finally {
@@ -1539,37 +1534,38 @@ function PartsPanel({
   const canEdit = !["delivered", "cancelled"].includes(repair.status);
 
   return (
-    <Card>
+    <Card className="bg-white border border-outline-variant rounded-xl shadow-sm">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Package className="h-4 w-4" />
-            Parts Used
+          <CardTitle className="flex items-center gap-2 font-title-md text-title-md">
+            <Icon name="package" size={16} />
+            {t('repair.parts.title')}
           </CardTitle>
           {canEdit && (
             <Button
               size="sm"
               variant="outline"
               onClick={() => setAddOpen(true)}
+              className="border border-outline-variant text-on-surface-variant"
             >
-              <Plus className="h-4 w-4" />
-              Add Part
+              <Icon name="add" size={16} />
+              {t('repair.parts.addPart')}
             </Button>
           )}
         </div>
       </CardHeader>
       <CardContent className="text-sm">
         {repair.parts.length === 0 ? (
-          <p className="text-muted-foreground">No parts added yet.</p>
+          <p className="text-muted-foreground">{t('repair.parts.noPartsYet')}</p>
         ) : (
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b text-left text-xs text-muted-foreground">
-                <th className="pb-2 font-medium">Part</th>
-                <th className="pb-2 font-medium">Category</th>
-                <th className="pb-2 font-medium text-right">Qty</th>
-                <th className="pb-2 font-medium text-right">Unit</th>
-                <th className="pb-2 font-medium text-right">Subtotal</th>
+                <th className="pb-2 font-medium">{t('repair.parts.part')}</th>
+                <th className="pb-2 font-medium">{t('repair.parts.category')}</th>
+                <th className="pb-2 font-medium text-right">{t('repair.parts.quantity')}</th>
+                <th className="pb-2 font-medium text-right">{t('repair.parts.unitCost')}</th>
+                <th className="pb-2 font-medium text-right">{t('repair.parts.subtotal')}</th>
                 {canEdit && <th className="pb-2 w-8" />}
               </tr>
             </thead>
@@ -1602,9 +1598,9 @@ function PartsPanel({
                         disabled={removeId === p.id}
                       >
                         {removeId === p.id ? (
-                          <Loader2 className="h-3 w-3 animate-spin" />
+                          <Icon name="sync" size={12} className="animate-spin" />
                         ) : (
-                          <Trash2 className="h-3 w-3" />
+                          <Icon name="delete" size={12} />
                         )}
                       </Button>
                     </td>
@@ -1618,7 +1614,7 @@ function PartsPanel({
                   colSpan={canEdit ? 4 : 3}
                   className="pt-2 text-right text-muted-foreground"
                 >
-                  Total Parts:
+                  {t('repair.costs.partsTotal')} :
                 </td>
                 <td className="pt-2 text-right">{money(repair.partsTotal)}</td>
                 {canEdit && <td />}
@@ -1632,16 +1628,16 @@ function PartsPanel({
       <Dialog open={addOpen} onOpenChange={setAddOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Add Part</DialogTitle>
+            <DialogTitle>{t('repair.parts.addPart')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             {/* Part search */}
             <div className="space-y-2">
-              <Label>Search Part</Label>
+              <Label>{t('repair.parts.searchParts')}</Label>
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Icon name="search" size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                 <Input
-                  placeholder="Search by name..."
+                  placeholder={t('repair.parts.searchPlaceholder')}
                   value={partQuery}
                   onChange={(e) => {
                     setPartQuery(e.target.value);
@@ -1654,14 +1650,14 @@ function PartsPanel({
 
               {partsError && (
                 <p className="text-xs text-muted-foreground">
-                  Parts module coming soon — cannot search parts right now.
+                  {t('repair.parts.moduleComingSoon')}
                 </p>
               )}
 
               {partsLoading && (
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <Loader2 className="h-3 w-3 animate-spin" />
-                  Searching...
+<Icon name="sync" size={12} className="animate-spin" /> 
+                  {t('common.loading')}
                 </div>
               )}
 
@@ -1703,14 +1699,14 @@ function PartsPanel({
                     {selectedPart.name}
                   </span>
                   <span className="text-green-600">
-                    {money(selectedPart.unitCost)} / unit
+                    {money(selectedPart.unitCost)} {t('repair.parts.unitLabel')}
                   </span>
                 </div>
               )}
             </div>
 
             <div className="space-y-2">
-              <Label>Quantity *</Label>
+              <Label>{t('repair.parts.quantityLabel')}</Label>
               <Input
                 type="number"
                 min="1"
@@ -1727,19 +1723,20 @@ function PartsPanel({
                 onChange={(e) => setStockOverride(e.target.checked)}
                 className="h-4 w-4"
               />
-              Override stock check
+              {t('repair.parts.stockOverride')}
             </label>
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline" className="border border-outline-variant text-on-surface-variant">{t('common.cancel')}</Button>
             </DialogClose>
             <Button
               onClick={handleAddPart}
               disabled={!selectedPart || !quantity || busy}
               isLoading={busy}
+              className="bg-primary text-on-primary rounded-lg px-lg py-sm font-title-md text-title-md"
             >
-              Add Part
+              {t('repair.parts.addPart')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1757,6 +1754,7 @@ function LaborPanel({
   repair: RepairDetail;
   onUpdate: () => void;
 }) {
+  const t = useTranslations();
   const { toast } = useToast();
   const [addOpen, setAddOpen] = useState(false);
   const [description, setDescription] = useState("");
@@ -1772,16 +1770,16 @@ function LaborPanel({
         description: description.trim(),
         cost: Number(cost),
       });
-      toast({ title: "Labor item added" });
+      toast({ title: t('repair.labor.added') });
       setAddOpen(false);
       setDescription("");
       setCost("");
       onUpdate();
     } catch (err) {
       toast({
-        title: "Failed to add labor",
+        title: t('repair.labor.addFailed'),
         description:
-          err instanceof ApiError ? err.message : "An error occurred.",
+          err instanceof ApiError ? err.message : t('common.error'),
         variant: "error",
       });
     } finally {
@@ -1793,13 +1791,13 @@ function LaborPanel({
     setRemoveId(id);
     try {
       await api.delete(`/repairs/${repair.id}/labor/${id}`);
-      toast({ title: "Labor item removed" });
+      toast({ title: t('repair.labor.removed') });
       onUpdate();
     } catch (err) {
       toast({
-        title: "Failed to remove labor",
+        title: t('repair.labor.removeFailed'),
         description:
-          err instanceof ApiError ? err.message : "An error occurred.",
+          err instanceof ApiError ? err.message : t('common.error'),
         variant: "error",
       });
     } finally {
@@ -1810,12 +1808,12 @@ function LaborPanel({
   const canEdit = !["delivered", "cancelled"].includes(repair.status);
 
   return (
-    <Card>
+    <Card className="bg-white border border-outline-variant rounded-xl shadow-sm">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <DollarSign className="h-4 w-4" />
-            Labor
+          <CardTitle className="flex items-center gap-2 font-title-md text-title-md">
+            <Icon name="attach_money" size={16} />
+            {t('repair.labor.title')}
           </CardTitle>
           {canEdit && (
             <Button
@@ -1823,21 +1821,21 @@ function LaborPanel({
               variant="outline"
               onClick={() => setAddOpen(true)}
             >
-              <Plus className="h-4 w-4" />
-              Add Labor
+              <Icon name="add" size={16} />
+              {t('repair.labor.addItem')}
             </Button>
           )}
         </div>
       </CardHeader>
       <CardContent className="text-sm">
         {repair.laborItems.length === 0 ? (
-          <p className="text-muted-foreground">No labor items added yet.</p>
+          <p className="text-muted-foreground">{t('repair.labor.noLaborYet')}</p>
         ) : (
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b text-left text-xs text-muted-foreground">
-                <th className="pb-2 font-medium">Description</th>
-                <th className="pb-2 font-medium text-right">Cost</th>
+                <th className="pb-2 font-medium">{t('repair.labor.description')}</th>
+                <th className="pb-2 font-medium text-right">{t('repair.labor.cost')}</th>
                 {canEdit && <th className="pb-2 w-8" />}
               </tr>
             </thead>
@@ -1858,9 +1856,9 @@ function LaborPanel({
                         disabled={removeId === item.id}
                       >
                         {removeId === item.id ? (
-                          <Loader2 className="h-3 w-3 animate-spin" />
+                          <Icon name="sync" size={12} className="animate-spin" />
                         ) : (
-                          <Trash2 className="h-3 w-3" />
+                          <Icon name="delete" size={12} />
                         )}
                       </Button>
                     </td>
@@ -1871,7 +1869,7 @@ function LaborPanel({
             <tfoot>
               <tr className="border-t font-semibold">
                 <td className="pt-2 text-right text-muted-foreground">
-                  Total Labor:
+                  {t('repair.costs.laborTotal')} :
                 </td>
                 <td className="pt-2 text-right">{money(repair.laborTotal)}</td>
                 {canEdit && <td />}
@@ -1884,19 +1882,19 @@ function LaborPanel({
       <Dialog open={addOpen} onOpenChange={setAddOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add Labor Item</DialogTitle>
+            <DialogTitle>{t('repair.labor.addItem')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label>Description *</Label>
+              <Label>{t('repair.labor.description')} *</Label>
               <Input
-                placeholder="e.g. Oil change service"
+                placeholder={t('repair.labor.descriptionPlaceholder')}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
             </div>
             <div className="space-y-2">
-              <Label>Cost *</Label>
+              <Label>{t('repair.labor.costLabel')}</Label>
               <Input
                 type="number"
                 min="0"
@@ -1909,14 +1907,15 @@ function LaborPanel({
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline" className="border border-outline-variant text-on-surface-variant">{t('common.cancel')}</Button>
             </DialogClose>
             <Button
               onClick={handleAdd}
               disabled={!description.trim() || !cost || busy}
               isLoading={busy}
+              className="bg-primary text-on-primary rounded-lg px-lg py-sm font-title-md text-title-md"
             >
-              Add
+              {t('common.add')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1934,6 +1933,7 @@ function WorkLogsPanel({
   repair: RepairDetail;
   onUpdate: () => void;
 }) {
+  const t = useTranslations();
   const { toast } = useToast();
   const [addOpen, setAddOpen] = useState(false);
   const [description, setDescription] = useState("");
@@ -1948,16 +1948,16 @@ function WorkLogsPanel({
         description: description.trim(),
         hoursSpent: Number(hours),
       });
-      toast({ title: "Work log added" });
+      toast({ title: t('repair.workLog.added') });
       setAddOpen(false);
       setDescription("");
       setHours("");
       onUpdate();
     } catch (err) {
       toast({
-        title: "Failed to add work log",
+        title: t('repair.workLog.failed'),
         description:
-          err instanceof ApiError ? err.message : "An error occurred.",
+          err instanceof ApiError ? err.message : t('common.error'),
         variant: "error",
       });
     } finally {
@@ -1968,12 +1968,12 @@ function WorkLogsPanel({
   const canEdit = !["delivered", "cancelled"].includes(repair.status);
 
   return (
-    <Card>
+    <Card className="bg-white border border-outline-variant rounded-xl shadow-sm">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Clock className="h-4 w-4" />
-            Work Log
+          <CardTitle className="flex items-center gap-2 font-title-md text-title-md">
+            <Icon name="schedule" size={16} />
+            {t('repair.workLog.title')}
           </CardTitle>
           {canEdit && (
             <Button
@@ -1981,15 +1981,15 @@ function WorkLogsPanel({
               variant="outline"
               onClick={() => setAddOpen(true)}
             >
-              <Plus className="h-4 w-4" />
-              Add Entry
+              <Icon name="add" size={16} />
+              {t('repair.workLog.addEntry')}
             </Button>
           )}
         </div>
       </CardHeader>
       <CardContent className="text-sm">
         {repair.workLogs.length === 0 ? (
-          <p className="text-muted-foreground">No work logs yet.</p>
+          <p className="text-muted-foreground">{t('repair.noWorkLogs')}</p>
         ) : (
           <div className="space-y-3">
             {repair.workLogs.map((log) => (
@@ -2002,11 +2002,11 @@ function WorkLogsPanel({
                   <p className="font-medium">{log.description}</p>
                   <div className="mt-1 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
                     <span className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
+                      <Icon name="schedule" size={12} />
                       {log.hoursSpent}h
                     </span>
                     <span className="flex items-center gap-1">
-                      <User className="h-3 w-3" />
+                      <Icon name="person" size={12} />
                       {log.mechanic.name}
                     </span>
                     <span>{formatDateTime(log.loggedAt)}</span>
@@ -2021,26 +2021,26 @@ function WorkLogsPanel({
       <Dialog open={addOpen} onOpenChange={setAddOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add Work Log Entry</DialogTitle>
+            <DialogTitle>{t('repair.workLog.addEntry')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label>Description *</Label>
+              <Label>{t('repair.workLog.description')} *</Label>
               <textarea
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
                 rows={3}
-                placeholder="What work was done?"
+                placeholder={t('repair.workLog.descriptionPlaceholder')}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
             </div>
             <div className="space-y-2">
-              <Label>Hours Spent *</Label>
+              <Label>{t('repair.workLog.hours')}</Label>
               <Input
                 type="number"
                 min="0.5"
                 step="0.5"
-                placeholder="e.g. 2.5"
+                placeholder={t('repair.workLog.hoursPlaceholder')}
                 value={hours}
                 onChange={(e) => setHours(e.target.value)}
               />
@@ -2048,14 +2048,15 @@ function WorkLogsPanel({
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline" className="border border-outline-variant text-on-surface-variant">{t('common.cancel')}</Button>
             </DialogClose>
             <Button
               onClick={handleAdd}
               disabled={!description.trim() || !hours || busy}
               isLoading={busy}
+              className="bg-primary text-on-primary rounded-lg px-lg py-sm font-title-md text-title-md"
             >
-              Add Entry
+              {t('repair.workLog.addEntry')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -2073,19 +2074,38 @@ function PaymentPanel({
   repair: RepairDetail;
   onUpdate: () => void;
 }) {
+  const t = useTranslations();
   const { toast } = useToast();
   const [payOpen, setPayOpen] = useState(false);
   const [amountBilled, setAmountBilled] = useState("");
   const [amountReceived, setAmountReceived] = useState("");
   const [paidByName, setPaidByName] = useState("");
   const [payNotes, setPayNotes] = useState("");
+  const [paymentType, setPaymentType] = useState("cash");
+  const [checkFile, setCheckFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
+
+  const PAYMENT_TYPE_OPTIONS = [
+    { value: "cash", label: t('repair.payment.cash') },
+    { value: "check", label: t('repair.payment.check') },
+    { value: "card", label: t('repair.payment.card') },
+    { value: "transfer", label: t('repair.payment.transfer') },
+  ];
+
+  const PAYMENT_TYPE_LABELS: Record<string, string> = {
+    cash: t('repair.payment.cash'),
+    check: t('repair.payment.check'),
+    card: t('repair.payment.card'),
+    transfer: t('repair.payment.transfer'),
+  };
 
   function openPayment() {
     setAmountBilled(String(repair.finalTotal));
     setAmountReceived("");
     setPaidByName("");
     setPayNotes("");
+    setPaymentType("cash");
+    setCheckFile(null);
     setPayOpen(true);
   }
 
@@ -2097,25 +2117,49 @@ function PaymentPanel({
   async function handlePayment() {
     setBusy(true);
     try {
-      const res = await api.post<{ data: { invoiceNumber: string } }>(
+      let checkImageUrl: string | undefined;
+
+      if (paymentType === "check") {
+        if (!checkFile) {
+          toast({
+            title: t('repair.payment.checkImageRequired'),
+            description: t('repair.payment.checkImageHint'),
+            variant: "error",
+          });
+          setBusy(false);
+          return;
+        }
+        const base64 = btoa(
+          String.fromCharCode(...new Uint8Array(await checkFile.arrayBuffer()))
+        );
+        const uploadRes = await api.post<{ data: { url: string } }>(
+          "/payments/check-upload",
+          { image: base64, mimeType: checkFile.type },
+        );
+        checkImageUrl = uploadRes.data.url;
+      }
+
+      await api.post<{ data: { invoiceNumber: string } }>(
         "/payments",
         {
           repairId: repair.id,
           amountBilled: Number(amountBilled),
           amountReceived: Number(amountReceived),
           discountAmount: 0,
+          paymentType,
+          checkImageUrl,
           paidByName: paidByName.trim() || undefined,
           notes: payNotes.trim() || undefined,
         },
       );
-      toast({ title: "Payment registered successfully" });
+      toast({ title: t('common.success') });
       setPayOpen(false);
       onUpdate();
     } catch (err) {
       toast({
-        title: "Payment failed",
+        title: t('common.error'),
         description:
-          err instanceof ApiError ? err.message : "An error occurred.",
+          err instanceof ApiError ? err.message : t('common.error'),
         variant: "error",
       });
     } finally {
@@ -2123,8 +2167,8 @@ function PaymentPanel({
     }
   }
 
-  if (repair.status !== "complete") {
-    return null; // Only show when repair is complete
+  if (repair.status !== "complete" && repair.status !== "delivered") {
+    return null; // Only show when repair is complete or delivered
   }
 
   if (repair.payment) {
@@ -2132,42 +2176,65 @@ function PaymentPanel({
       <Card className="border-green-200 bg-green-50">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-base text-green-700">
-            <CheckCircle2 className="h-4 w-4" />
-            Payment Received
+            <Icon name="check_circle" size={16} />
+            {t('repair.payment.received')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3 text-sm">
           <div className="flex justify-between">
-            <span className="text-green-700">Amount Billed</span>
+            <span className="text-green-700">{t('repair.payment.amountBilled')}</span>
             <span className="font-medium text-green-700">
               {money(repair.payment.amountBilled)}
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-green-700">Amount Received</span>
+            <span className="text-green-700">{t('repair.payment.amountReceived')}</span>
             <span className="font-medium text-green-700">
               {money(repair.payment.amountReceived)}
             </span>
           </div>
           <div className="flex justify-between border-t border-green-200 pt-2">
-            <span className="text-green-700">Change Due</span>
+            <span className="text-green-700">{t('repair.payment.changeDue')}</span>
             <span className="font-bold text-green-700">
               {money(repair.payment.changeDue)}
             </span>
           </div>
-          {(repair.payment as any).paidByName && (
+          <div className="flex justify-between">
+            <span className="text-green-700">{t('repair.payment.method')}</span>
+            <span className="font-medium text-green-700">
+              {PAYMENT_TYPE_LABELS[repair.payment.paymentType] ?? repair.payment.paymentType}
+            </span>
+          </div>
+          {repair.payment.checkImageUrl && (
+            <div>
+              <p className="text-xs text-green-600 mb-1">{t('repair.payment.checkImage')}</p>
+              <a
+                href={repair.payment.checkImageUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block rounded-md border border-green-200 overflow-hidden"
+              >
+                <img
+                  src={repair.payment.checkImageUrl}
+                  alt={t('repair.payment.check')}
+                  className="w-full h-32 object-cover"
+                />
+              </a>
+            </div>
+          )}
+          {repair.payment.paidByName && (
             <p className="text-xs text-green-600 pt-2 italic">
-              Paid by: {(repair.payment as any).paidByName}
+              {t('repair.payment.paidBy')} : {repair.payment.paidByName}
             </p>
           )}
           <Button
             variant="outline"
             size="sm"
             asChild
-            className="w-full mt-4"
+            className="w-full mt-4 border border-outline-variant text-on-surface-variant"
           >
             <Link href={`/repairs/${repair.id}/invoice`}>
-              View Invoice #{repair.payment.invoiceNumber}
+              {t('repair.payment.viewInvoice')}{repair.payment.invoiceNumber}
             </Link>
           </Button>
         </CardContent>
@@ -2176,31 +2243,31 @@ function PaymentPanel({
   }
 
   return (
-    <Card>
+    <Card className="bg-white border border-outline-variant rounded-xl shadow-sm">
       <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-base">
-          <CreditCard className="h-4 w-4" />
-          Register Payment
+        <CardTitle className="flex items-center gap-2 font-title-md text-title-md">
+          <Icon name="credit_card" size={16} />
+          {t('repair.payment.register')}
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <Button className="w-full" onClick={openPayment}>
-          <Plus className="h-4 w-4 mr-2" />
-          Register Payment
+        <Button className="w-full bg-primary text-on-primary rounded-lg px-lg py-sm font-title-md text-title-md" onClick={openPayment}>
+          <Icon name="add" size={16} className="mr-2" />
+          {t('repair.payment.register')}
         </Button>
       </CardContent>
 
       <Dialog open={payOpen} onOpenChange={setPayOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Register Payment</DialogTitle>
+            <DialogTitle>{t('repair.payment.register')}</DialogTitle>
             <DialogDescription>
-              Record the payment received for this repair.
+              {t('repair.payment.title')}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label>Amount Billed</Label>
+              <Label>{t('repair.payment.amountBilled')}</Label>
               <Input
                 type="number"
                 min="0"
@@ -2210,7 +2277,7 @@ function PaymentPanel({
               />
             </div>
             <div className="space-y-2">
-              <Label>Amount Received *</Label>
+              <Label>{t('repair.payment.amountReceived')} *</Label>
               <Input
                 type="number"
                 min="0"
@@ -2222,24 +2289,49 @@ function PaymentPanel({
             </div>
             {amountReceived && (
               <div className="rounded-md bg-green-50 border border-green-200 px-3 py-2 text-sm">
-                <span className="text-green-700">Change Due: </span>
+                <span className="text-green-700">{t('repair.payment.changeDue')} : </span>
                 <span className="font-semibold text-green-700">
                   {money(changeDue)}
                 </span>
               </div>
             )}
             <div className="space-y-2">
-              <Label>Paid By Name</Label>
+              <Label>{t('repair.payment.method')}</Label>
+              <Select value={paymentType} onValueChange={setPaymentType}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {PAYMENT_TYPE_OPTIONS.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {paymentType === "check" && (
+              <div className="space-y-2">
+                <Label>{t('repair.payment.checkImage')} *</Label>
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setCheckFile(e.target.files?.[0] ?? null)}
+                />
+              </div>
+            )}
+            <div className="space-y-2">
+              <Label>{t('repair.payment.paidBy')}</Label>
               <Input
-                placeholder="Optional — customer name"
+                placeholder={t('repair.payment.paidByNamePlaceholder')}
                 value={paidByName}
                 onChange={(e) => setPaidByName(e.target.value)}
               />
             </div>
             <div className="space-y-2">
-              <Label>Notes</Label>
+              <Label>{t('common.notes')}</Label>
               <Input
-                placeholder="Optional payment notes..."
+                placeholder={t('repair.payment.notesPlaceholder')}
                 value={payNotes}
                 onChange={(e) => setPayNotes(e.target.value)}
               />
@@ -2247,14 +2339,15 @@ function PaymentPanel({
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline" className="border border-outline-variant text-on-surface-variant">{t('common.cancel')}</Button>
             </DialogClose>
             <Button
               onClick={handlePayment}
               disabled={!amountReceived || busy}
               isLoading={busy}
+              className="bg-primary text-on-primary rounded-lg px-lg py-sm font-title-md text-title-md"
             >
-              Confirm Payment
+              {t('repair.payment.confirm')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -2266,32 +2359,41 @@ function PaymentPanel({
 // ── CostSummaryCard ───────────────────────────────────────────────────────────
 
 function CostSummaryCard({ repair }: { repair: RepairDetail }) {
+  const t = useTranslations();
+  const subtotal = repair.partsTotal + repair.laborTotal - repair.discountAmount;
+  const garageFees = Math.max(0, repair.finalTotal - subtotal);
   return (
-    <Card>
+    <Card className="bg-white border border-outline-variant rounded-xl shadow-sm">
       <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-base">
-          <DollarSign className="h-4 w-4" />
-          Cost Summary
+        <CardTitle className="flex items-center gap-2 font-title-md text-title-md">
+          <Icon name="attach_money" size={16} />
+          {t('repair.costs.title')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3 text-sm">
         <div className="flex justify-between">
-          <span className="text-muted-foreground">Parts Total</span>
+          <span className="text-muted-foreground">{t('repair.costs.partsTotal')}</span>
           <span>{money(repair.partsTotal)}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-muted-foreground">Labor Total</span>
+          <span className="text-muted-foreground">{t('repair.costs.laborTotal')}</span>
           <span>{money(repair.laborTotal)}</span>
         </div>
         {repair.discountAmount > 0 && (
           <div className="flex justify-between text-green-600">
-            <span>Discount</span>
+            <span>{t('repair.costs.discount')}</span>
             <span>— {money(repair.discountAmount)}</span>
+          </div>
+        )}
+        {garageFees > 0 && (
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">{t('repair.costs.garageFee')}</span>
+            <span>{money(garageFees)}</span>
           </div>
         )}
         <Separator />
         <div className="flex justify-between text-base font-bold">
-          <span>Final Total</span>
+          <span>{t('repair.costs.finalTotal')}</span>
           <span>{money(repair.finalTotal)}</span>
         </div>
       </CardContent>
@@ -2302,17 +2404,18 @@ function CostSummaryCard({ repair }: { repair: RepairDetail }) {
 // ── StatusHistoryCard ─────────────────────────────────────────────────────────
 
 function StatusHistoryCard({ repair }: { repair: RepairDetail }) {
+  const t = useTranslations();
   return (
-    <Card>
+    <Card className="bg-white border border-outline-variant rounded-xl shadow-sm">
       <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-base">
-          <History className="h-4 w-4" />
-          Status History
+        <CardTitle className="flex items-center gap-2 font-title-md text-title-md">
+          <Icon name="history" size={16} />
+          {t('repair.statusHistory')}
         </CardTitle>
       </CardHeader>
       <CardContent className="text-sm">
         {repair.statusLogs.length === 0 ? (
-          <p className="text-muted-foreground">No status changes yet.</p>
+          <p className="text-muted-foreground">{t('repair.noStatusHistory')}</p>
         ) : (
           <div className="space-y-0">
             {[...repair.statusLogs].reverse().map((log, idx) => (
@@ -2328,7 +2431,7 @@ function StatusHistoryCard({ repair }: { repair: RepairDetail }) {
                     {log.fromStatus && (
                       <>
                         <StatusBadge status={log.fromStatus} />
-                        <ChevronRight className="h-3 w-3 text-muted-foreground" />
+                        <Icon name="chevron_right" size={12} className="text-muted-foreground" />
                       </>
                     )}
                     <StatusBadge status={log.toStatus} />
@@ -2354,6 +2457,7 @@ function StatusHistoryCard({ repair }: { repair: RepairDetail }) {
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function RepairDetailPage() {
+  const t = useTranslations();
   const { id } = useParams() as { id: string };
   const [repair, setRepair] = useState<RepairDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -2364,7 +2468,7 @@ export default function RepairDetailPage() {
       const res = await api.get<{ data: RepairDetail }>(`/repairs/${id}`);
       setRepair(res.data);
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Failed to load repair");
+      setError(err instanceof ApiError ? err.message : t('common.error'));
     } finally {
       setLoading(false);
     }
@@ -2377,7 +2481,7 @@ export default function RepairDetailPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <Icon name="sync" size={32} className="animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -2386,22 +2490,22 @@ export default function RepairDetailPage() {
     return (
       <div className="mx-auto max-w-lg pt-12">
         <div className="flex items-center gap-3 rounded-md border border-destructive/50 bg-destructive/10 p-4 text-destructive">
-          <AlertCircle className="h-5 w-5 shrink-0" />
-          <p className="text-sm">{error ?? "Repair not found."}</p>
+        <Icon name="info" size={20} className="shrink-0" />
+          <p className="text-sm">{error ?? t('repair.notFound')}</p>
           <Button
             variant="outline"
             size="sm"
             onClick={loadRepair}
             className="ml-auto"
           >
-            Retry
+            {t('common.retry')}
           </Button>
         </div>
         <div className="mt-4">
           <Button variant="ghost" size="sm" asChild>
             <Link href="/repairs">
-              <ArrowLeft className="h-4 w-4" />
-              Back to Repairs
+            <Icon name="arrow_back" size={16} />
+              {t('common.back')} {t('nav.repairs')}
             </Link>
           </Button>
         </div>

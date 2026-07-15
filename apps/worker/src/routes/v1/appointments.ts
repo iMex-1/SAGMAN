@@ -5,9 +5,10 @@ import { Errors } from '../../utils/errors';
 import { authorize } from '../../middleware/authorize';
 import { authenticate } from '../../middleware/auth';
 import { getPaginationParams, paginate } from '../../utils/pagination';
+import { normalizePhone } from '../../utils/phone';
 
 const appointments = new Hono<AppBindings>();
-appointments.use('/*', authenticate, authorize(['manager']));
+appointments.use('/*', authenticate, authorize(['manager', 'overseer']));
 
 const ACTIVE_STATUSES = ['received', 'diagnosing', 'awaiting_approval', 'in_progress', 'waiting_for_parts', 'complete'];
 
@@ -38,6 +39,7 @@ appointments.get('/', async (c) => {
 
   const rows = await c.env.DB.prepare(
     `SELECT a.id, a.client_id, a.client_name, a.client_phone, a.car_id, a.car_matricule,
+            a.car_make, a.car_model, a.car_year, a.car_color, a.car_image_url,
             a.purpose, a.requested_at, a.confirmed_at, a.rescheduled_to,
             a.status, a.cancellation_reason, a.notes, a.created_at,
             u.name as client_name_val, u.phone as client_phone_val,
@@ -57,6 +59,11 @@ appointments.get('/', async (c) => {
     clientPhone: r.client_phone,
     carId: r.car_id,
     carMatricule: r.car_matricule,
+    carMake: r.car_make,
+    carModel: r.car_model,
+    carYear: r.car_year,
+    carColor: r.car_color,
+    carImageUrl: r.car_image_url,
     purpose: r.purpose,
     requestedAt: r.requested_at,
     confirmedAt: r.confirmed_at,
@@ -77,17 +84,22 @@ appointments.post('/', async (c) => {
   const user = c.get('user');
   const body = await c.req.json() as any;
 
+  const clientPhone = normalizePhone(body.clientPhone);
   const id = crypto.randomUUID();
   await c.env.DB.prepare(
-    `INSERT INTO appointments (id, client_id, client_name, client_phone, car_id, car_matricule, purpose, requested_at, status, confirmed_at, created_by, notes)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'confirmed', ?, ?, ?)`,
+    `INSERT INTO appointments (id, client_id, client_name, client_phone, car_id, car_matricule, car_make, car_model, car_year, car_color, purpose, requested_at, status, confirmed_at, created_by, notes)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'confirmed', ?, ?, ?)`,
   ).bind(
     id,
     body.clientId ?? null,
     body.clientName,
-    body.clientPhone,
+    clientPhone,
     body.carId ?? null,
     body.carMatricule ?? null,
+    body.carMake ?? null,
+    body.carModel ?? null,
+    body.carYear ?? null,
+    body.carColor ?? null,
     body.purpose,
     body.requestedAt,
     new Date().toISOString(),
@@ -128,6 +140,11 @@ appointments.get('/:id', async (c) => {
       clientPhone: row.client_phone,
       carId: row.car_id,
       carMatricule: row.car_matricule,
+      carMake: row.car_make,
+      carModel: row.car_model,
+      carYear: row.car_year,
+      carColor: row.car_color,
+      carImageUrl: row.car_image_url,
       purpose: row.purpose,
       requestedAt: row.requested_at,
       confirmedAt: row.confirmed_at,
@@ -161,8 +178,11 @@ appointments.patch('/:id', async (c) => {
 
   const setClauses: string[] = [];
   const params: any[] = [];
-  for (const key of ['purpose', 'notes']) {
-    if (body[key] !== undefined) { setClauses.push(`${key} = ?`); params.push(body[key]); }
+  for (const key of ['purpose', 'notes', 'carImageUrl']) {
+    if (body[key] !== undefined) {
+      const col = key === 'carImageUrl' ? 'car_image_url' : key;
+      setClauses.push(`${col} = ?`); params.push(body[key]);
+    }
   }
   if (body.requestedAt !== undefined) { setClauses.push('requested_at = ?'); params.push(body.requestedAt); }
 
@@ -183,8 +203,8 @@ appointments.patch('/:id/confirm', async (c) => {
     `SELECT id, status, requested_at FROM appointments WHERE id = ? AND deleted_at IS NULL`,
   ).bind(id).first<{ id: string; status: string; requested_at: string }>();
   if (!existing) throw Errors.NotFound('Appointment', id);
-  if (existing.status !== 'pending') {
-    throw Errors.BadRequest(`Only pending appointments can be confirmed. Current status: '${existing.status}'`, 'INVALID_STATUS_TRANSITION');
+  if (existing.status !== 'pending' && existing.status !== 'rescheduled') {
+    throw Errors.BadRequest(`Only pending or rescheduled appointments can be confirmed. Current status: '${existing.status}'`, 'INVALID_STATUS_TRANSITION');
   }
 
   if (!force) {
@@ -268,7 +288,7 @@ appointments.post('/:id/convert', async (c) => {
   };
 
   const existing = await c.env.DB.prepare(
-    `SELECT id, status, car_id, car_matricule, purpose FROM appointments WHERE id = ? AND deleted_at IS NULL`,
+    `SELECT id, status, car_id, car_matricule, car_make, car_model, car_year, car_color, client_id, purpose FROM appointments WHERE id = ? AND deleted_at IS NULL`,
   ).bind(id).first<any>();
   if (!existing) throw Errors.NotFound('Appointment', id);
   if (existing.status !== 'confirmed') {
@@ -284,10 +304,18 @@ appointments.post('/:id/convert', async (c) => {
 
   let carId = existing.car_id;
   if (!carId && existing.car_matricule) {
+    const matricule = existing.car_matricule;
     const car = await c.env.DB.prepare(
       `SELECT id FROM cars WHERE matricule = ? AND deleted_at IS NULL`,
-    ).bind(existing.car_matricule).first<{ id: string }>();
-    if (car) carId = car.id;
+    ).bind(matricule).first<{ id: string }>();
+    if (car) {
+      carId = car.id;
+    } else if (existing.car_make && existing.car_model) {
+      carId = crypto.randomUUID();
+      await c.env.DB.prepare(
+        `INSERT INTO cars (id, matricule, make, model, year, color, client_id) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      ).bind(carId, matricule, existing.car_make, existing.car_model, existing.car_year ?? null, existing.car_color ?? null, existing.client_id).run();
+    }
   }
   if (!carId) throw Errors.BadRequest('Cannot convert appointment: no car linked', 'CAR_NOT_RESOLVED');
 

@@ -4,16 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { use } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import {
-  ArrowLeft,
-  Loader2,
-  AlertCircle,
-  Plus,
-  Pencil,
-  Check,
-  X,
-  Trash2,
-} from 'lucide-react'
+import { Icon } from '@/components/ui/icon'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -27,6 +18,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { api, ApiError } from '@/lib/api-client'
+import { useTranslations } from 'next-intl'
 import { useToast } from '@/components/ui/use-toast'
 
 interface CarDetail {
@@ -71,19 +63,8 @@ const REPAIR_STATUS_VARIANTS: Record<
   cancelled: 'destructive',
 }
 
-const REPAIR_STATUS_LABELS: Record<string, string> = {
-  received: 'Received',
-  diagnosing: 'Diagnosing',
-  awaiting_approval: 'Awaiting Approval',
-  in_progress: 'In Progress',
-  waiting_for_parts: 'Waiting for Parts',
-  complete: 'Complete',
-  delivered: 'Delivered',
-  cancelled: 'Cancelled',
-}
-
 function formatDate(iso: string) {
-  return new Date(iso).toLocaleString('en-GB', {
+  return new Date(iso).toLocaleString('fr-FR', {
     day: '2-digit',
     month: 'short',
     year: 'numeric',
@@ -93,6 +74,7 @@ function formatDate(iso: string) {
 }
 
 export default function CarDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const t = useTranslations()
   const { id } = use(params)
   const router = useRouter()
   const { success, error: toastError } = useToast()
@@ -126,7 +108,7 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
       if (err instanceof ApiError) {
         setError(err.message)
       } else {
-        setError('Failed to load car details.')
+        setError(t('car.loadCarError'))
       }
     } finally {
       setIsLoading(false)
@@ -144,12 +126,12 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
       await api.patch(`/cars/${id}`, { notes: notesValue })
       setCar((prev) => (prev ? { ...prev, notes: notesValue } : prev))
       setEditingNotes(false)
-      success('Notes saved')
+      success(t('car.detail.toasts.notesSaved'))
     } catch (err) {
       if (err instanceof ApiError) {
-        toastError('Save failed', err.message)
+        toastError(t('car.detail.toasts.saveFailed'), err.message)
       } else {
-        toastError('Save failed', 'An unexpected error occurred.')
+        toastError(t('car.detail.toasts.saveFailed'), t('car.detail.toasts.genericError'))
       }
     } finally {
       setSavingNotes(false)
@@ -165,13 +147,13 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
     setDeleting(true)
     try {
       await api.delete(`/cars/${id}`)
-      success('Car deleted', `${car?.matricule} has been removed.`)
+      success(t('car.detail.toasts.deleted'), t('car.detail.deleteSuccess', { matricule: car?.matricule ?? '' }))
       router.push('/cars')
     } catch (err) {
       if (err instanceof ApiError) {
-        toastError('Delete failed', err.message)
+        toastError(t('car.detail.toasts.deleteFailed'), err.message)
       } else {
-        toastError('Delete failed', 'An unexpected error occurred.')
+        toastError(t('car.detail.toasts.deleteFailed'), t('car.detail.toasts.genericError'))
       }
       setDeleting(false)
       setShowDeleteDialog(false)
@@ -181,7 +163,7 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-16">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <Icon name="sync" size={32} className="animate-spin text-muted-foreground" />
       </div>
     )
   }
@@ -191,15 +173,15 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
       <div className="space-y-4">
         <Button variant="ghost" size="sm" asChild>
           <Link href="/cars">
-            <ArrowLeft className="h-4 w-4" />
-            Back to Cars
+            <Icon name="arrow_back" size={16} />
+            {t('car.detail.backLink')}
           </Link>
         </Button>
         <div className="flex items-center gap-3 rounded-md border border-destructive/50 bg-destructive/10 p-4 text-destructive">
-          <AlertCircle className="h-5 w-5 shrink-0" />
-          <p className="text-sm">{error ?? 'Car not found.'}</p>
+          <Icon name="info" size={20} className="shrink-0" />
+          <p className="text-sm">{error ?? t('car.detail.notFound')}</p>
           <Button variant="outline" size="sm" onClick={fetchCar} className="ml-auto">
-            Retry
+            {t('car.detail.retry')}
           </Button>
         </div>
       </div>
@@ -212,8 +194,8 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
       <div>
         <Button variant="ghost" size="sm" asChild>
           <Link href="/cars">
-            <ArrowLeft className="h-4 w-4" />
-            Back to Cars
+            <Icon name="arrow_back" size={16} />
+            {t('car.detail.backLink')}
           </Link>
         </Button>
       </div>
@@ -221,17 +203,17 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
       {/* Page header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="font-mono text-3xl font-bold">{car.matricule}</h1>
+          <h1 className="font-headline-xl text-headline-xl font-mono">{car.matricule}</h1>
           <p className="mt-1 text-muted-foreground">
             {car.make} {car.model}
             {car.year ? ` · ${car.year}` : ''}
             {car.color ? ` · ${car.color}` : ''}
           </p>
         </div>
-        <Button asChild>
+        <Button asChild className="bg-primary text-on-primary rounded-lg px-lg py-sm font-title-md text-title-md">
           <Link href={`/repairs/new?carId=${car.id}`}>
-            <Plus className="h-4 w-4" />
-            New Repair
+            <Icon name="add" size={16} />
+            {t('car.detail.newRepair')}
           </Link>
         </Button>
       </div>
@@ -240,64 +222,65 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
         {/* ── Left column ── */}
         <div className="space-y-6 lg:col-span-2">
           {/* Vehicle Info */}
-          <Card>
+          <Card className="bg-white border border-outline-variant rounded-xl shadow-sm">
             <CardHeader>
-              <CardTitle className="text-base">Vehicle Info</CardTitle>
+              <CardTitle className="font-title-md text-title-md">{t('car.detail.info')}</CardTitle>
             </CardHeader>
             <CardContent>
               <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-                <dt className="text-muted-foreground">Plate</dt>
+                <dt className="text-muted-foreground">{t('car.detail.plate')}</dt>
                 <dd className="font-mono font-medium">{car.matricule}</dd>
 
-                <dt className="text-muted-foreground">Make</dt>
+                <dt className="text-muted-foreground">{t('car.detail.make')}</dt>
                 <dd>{car.make}</dd>
 
-                <dt className="text-muted-foreground">Model</dt>
+                <dt className="text-muted-foreground">{t('car.detail.model')}</dt>
                 <dd>{car.model}</dd>
 
                 {car.year !== undefined && (
                   <>
-                    <dt className="text-muted-foreground">Year</dt>
+                    <dt className="text-muted-foreground">{t('car.detail.year')}</dt>
                     <dd>{car.year}</dd>
                   </>
                 )}
                 {car.color && (
                   <>
-                    <dt className="text-muted-foreground">Color</dt>
+                    <dt className="text-muted-foreground">{t('car.detail.color')}</dt>
                     <dd>{car.color}</dd>
                   </>
                 )}
                 {car.vin && (
                   <>
-                    <dt className="text-muted-foreground">VIN</dt>
+                    <dt className="text-muted-foreground">{t('car.detail.vin')}</dt>
                     <dd className="break-all font-mono text-xs">{car.vin}</dd>
                   </>
                 )}
-                {car.mileage !== undefined && (
+                {car.mileage != null && (
                   <>
-                    <dt className="text-muted-foreground">Mileage</dt>
+                    <dt className="text-muted-foreground">{t('car.detail.mileage')}</dt>
                     <dd>{car.mileage.toLocaleString()} km</dd>
                   </>
                 )}
-                <dt className="text-muted-foreground">Registered</dt>
+                <dt className="text-muted-foreground">{t('car.detail.registeredOn')}</dt>
                 <dd>{formatDate(car.createdAt)}</dd>
               </dl>
             </CardContent>
           </Card>
 
           {/* Notes */}
-          <Card>
+          <Card className="bg-white border border-outline-variant rounded-xl shadow-sm">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-base">Notes</CardTitle>
+                <CardTitle className="font-title-md text-title-md">{t('car.detail.notes')}</CardTitle>
                 {!editingNotes && (
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setEditingNotes(true)}
-                    title="Edit notes"
+                    title={t('car.detail.editNotes')}
+                    className="text-on-surface-variant"
                   >
-                    <Pencil className="h-4 w-4" />
+                    <Icon name="edit" size={16} />
                   </Button>
                 )}
               </div>
@@ -313,68 +296,68 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
                     className="w-full resize-none rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                   />
                   <div className="flex gap-2">
-                    <Button size="sm" onClick={handleSaveNotes} disabled={savingNotes}>
+                    <Button size="sm" onClick={handleSaveNotes} disabled={savingNotes} className="bg-primary text-on-primary rounded-lg px-lg py-sm font-title-md text-title-md">
                       {savingNotes ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <Icon name="sync" size={16} className="animate-spin" />
                       ) : (
-                        <Check className="h-4 w-4" />
+                        <Icon name="check" size={16} />
                       )}
-                      Save
+                      {t('car.detail.save')}
                     </Button>
-                    <Button size="sm" variant="ghost" onClick={handleCancelNotes}>
-                      <X className="h-4 w-4" />
-                      Cancel
+                    <Button size="sm" variant="ghost" onClick={handleCancelNotes} className="text-on-surface-variant">
+                      <Icon name="close" size={16} />
+                      {t('common.cancel')}
                     </Button>
                   </div>
                 </div>
               ) : (
                 <p className="text-sm text-muted-foreground">
-                  {car.notes || 'No notes. Click the edit button to add some.'}
+                  {car.notes || t('car.detail.noNotes')}
                 </p>
               )}
             </CardContent>
           </Card>
 
           {/* Repair History */}
-          <Card>
+          <Card className="bg-white border border-outline-variant rounded-xl shadow-sm">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-base">Repair History</CardTitle>
+                <CardTitle className="font-title-md text-title-md">{t('car.detail.repairHistory')}</CardTitle>
                 <span className="text-sm text-muted-foreground">
-                  {repairs.length} record{repairs.length !== 1 ? 's' : ''}
+                  {t('car.detail.repairCount', { count: repairs.length })}
                 </span>
               </div>
             </CardHeader>
             <CardContent className="p-0">
               {repairs.length === 0 ? (
                 <p className="px-6 py-8 text-center text-sm text-muted-foreground">
-                  No repairs on record for this vehicle.
+                  {t('car.detail.noRepairs')}
                 </p>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b bg-muted/50">
-                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                          ID
+                      <tr className="border-b bg-surface-container/50">
+                        <th className="px-4 py-3 text-left font-label-sm text-label-sm text-on-surface-variant">
+                          {t('car.table.id')}
                         </th>
-                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                          Status
+                        <th className="px-4 py-3 text-left font-label-sm text-label-sm text-on-surface-variant">
+                          {t('car.table.status')}
                         </th>
-                        <th className="hidden px-4 py-3 text-left font-medium text-muted-foreground md:table-cell">
-                          Priority
+                        <th className="hidden px-4 py-3 text-left font-label-sm text-label-sm text-on-surface-variant md:table-cell">
+                          {t('car.table.priority')}
                         </th>
-                        <th className="hidden px-4 py-3 text-left font-medium text-muted-foreground lg:table-cell">
-                          Mechanic
+                        <th className="hidden px-4 py-3 text-left font-label-sm text-label-sm text-on-surface-variant lg:table-cell">
+                          {t('car.table.mechanic')}
                         </th>
-                        <th className="hidden px-4 py-3 text-left font-medium text-muted-foreground lg:table-cell">
-                          Created
+                        <th className="hidden px-4 py-3 text-left font-label-sm text-label-sm text-on-surface-variant lg:table-cell">
+                          {t('car.table.createdAt')}
                         </th>
-                        <th className="hidden px-4 py-3 text-left font-medium text-muted-foreground xl:table-cell">
-                          Target
+                        <th className="hidden px-4 py-3 text-left font-label-sm text-label-sm text-on-surface-variant xl:table-cell">
+                          {t('car.table.targetDate')}
                         </th>
-                        <th className="px-4 py-3 text-right font-medium text-muted-foreground">
-                          Actions
+                        <th className="px-4 py-3 text-right font-label-sm text-label-sm text-on-surface-variant">
+                          {t('car.table.actions')}
                         </th>
                       </tr>
                     </thead>
@@ -388,7 +371,7 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
                             <Badge
                               variant={REPAIR_STATUS_VARIANTS[repair.status] ?? 'secondary'}
                             >
-                              {REPAIR_STATUS_LABELS[repair.status] ?? repair.status}
+                              {t('repair.status.' + repair.status) ?? repair.status}
                             </Badge>
                           </td>
                           <td className="hidden px-4 py-3 capitalize text-muted-foreground md:table-cell">
@@ -406,8 +389,8 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
                               : '—'}
                           </td>
                           <td className="px-4 py-3 text-right">
-                            <Button variant="ghost" size="sm" asChild>
-                              <Link href={`/repairs/${repair.id}`}>View</Link>
+                            <Button variant="ghost" size="sm" asChild className="text-on-surface-variant">
+                              <Link href={`/repairs/${repair.id}`}>{t('car.table.view')}</Link>
                             </Button>
                           </td>
                         </tr>
@@ -423,42 +406,42 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
         {/* ── Right column ── */}
         <div className="space-y-6">
           {/* Client */}
-          <Card>
+          <Card className="bg-white border border-outline-variant rounded-xl shadow-sm">
             <CardHeader>
-              <CardTitle className="text-base">Client</CardTitle>
+              <CardTitle className="font-title-md text-title-md">{t('car.detail.client')}</CardTitle>
             </CardHeader>
             <CardContent className="text-sm">
               {car.client ? (
                 <div className="space-y-2">
                   <p className="font-medium">{car.client.name}</p>
                   <p className="text-muted-foreground">{car.client.phone}</p>
-                  <Button variant="outline" size="sm" className="mt-2 w-full" asChild>
-                    <Link href={`/clients/${car.client.id}`}>View Client</Link>
+                  <Button variant="outline" size="sm" className="mt-2 w-full border border-outline-variant text-on-surface-variant" asChild>
+                    <Link href={`/clients/${car.client.id}`}>{t('car.detail.viewClient')}</Link>
                   </Button>
                 </div>
               ) : (
-                <p className="text-muted-foreground">Walk-in (no client account)</p>
+                <p className="text-muted-foreground">{t('car.detail.noClient')}</p>
               )}
             </CardContent>
           </Card>
 
           {/* Danger Zone */}
-          <Card className="border-destructive/30">
+          <Card className="bg-white border border-outline-variant rounded-xl shadow-sm border-destructive/30">
             <CardHeader>
-              <CardTitle className="text-base text-destructive">Danger Zone</CardTitle>
+              <CardTitle className="font-title-md text-title-md text-destructive">{t('car.detail.deleteSection')}</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="mb-3 text-xs text-muted-foreground">
-                Permanently deletes this vehicle and all associated records.
+                {t('car.detail.deleteDescription')}
               </p>
               <Button
                 variant="destructive"
                 size="sm"
-                className="w-full"
+                className="w-full bg-destructive text-destructive-foreground rounded-lg px-lg py-sm font-title-md text-title-md"
                 onClick={() => setShowDeleteDialog(true)}
               >
-                <Trash2 className="h-4 w-4" />
-                Delete Car
+                <Icon name="delete" size={16} />
+                {t('car.detail.deleteButton')}
               </Button>
             </CardContent>
           </Card>
@@ -469,11 +452,9 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete Car</DialogTitle>
+            <DialogTitle>{t('car.detail.deleteConfirm')}</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete{' '}
-              <strong className="font-mono">{car.matricule}</strong>? This action cannot be
-              undone and will remove all associated repair records.
+              {t('car.detail.deleteConfirmMessage')}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -481,16 +462,17 @@ export default function CarDetailPage({ params }: { params: Promise<{ id: string
               variant="outline"
               onClick={() => setShowDeleteDialog(false)}
               disabled={deleting}
+              className="border border-outline-variant text-on-surface-variant"
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
-            <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
+            <Button variant="destructive" onClick={handleDelete} disabled={deleting} className="bg-destructive text-destructive-foreground rounded-lg px-lg py-sm font-title-md text-title-md">
               {deleting ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Icon name="sync" size={16} className="animate-spin" />
               ) : (
-                <Trash2 className="h-4 w-4" />
+                <Icon name="delete" size={16} />
               )}
-              Delete
+              {t('common.delete')}
             </Button>
           </DialogFooter>
         </DialogContent>

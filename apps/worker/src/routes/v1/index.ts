@@ -5,7 +5,7 @@ import { health } from './health';
 import { auth } from './auth';
 import { settings } from './settings';
 import { cars } from './cars';
-import { employees } from './employees';
+import { employees, clients } from './employees';
 import { appointments } from './appointments';
 import { repairs } from './repairs';
 import { parts } from './parts';
@@ -16,14 +16,17 @@ import { reports } from './reports';
 import { notifications } from './notifications';
 import { calendar } from './calendar';
 import { search } from './search';
+import { uploads } from './uploads';
 
 const v1 = new Hono<AppBindings>();
 
 v1.route('/health', health);
 v1.route('/auth', auth);
 v1.route('/settings', settings);
+v1.route('/uploads', uploads);
 v1.route('/cars', cars);
 v1.route('/employees', employees);
+v1.route('/clients', clients);
 v1.route('/appointments', appointments);
 v1.route('/repairs', repairs);
 v1.route('/parts', parts);

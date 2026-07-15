@@ -7,7 +7,7 @@ import { authenticate } from '../../middleware/auth';
 import { getPaginationParams, paginate } from '../../utils/pagination';
 
 const cars = new Hono<AppBindings>();
-cars.use('/*', authenticate, authorize(['manager']));
+cars.use('/*', authenticate, authorize(['manager', 'overseer']));
 
 // GET /cars
 cars.get('/', async (c) => {

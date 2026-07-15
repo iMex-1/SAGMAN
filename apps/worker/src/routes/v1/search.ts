@@ -5,7 +5,7 @@ import { authorize } from '../../middleware/authorize';
 import { authenticate } from '../../middleware/auth';
 
 const search = new Hono<AppBindings>();
-search.use('/*', authenticate, authorize(['manager']));
+search.use('/*', authenticate, authorize(['manager', 'mechanic', 'overseer']));
 
 // GET /search
 search.get('/', async (c) => {

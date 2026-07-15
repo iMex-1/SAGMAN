@@ -4,12 +4,12 @@ compatibility_date = "2024-11-01"
 compatibility_flags = ["nodejs_compat"]
 
 [[d1_databases]]
-binding = "sagman"
+binding = "DB"
 database_name = "sagman"
 database_id = "c3b12369-5076-4eb3-929d-f0a9dbbfe115"
 
 [[r2_buckets]]
-binding = "sagman_uploads"
+binding = "UPLOADS"
 bucket_name = "sagman-uploads"
 
 # ⚠️ Create a KV namespace first, then uncomment:

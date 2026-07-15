@@ -60,8 +60,18 @@ async function request<T>(
     localStorage.removeItem("sagman_token");
     localStorage.removeItem("sagman_refresh_token");
     deleteCookie("sagman_token");
-    window.location.href = "/login";
-    throw new ApiError("UNAUTHORIZED", "Session expired", 401);
+    // Read the actual server error instead of hardcoding "Session expired"
+    let message = "Session expired";
+    try {
+      const errBody = await response.json();
+      message = errBody?.error?.message ?? message;
+    } catch {}
+    // Portal pages handle 401 themselves (redirect to /portal/login).
+    // For admin pages, redirect to /login (middleware.ts also catches missing cookie).
+    if (!window.location.pathname.startsWith("/portal")) {
+      window.location.href = "/login";
+    }
+    throw new ApiError("UNAUTHORIZED", message, 401);
   }
 
   const json = await response.json();

@@ -5,7 +5,7 @@ import { authorize } from '../../middleware/authorize';
 import { authenticate } from '../../middleware/auth';
 
 const reports = new Hono<AppBindings>();
-reports.use('/*', authenticate, authorize(['manager']));
+reports.use('/*', authenticate, authorize(['manager', 'overseer']));
 
 // GET /reports/end-of-day
 reports.get('/end-of-day', async (c) => {

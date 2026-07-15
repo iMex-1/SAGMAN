@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Repair Status | Sagman Garage</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline": "#757682",
+                    "on-secondary-fixed-variant": "#93000b",
+                    "surface-tint": "#4059aa",
+                    "primary-fixed-dim": "#b6c4ff",
+                    "on-secondary-container": "#fffbff",
+                    "surface-variant": "#e0e3e5",
+                    "on-primary-fixed-variant": "#264191",
+                    "on-surface": "#191c1e",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#3f465c",
+                    "tertiary-container": "#384055",
+                    "on-error": "#ffffff",
+                    "primary-fixed": "#dce1ff",
+                    "primary": "#00236f",
+                    "inverse-surface": "#2d3133",
+                    "surface-dim": "#d8dadc",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-primary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "tertiary": "#222a3e",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-primary": "#b6c4ff",
+                    "tertiary-fixed-dim": "#bec6e0",
+                    "surface-container": "#eceef0",
+                    "secondary-fixed": "#ffdad6",
+                    "background": "#f7f9fb",
+                    "on-primary-container": "#90a8ff",
+                    "on-background": "#191c1e",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-container": "#a4acc5",
+                    "secondary": "#bb0112",
+                    "secondary-container": "#e02928",
+                    "on-primary-fixed": "#00164e",
+                    "outline-variant": "#c5c5d3",
+                    "on-surface-variant": "#444651",
+                    "inverse-on-surface": "#eff1f3",
+                    "surface-container-high": "#e6e8ea",
+                    "on-tertiary-fixed": "#131b2e",
+                    "surface-container-low": "#f2f4f6",
+                    "surface": "#f7f9fb",
+                    "primary-container": "#1e3a8a",
+                    "on-secondary-fixed": "#410002",
+                    "surface-bright": "#f7f9fb",
+                    "tertiary-fixed": "#dae2fd",
+                    "secondary-fixed-dim": "#ffb4ab",
+                    "error": "#ba1a1a",
+                    "error-container": "#ffdad6"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "lg": "24px",
+                    "container-margin": "24px",
+                    "gutter": "16px",
+                    "xs": "4px",
+                    "sm": "8px",
+                    "xl": "32px",
+                    "md": "16px",
+                    "base": "4px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "title-md": ["Inter"],
+                    "headline-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-xl": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "title-md": ["18px", {"lineHeight": "26px", "fontWeight": "600"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        .progress-line {
+            background: linear-gradient(90deg, #1e3a8a 60%, #e0e3e5 60%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(224, 227, 229, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md text-body-md">
+<!-- TopNavBar (Shared Component) -->
+<header class="flex justify-between items-center px-lg py-md w-full sticky top-0 z-50 bg-white dark:bg-surface-container border-b border-outline-variant dark:border-outline">
+<div class="flex items-center gap-md">
+<span class="font-headline-lg text-headline-lg font-black text-primary dark:text-primary-fixed">Sagman Garage</span>
+</div>
+<div class="hidden md:flex flex-1 max-w-md mx-xl">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-xl pr-md py-sm bg-surface-container-low border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" placeholder="Track another repair..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-sm text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">help</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a garage service advisor wearing a clean blue uniform, smiling reassuringly at the camera in a modern, well-lit automotive workshop office. The background is slightly blurred showing organized shelves and a clean white desk. The lighting is bright and airy, suggesting high-quality customer service." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQ5ArJ5pGmhdwz48vVZXzryzjo6rGusb0l8gF_aC5CAnn6zP1qnwkke9xF6N-fxhQyduFL3Ty35l8dIAtidmMClzUcFAxwNFVkI-QfgcqsczgD0-ZSmgBd5dtKow1uiqRRYT2cmQZttsyE_3RScu5jht8izXSOgtmQRaHeByosRZOP-9UCK4vsxRAuBpwaaUJRTTeWukQDF-em03KMT9L_HxVTe2s4jmaYWvW08AoU6W1Du4shopwu9w"/>
+</div>
+</div>
+</header>
+<main class="flex-grow w-full max-w-6xl mx-auto px-lg py-xl">
+<!-- Header & Vital Stats Bento -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-lg mb-xl">
+<!-- Vehicle Highlight -->
+<div class="lg:col-span-2 bg-white rounded-xl p-lg border border-outline-variant flex flex-col md:flex-row gap-lg items-center">
+<div class="w-full md:w-48 h-32 rounded-lg overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A clean, modern metallic silver sedan parked in a high-tech automotive service bay. The environment is pristine with white tiled floors and professional overhead LED lighting that creates sleek highlights on the car's body. The overall mood is technological, precise, and highly reliable, fitting a premium garage brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCb1xTForgU8q4x6EU6f2u2dZKvtdQ0Es7gpESKyFAKULufMz6uy6Nw6UPJ1sI9fh1JG2FRzTZHg0Cc7tatlZXrmQFylZN4M9fPMrQVuh0NJmd1782b0-zwsUGquaLGDMNGoj1bnDhN0ruUCC0UAzheL2Phd3NjNlnbbiWJ0RTQlJoQhnrpK8mQAGZWaw0EYlOGTCuWuRB8TzLM4rFDMcrwo3Ka4ro_noGufGOaFhmnxhLifhoa0P6ROQ"/>
+</div>
+<div class="flex-grow space-y-xs">
+<div class="flex items-center gap-sm">
+<span class="bg-primary-container/10 text-primary px-sm py-1 rounded text-label-sm font-bold tracking-wider uppercase">Active Repair</span>
+<span class="text-on-surface-variant font-medium">RO #28442</span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-primary">Mercedes-Benz C300</h1>
+<div class="flex flex-wrap gap-md text-on-surface-variant font-medium">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-md">directions_car</span>
+<span>Plate: ABC-1234</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-md">calendar_today</span>
+<span>Received: Oct 24, 2023</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Est Completion Bento -->
+<div class="bg-primary text-on-primary rounded-xl p-lg flex flex-col justify-center items-center text-center shadow-lg">
+<span class="font-label-sm uppercase tracking-widest opacity-80 mb-xs">Estimated Completion</span>
+<div class="font-headline-xl text-headline-xl mb-xs">Today, 4:30 PM</div>
+<div class="flex items-center gap-sm bg-white/10 px-md py-sm rounded-full">
+<span class="material-symbols-outlined text-md" style="font-variation-settings: 'FILL' 1;">timer</span>
+<span class="font-medium">On Track</span>
+</div>
+</div>
+</div>
+<!-- Visual Timeline -->
+<section class="bg-white rounded-xl p-xl border border-outline-variant mb-xl">
+<h2 class="font-title-md text-title-md text-primary mb-xl flex items-center gap-sm">
+<span class="material-symbols-outlined">analytics</span>
+                Repair Progress
+            </h2>
+<div class="relative pt-md pb-xl">
+<!-- Progress Background Line -->
+<div class="absolute top-[52px] left-8 right-8 h-1 bg-surface-container rounded-full hidden md:block"></div>
+<!-- Active Progress Line -->
+<div class="absolute top-[52px] left-8 w-[60%] h-1 bg-primary rounded-full hidden md:block"></div>
+<div class="grid grid-cols-1 md:grid-cols-5 gap-lg relative">
+<!-- Step 1: Completed -->
+<div class="flex md:flex-col items-center gap-md md:text-center group">
+<div class="z-10 w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center border-4 border-white shadow-sm transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div>
+<p class="font-title-md text-title-md text-primary">Received</p>
+<p class="font-label-sm text-on-surface-variant">Oct 24, 09:15 AM</p>
+</div>
+</div>
+<!-- Step 2: Completed -->
+<div class="flex md:flex-col items-center gap-md md:text-center group">
+<div class="z-10 w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center border-4 border-white shadow-sm transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div>
+<p class="font-title-md text-title-md text-primary">Diagnosing</p>
+<p class="font-label-sm text-on-surface-variant">Oct 24, 11:30 AM</p>
+</div>
+</div>
+<!-- Step 3: Active -->
+<div class="flex md:flex-col items-center gap-md md:text-center group">
+<div class="z-10 w-12 h-12 rounded-full bg-white border-4 border-primary text-primary flex items-center justify-center shadow-md animate-pulse">
+<span class="material-symbols-outlined">build</span>
+</div>
+<div>
+<p class="font-title-md text-title-md text-primary font-bold">Repairing</p>
+<p class="font-label-sm text-secondary font-medium italic">In Progress</p>
+</div>
+</div>
+<!-- Step 4: Pending -->
+<div class="flex md:flex-col items-center gap-md md:text-center opacity-40">
+<div class="z-10 w-12 h-12 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center border-4 border-white">
+<span class="material-symbols-outlined">verified</span>
+</div>
+<div>
+<p class="font-title-md text-title-md">Quality Control</p>
+<p class="font-label-sm">Pending</p>
+</div>
+</div>
+<!-- Step 5: Pending -->
+<div class="flex md:flex-col items-center gap-md md:text-center opacity-40">
+<div class="z-10 w-12 h-12 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center border-4 border-white">
+<span class="material-symbols-outlined">key</span>
+</div>
+<div>
+<p class="font-title-md text-title-md">Ready</p>
+<p class="font-label-sm">Final Stage</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+<!-- Work Summary -->
+<div class="lg:col-span-2 space-y-lg">
+<div class="bg-white rounded-xl border border-outline-variant overflow-hidden">
+<div class="bg-surface-container-low px-lg py-md border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-title-md text-title-md text-primary">Service Summary</h3>
+<span class="text-on-surface-variant font-medium">3 Tasks</span>
+</div>
+<div class="divide-y divide-outline-variant">
+<div class="p-lg flex justify-between items-start">
+<div class="flex gap-md">
+<span class="material-symbols-outlined text-primary mt-xs">check_circle</span>
+<div>
+<p class="font-title-md text-title-md">Full Engine Diagnostics</p>
+<p class="text-on-surface-variant">Comprehensive scan and physical inspection of powertrain systems.</p>
+</div>
+</div>
+<span class="text-label-sm font-bold text-primary bg-primary-container/10 px-sm py-1 rounded uppercase">Completed</span>
+</div>
+<div class="p-lg flex justify-between items-start bg-primary-container/5">
+<div class="flex gap-md">
+<span class="material-symbols-outlined text-secondary mt-xs">settings_suggest</span>
+<div>
+<p class="font-title-md text-title-md">Brake Pad Replacement (Front)</p>
+<p class="text-on-surface-variant">Installation of OEM ceramic brake pads and rotor resurfacing.</p>
+</div>
+</div>
+<span class="text-label-sm font-bold text-secondary bg-secondary-fixed/30 px-sm py-1 rounded uppercase">Repairing</span>
+</div>
+<div class="p-lg flex justify-between items-start opacity-50">
+<div class="flex gap-md">
+<span class="material-symbols-outlined text-outline mt-xs">schedule</span>
+<div>
+<p class="font-title-md text-title-md">Brake Fluid Flush</p>
+<p class="text-on-surface-variant">Removal of old moisture-laden fluid and refill with high-performance DOT 4.</p>
+</div>
+</div>
+<span class="text-label-sm font-bold text-on-surface-variant bg-surface-variant px-sm py-1 rounded uppercase">Pending</span>
+</div>
+</div>
+</div>
+<!-- Live Feed/Notes -->
+<div class="bg-white rounded-xl border border-outline-variant p-lg">
+<h3 class="font-title-md text-title-md text-primary mb-md">Technician Notes</h3>
+<div class="flex gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary">badge</span>
+</div>
+<div class="bg-surface-container-lowest p-md rounded-lg border border-outline-variant flex-grow italic text-on-surface-variant">
+                            "Diagnostics confirmed front brake pads are at 2mm. Proceeding with replacement as authorized. Rotors show minimal wear and will be resurfaced."
+                            <div class="mt-sm text-label-sm not-italic font-bold">— Ahmed S., Master Technician</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Contact & Next Steps -->
+<div class="space-y-lg">
+<div class="bg-white rounded-xl border border-outline-variant p-lg">
+<h3 class="font-title-md text-title-md text-primary mb-md">Quick Contact</h3>
+<div class="space-y-md">
+<button class="w-full flex items-center justify-between p-md border border-outline-variant rounded-lg hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary">call</span>
+<div class="text-left">
+<p class="font-bold">Call Advisor</p>
+<p class="text-label-sm text-on-surface-variant">Talk to Karim about your car</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-md border border-outline-variant rounded-lg hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary">chat</span>
+<div class="text-left">
+<p class="font-bold">Text Support</p>
+<p class="text-label-sm text-on-surface-variant">Fast response via SMS</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="bg-surface-container-highest rounded-xl p-lg border border-outline-variant">
+<div class="flex items-center gap-sm text-primary mb-sm">
+<span class="material-symbols-outlined">location_on</span>
+<span class="font-bold">Garage Location</span>
+</div>
+<div class="aspect-video rounded-lg overflow-hidden bg-white mb-md">
+<img class="w-full h-full object-cover" data-alt="A clean, minimalist digital map view showing the precise location of Sagman Garage in an upscale urban neighborhood of Casablanca. The map style is professional with soft grays and blues, highlighting key landmarks and the garage's prominent location near a main thoroughfare. The lighting suggests a clear daytime view." data-location="Casablanca" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHQS22IRkHcIj_NQyzuZ0WRLURtWiTX5o-ckmE7rAUWkyjPk72Vl_uSKiX4Y40HwG4cDkoO9KM1LB2P939qO9YoyT5T43Kt65S1DqB9sAMEaIV61R2oH2COfmzIyli4XIehJKFb3CVhbxLIJ2EWl9b4ZQLdw84UJ7pfeOJPDMCf4CC7L1f17HsDbS0vXGAp8ipP0CjoTWcD6S0Bab37qUYG1l0mKJB6cFAufnOe_YMogw6b6eRuv2E3A"/>
+</div>
+<p class="font-bold">123 Avenue des FAR</p>
+<p class="text-on-surface-variant">Casablanca, Morocco</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer (Shared Component) -->
+<footer class="flex flex-col md:flex-row justify-between items-center px-lg py-md w-full mt-auto bg-surface-container-lowest dark:bg-surface-container-high border-t border-outline-variant dark:border-outline">
+<div class="mb-md md:mb-0">
+<span class="font-title-md text-title-md font-bold text-primary dark:text-primary-fixed">Sagman Garage</span>
+</div>
+<div class="text-on-surface-variant font-label-sm text-label-sm text-center md:text-left mb-md md:mb-0">
+            © 2024 Sagman Garage Management System. All rights reserved.
+        </div>
+<div class="flex gap-md font-label-sm text-label-sm text-on-surface-variant">
+<a class="hover:underline decoration-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:underline decoration-primary transition-colors" href="#">Terms of Service</a>
+<a class="hover:underline decoration-primary transition-colors" href="#">Support</a>
+<a class="hover:underline decoration-primary transition-colors" href="#">Contact</a>
+</div>
+</footer>
+<!-- Floating Help Button (FAB Contextual) -->
+<button class="fixed bottom-lg right-lg bg-primary text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all z-50">
+<span class="material-symbols-outlined text-[32px]">question_answer</span>
+</button>
+<script>
+        // Micro-interaction: Update time every minute
+        function updateTime() {
+            // Static for this UI but shows intent
+            console.log("Time updated on status dashboard");
+        }
+        setInterval(updateTime, 60000);
+
+        // Hover animation for steps
+        const steps = document.querySelectorAll('.group');
+        steps.forEach(step => {
+            step.addEventListener('mouseenter', () => {
+                const icon = step.querySelector('.material-symbols-outlined');
+                if (icon) icon.classList.add('scale-110');
+            });
+            step.addEventListener('mouseleave', () => {
+                const icon = step.querySelector('.material-symbols-outlined');
+                if (icon) icon.classList.remove('scale-110');
+            });
+        });
+    </script>
+</body></html>

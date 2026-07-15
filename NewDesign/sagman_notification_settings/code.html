@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Notification Settings | Sagman Garage</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Custom Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #e0e3e5;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider { background-color: #00236f; }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #c5c5d3; border-radius: 10px; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-fixed-dim": "#bec6e0",
+                      "on-surface-variant": "#444651",
+                      "surface-variant": "#e0e3e5",
+                      "primary-fixed": "#dce1ff",
+                      "on-primary-container": "#90a8ff",
+                      "surface-bright": "#f7f9fb",
+                      "outline-variant": "#c5c5d3",
+                      "surface-tint": "#4059aa",
+                      "secondary-container": "#e02928",
+                      "on-tertiary-fixed-variant": "#3f465c",
+                      "surface-container": "#eceef0",
+                      "on-primary-fixed-variant": "#264191",
+                      "surface": "#f7f9fb",
+                      "surface-dim": "#d8dadc",
+                      "primary-fixed-dim": "#b6c4ff",
+                      "on-tertiary-container": "#a4acc5",
+                      "on-primary-fixed": "#00164e",
+                      "tertiary-container": "#384055",
+                      "outline": "#757682",
+                      "on-error-container": "#93000a",
+                      "tertiary-fixed": "#dae2fd",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "inverse-on-surface": "#eff1f3",
+                      "secondary-fixed": "#ffdad6",
+                      "error": "#ba1a1a",
+                      "on-tertiary-fixed": "#131b2e",
+                      "inverse-surface": "#2d3133",
+                      "inverse-primary": "#b6c4ff",
+                      "surface-container-highest": "#e0e3e5",
+                      "on-error": "#ffffff",
+                      "on-secondary-fixed": "#410002",
+                      "background": "#f7f9fb",
+                      "on-secondary-container": "#fffbff",
+                      "secondary-fixed-dim": "#ffb4ab",
+                      "on-secondary-fixed-variant": "#93000b",
+                      "on-primary": "#ffffff",
+                      "on-surface": "#191c1e",
+                      "on-secondary": "#ffffff",
+                      "on-background": "#191c1e",
+                      "surface-container-low": "#f2f4f6",
+                      "secondary": "#bb0112",
+                      "error-container": "#ffdad6",
+                      "primary-container": "#1e3a8a",
+                      "surface-container-high": "#e6e8ea",
+                      "tertiary": "#222a3e",
+                      "primary": "#00236f"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "gutter": "16px",
+                      "xl": "32px",
+                      "lg": "24px",
+                      "xs": "4px",
+                      "base": "4px",
+                      "md": "16px",
+                      "container-margin": "24px",
+                      "sm": "8px"
+              },
+              "fontFamily": {
+                      "body-md": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "title-md": ["Inter"],
+                      "headline-xl": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "body-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                      "title-md": ["18px", {"lineHeight": "26px", "fontWeight": "600"}],
+                      "headline-xl": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex overflow-hidden">
+<!-- SideNavBar Anchor -->
+<aside class="hidden md:flex h-screen sticky left-0 w-64 bg-surface-container-low border-r border-outline-variant flex-col py-md px-sm z-50">
+<div class="px-md mb-xl">
+<div class="flex items-center gap-sm mb-xs">
+<div class="w-10 h-10 bg-primary-container rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">garage</span>
+</div>
+<div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary leading-tight">Sagman Garage</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Workshop Management</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-xs overflow-y-auto">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-variant transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary" data-icon="dashboard">dashboard</span>
+<span class="font-label-sm text-label-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-variant transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary" data-icon="calendar_today">calendar_today</span>
+<span class="font-label-sm text-label-sm">Appointments</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-variant transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary" data-icon="build">build</span>
+<span class="font-label-sm text-label-sm">Jobs</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-variant transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-sm text-label-sm">Inventory</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-primary font-bold bg-primary-fixed/20 transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined" data-icon="notifications" style="font-variation-settings: 'FILL' 1;">notifications</span>
+<span class="font-label-sm text-label-sm">Notifications</span>
+</a>
+</nav>
+<div class="mt-auto space-y-xs pt-md border-t border-outline-variant">
+<button class="w-full bg-primary text-on-primary py-sm rounded-lg font-label-sm text-label-sm flex items-center justify-center gap-sm mb-md hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined" style="font-size: 18px;">add_circle</span>
+                New Repair Order
+            </button>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-variant transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="contact_support">contact_support</span>
+<span class="font-label-sm text-label-sm">Support</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-variant transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-sm text-label-sm">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col h-screen overflow-y-auto">
+<!-- TopNavBar Anchor -->
+<header class="w-full sticky top-0 z-40 bg-surface border-b border-outline-variant flex justify-between items-center px-lg h-16 shrink-0">
+<div class="flex items-center gap-md flex-1">
+<div class="relative w-full max-w-md hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" style="font-size: 20px;">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full pl-10 py-2 text-body-md focus:ring-2 focus:ring-primary" placeholder="Search orders, clients, or parts..." type="text"/>
+</div>
+<div class="md:hidden">
+<span class="font-headline-lg text-headline-lg font-bold text-primary">Sagman Garage</span>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-sm rounded-full hover:bg-surface-container-low transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-sm rounded-full hover:bg-surface-container-low transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="w-px h-6 bg-outline-variant mx-xs"></div>
+<div class="flex items-center gap-sm cursor-pointer hover:bg-surface-container-low p-xs rounded-full transition-colors pr-sm">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="A professional headshot of a middle-aged workshop manager with a confident and helpful expression, wearing a clean charcoal work uniform. The background is a brightly lit, modern automotive service area with blurred high-end machinery, reflecting a clean and professional workspace aesthetic. The lighting is crisp and natural, emphasizing trust and competence in an automotive management setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOCWqjdbM_Ex5yp9rTEfBJ8Jg5gH2BIej6P1OrLvhJLjfmF1Pb3i7gaWbvOTAGHsqE2N_S3JrlNs8W6KDqz4lX3kJaAJH8_0zR0nO_WNlHzzdBseNnrNZ2vydTEMK4y8k2gj9-5UH6Nt-xzA1VMp3BBR2mNwuAPzqPcL2QYd72hsxfzn5jo8MHoINVq7ShNRBmqI_3A7etdFUXIMSIreh6YZVmVIO8ad2lqVxLuiP0z1_aHoP5s96fBg"/>
+<span class="font-label-sm text-label-sm font-semibold hidden lg:block">Manager</span>
+</div>
+</div>
+</header>
+<!-- Notification Settings Body -->
+<div class="p-lg max-w-6xl mx-auto w-full space-y-lg">
+<!-- Header Section -->
+<section class="flex flex-col md:flex-row md:items-end justify-between gap-md">
+<div>
+<h2 class="font-headline-xl text-headline-xl text-primary">Notification Settings</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Configure how and when your team and customers receive system alerts.</p>
+</div>
+<div class="flex gap-sm">
+<button class="px-lg py-sm border border-outline-variant rounded font-label-sm text-label-sm hover:bg-surface-container-low transition-colors">Discard Changes</button>
+<button class="px-lg py-sm bg-primary text-on-primary rounded font-label-sm text-label-sm hover:opacity-90 transition-all shadow-sm">Save Preferences</button>
+</div>
+</section>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-lg pb-xl">
+<!-- Left Column: Automated Alerts -->
+<div class="lg:col-span-7 space-y-lg">
+<!-- Automated Alerts Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-primary" data-icon="bolt">bolt</span>
+<h3 class="font-title-md text-title-md">Automated Alerts</h3>
+</div>
+<div class="space-y-md">
+<!-- Alert Item -->
+<div class="flex items-center justify-between p-md hover:bg-surface-container-low rounded-lg transition-colors border border-transparent hover:border-outline-variant">
+<div class="flex gap-md items-start">
+<span class="material-symbols-outlined text-on-surface-variant mt-xs" data-icon="event_available">event_available</span>
+<div>
+<p class="font-body-md text-body-md font-semibold">Appointment Reminders</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Send SMS and WhatsApp 24h before scheduled service.</p>
+</div>
+</div>
+<label class="switch">
+<input checked="" type="checkbox"/>
+<span class="slider"></span>
+</label>
+</div>
+<div class="flex items-center justify-between p-md hover:bg-surface-container-low rounded-lg transition-colors border border-transparent hover:border-outline-variant">
+<div class="flex gap-md items-start">
+<span class="material-symbols-outlined text-on-surface-variant mt-xs" data-icon="shopping_cart">shopping_cart</span>
+<div>
+<p class="font-body-md text-body-md font-semibold">Part In-Stock Alerts</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Notify technicians when ordered parts for their jobs arrive.</p>
+</div>
+</div>
+<label class="switch">
+<input checked="" type="checkbox"/>
+<span class="slider"></span>
+</label>
+</div>
+<div class="flex items-center justify-between p-md hover:bg-surface-container-low rounded-lg transition-colors border border-transparent hover:border-outline-variant">
+<div class="flex gap-md items-start">
+<span class="material-symbols-outlined text-on-surface-variant mt-xs" data-icon="task_alt">task_alt</span>
+<div>
+<p class="font-body-md text-body-md font-semibold">Job Completion Notification</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Automated customer update when vehicle is ready for pickup.</p>
+</div>
+</div>
+<label class="switch">
+<input type="checkbox"/>
+<span class="slider"></span>
+</label>
+</div>
+<div class="flex items-center justify-between p-md hover:bg-surface-container-low rounded-lg transition-colors border border-transparent hover:border-outline-variant">
+<div class="flex gap-md items-start">
+<span class="material-symbols-outlined text-on-surface-variant mt-xs" data-icon="priority_high">priority_high</span>
+<div>
+<p class="font-body-md text-body-md font-semibold">Overdue Payment Alerts</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Gentle nudges for outstanding invoices after 7 days.</p>
+</div>
+</div>
+<label class="switch">
+<input checked="" type="checkbox"/>
+<span class="slider"></span>
+</label>
+</div>
+</div>
+</div>
+<!-- Frequency & Quiet Hours Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-primary" data-icon="schedule">schedule</span>
+<h3 class="font-title-md text-title-md">Schedule &amp; Frequency</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<div class="space-y-sm">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider block">Notification Frequency</label>
+<select class="w-full bg-surface-container border border-outline-variant rounded p-md text-body-md focus:ring-2 focus:ring-primary">
+<option>Immediate (Real-time)</option>
+<option>Hourly Digest</option>
+<option>Daily Summary (8:00 AM)</option>
+</select>
+</div>
+<div class="space-y-sm">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider block">Quiet Hours</label>
+<div class="flex items-center gap-xs">
+<input class="flex-1 bg-surface-container border border-outline-variant rounded p-md text-body-md" type="time" value="20:00"/>
+<span class="text-on-surface-variant">to</span>
+<input class="flex-1 bg-surface-container border border-outline-variant rounded p-md text-body-md" type="time" value="08:00"/>
+</div>
+<p class="text-[10px] text-on-surface-variant italic">Only critical security alerts will bypass quiet hours.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Integrations & Recipient Mgmt -->
+<div class="lg:col-span-5 space-y-lg">
+<!-- WhatsApp Integration Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden">
+<div class="p-lg border-b border-outline-variant flex justify-between items-center">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-[#25D366]" data-icon="chat">chat</span>
+<h3 class="font-title-md text-title-md">WhatsApp Integration</h3>
+</div>
+<span class="bg-green-100 text-green-700 px-sm py-xs rounded-full font-label-sm text-[10px] flex items-center gap-xs">
+<span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                                Connected
+                            </span>
+</div>
+<div class="p-lg space-y-md">
+<div class="space-y-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Linked Phone Number</label>
+<div class="flex gap-sm">
+<input class="flex-1 bg-surface-container-low border border-outline-variant rounded p-md text-body-md font-mono text-on-surface-variant" readonly="" type="text" value="+212 522-123456"/>
+<button class="p-md border border-outline-variant rounded hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined" style="font-size: 18px;">edit</span>
+</button>
+</div>
+</div>
+<div class="p-md bg-primary-fixed/10 rounded-lg border border-primary-fixed/30 flex gap-md">
+<span class="material-symbols-outlined text-primary" data-icon="info">info</span>
+<p class="font-label-sm text-label-sm leading-relaxed">
+                                    API Status: <span class="font-bold">Active</span>. Remaining credits: <span class="font-bold">1,240 messages</span>. Reset in 12 days.
+                                </p>
+</div>
+</div>
+</div>
+<!-- Recipient Management Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-primary" data-icon="group">group</span>
+<h3 class="font-title-md text-title-md">Recipient Management</h3>
+</div>
+<div class="space-y-md">
+<!-- Role Based Access -->
+<div class="space-y-sm">
+<div class="flex justify-between items-center px-sm">
+<p class="font-body-md text-body-md font-semibold">Service Manager</p>
+<span class="text-[10px] bg-surface-variant px-sm py-xs rounded">All Notifications</span>
+</div>
+<div class="flex justify-between items-center px-sm">
+<p class="font-body-md text-body-md font-semibold">Lead Technician</p>
+<div class="flex gap-xs">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="build" style="font-size: 16px;">build</span>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="inventory_2" style="font-size: 16px;">inventory_2</span>
+</div>
+</div>
+<div class="flex justify-between items-center px-sm">
+<p class="font-body-md text-body-md font-semibold">Inventory Clerk</p>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="inventory_2" style="font-size: 16px;">inventory_2</span>
+</div>
+</div>
+<button class="w-full py-sm border-2 border-dashed border-outline-variant rounded-lg text-on-surface-variant font-label-sm text-label-sm flex items-center justify-center gap-sm hover:border-primary hover:text-primary transition-all">
+<span class="material-symbols-outlined" style="font-size: 18px;">person_add</span>
+                                Manage Custom Roles
+                            </button>
+</div>
+</div>
+<!-- Quick Support Promo -->
+<div class="relative h-32 rounded-xl overflow-hidden group cursor-pointer">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="A clean, minimalist high-tech customer support hub with soft glowing blue neon light accents. The image shows a sleek, modern desktop workstation with multiple monitors displaying data visualizations and communication dashboards. The atmosphere is professional, efficient, and technologically advanced, echoing the premium reliability of a world-class automotive management system. The lighting is low-key with cool blue and slate grey tones." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDRz-GhiZogOyhKzwWONCu5-IQUhLKh_VfBebdouoAvOoq5ouybet4dO8rVGnqwY7n0VyHe080lXUCWOLnYnhjvQlh2NnyxqxbTSiRVLYVSmEK-c5AXqHhTLdiJa_VN5XEzcqOMn2v3SdQzqQCbeUqw8clI07jPXC-yQfXrq352lrKnXC9Sj2ENwGuOlDbaO8dOkqoCCRJWIQzCdEGxcbkgnlRJVbIqecEOe1XF2eic_ehxqA2XJ3vqaw')"></div>
+<div class="absolute inset-0 bg-gradient-to-r from-primary/90 to-transparent flex flex-col justify-center px-lg">
+<h4 class="text-white font-title-md text-title-md">Need Custom Alerts?</h4>
+<p class="text-on-primary-container font-label-sm text-label-sm">Our API experts are ready to help.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Interactive Layer: Simple Notification Toast (Hidden by default) -->
+<div class="fixed bottom-lg right-lg bg-inverse-surface text-inverse-on-surface px-lg py-md rounded shadow-xl flex items-center gap-md translate-y-20 opacity-0 transition-all duration-300" id="saveToast">
+<span class="material-symbols-outlined text-green-400">check_circle</span>
+<span class="font-body-md text-body-md">Settings updated successfully</span>
+</div>
+<script>
+        // Micro-interaction for Save Button
+        const saveBtn = document.querySelector('button.bg-primary');
+        const toast = document.getElementById('saveToast');
+        
+        if(saveBtn) {
+            saveBtn.addEventListener('click', () => {
+                saveBtn.innerHTML = '<span class="material-symbols-outlined animate-spin" style="font-size: 18px;">sync</span> Updating...';
+                saveBtn.classList.add('opacity-70');
+                
+                setTimeout(() => {
+                    saveBtn.innerHTML = 'Save Preferences';
+                    saveBtn.classList.remove('opacity-70');
+                    
+                    // Show Toast
+                    toast.classList.remove('translate-y-20', 'opacity-0');
+                    
+                    setTimeout(() => {
+                        toast.classList.add('translate-y-20', 'opacity-0');
+                    }, 3000);
+                }, 1200);
+            });
+        }
+
+        // Toggle hover states or logic if needed
+        document.querySelectorAll('.switch input').forEach(input => {
+            input.addEventListener('change', (e) => {
+                const parent = e.target.closest('.flex');
+                if(e.target.checked) {
+                    parent.classList.add('bg-primary-fixed/5');
+                } else {
+                    parent.classList.remove('bg-primary-fixed/5');
+                }
+            });
+        });
+    </script>
+</body></html>

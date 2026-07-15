@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Invoice - Sagman Garage</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        @media print {
+            .no-print { display: none !important; }
+            body { background-color: white !important; }
+            .invoice-container { 
+                box-shadow: none !important; 
+                border: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+            }
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-primary-fixed-variant": "#264191",
+                      "primary-container": "#1e3a8a",
+                      "primary": "#00236f",
+                      "on-surface": "#191c1e",
+                      "on-tertiary-container": "#a4acc5",
+                      "on-tertiary-fixed": "#131b2e",
+                      "on-tertiary": "#ffffff",
+                      "on-primary-container": "#90a8ff",
+                      "surface": "#f7f9fb",
+                      "primary-fixed": "#dce1ff",
+                      "on-secondary-fixed": "#410002",
+                      "surface-dim": "#d8dadc",
+                      "inverse-surface": "#2d3133",
+                      "on-tertiary-fixed-variant": "#3f465c",
+                      "on-primary": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-variant": "#e0e3e5",
+                      "primary-fixed-dim": "#b6c4ff",
+                      "error": "#ba1a1a",
+                      "on-secondary": "#ffffff",
+                      "on-secondary-container": "#fffbff",
+                      "inverse-on-surface": "#eff1f3",
+                      "on-error": "#ffffff",
+                      "secondary-fixed-dim": "#ffb4ab",
+                      "background": "#f7f9fb",
+                      "inverse-primary": "#b6c4ff",
+                      "surface-tint": "#4059aa",
+                      "on-surface-variant": "#444651",
+                      "on-background": "#191c1e",
+                      "tertiary-fixed-dim": "#bec6e0",
+                      "on-primary-fixed": "#00164e",
+                      "tertiary-fixed": "#dae2fd",
+                      "secondary": "#bb0112",
+                      "outline": "#757682",
+                      "secondary-container": "#e02928",
+                      "tertiary": "#222a3e",
+                      "tertiary-container": "#384055",
+                      "outline-variant": "#c5c5d3",
+                      "surface-container": "#eceef0",
+                      "secondary-fixed": "#ffdad6",
+                      "surface-container-highest": "#e0e3e5",
+                      "surface-bright": "#f7f9fb",
+                      "surface-container-low": "#f2f4f6",
+                      "surface-container-high": "#e6e8ea",
+                      "error-container": "#ffdad6",
+                      "on-secondary-fixed-variant": "#93000b",
+                      "on-error-container": "#93000a"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "gutter": "16px",
+                      "xl": "32px",
+                      "md": "16px",
+                      "base": "4px",
+                      "xs": "4px",
+                      "sm": "8px",
+                      "lg": "24px",
+                      "container-margin": "24px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "title-md": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-xl": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                      "title-md": ["18px", {"lineHeight": "26px", "fontWeight": "600"}],
+                      "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-xl": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen flex flex-col items-center py-xl">
+<!-- Top Utility Bar (No-Print) -->
+<div class="no-print w-full max-w-[800px] mb-lg flex justify-between items-center px-lg">
+<a class="flex items-center gap-xs text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">arrow_back</span>
+<span class="font-label-sm text-label-sm">Back to Repairs</span>
+</a>
+<div class="flex gap-md">
+<button class="bg-primary text-on-primary px-lg py-sm rounded-lg font-title-md text-title-md flex items-center gap-sm hover:opacity-90 transition-opacity" onclick="window.print()">
+<span class="material-symbols-outlined">print</span>
+                Print Invoice
+            </button>
+<button class="bg-surface-container-high text-on-surface-variant px-lg py-sm rounded-lg font-title-md text-title-md flex items-center gap-sm hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">download</span>
+                Download PDF
+            </button>
+</div>
+</div>
+<!-- Main Invoice Canvas -->
+<main class="invoice-container w-full max-w-[800px] bg-white shadow-sm border border-outline-variant p-[50px] flex flex-col gap-xl">
+<!-- Header Branding Section -->
+<header class="flex justify-between items-start border-b border-outline-variant pb-lg">
+<div class="flex flex-col gap-xs">
+<div class="flex items-center gap-sm">
+<div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[32px]" style="font-variation-settings: 'FILL' 1;">build</span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-primary uppercase tracking-tighter">Sagman Garage</h1>
+</div>
+<div class="mt-sm text-on-surface-variant font-body-md text-body-md">
+<p>124 Industrial Zone, Avenue Hassan II</p>
+<p>Casablanca, Morocco 20000</p>
+<p class="flex items-center gap-xs mt-xs">
+<span class="material-symbols-outlined text-[16px]">call</span> +212 522-456789
+                    </p>
+<p class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">mail</span> service@sagman-garage.ma
+                    </p>
+</div>
+</div>
+<div class="text-right flex flex-col items-end gap-sm">
+<h2 class="font-headline-lg text-headline-lg text-on-surface-variant">INVOICE</h2>
+<div class="bg-primary-container/10 border border-primary-container px-md py-xs rounded flex items-center gap-sm">
+<span class="font-label-sm text-label-sm text-primary uppercase font-bold tracking-widest">Status</span>
+<!-- Status Badge: Paid -->
+<span class="inline-flex items-center px-sm py-xs rounded-full text-xs font-bold bg-[#D1FAE5] text-[#065F46] uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-[#059669] mr-2"></span>
+                        Paid
+                    </span>
+</div>
+</div>
+</header>
+<!-- Information Grid -->
+<section class="grid grid-cols-2 gap-xl">
+<!-- Client Details -->
+<div class="flex flex-col gap-sm">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest font-bold border-b border-outline-variant pb-xs">Bill To</h3>
+<div class="font-body-lg text-body-lg text-on-surface">
+<p class="font-bold">Ahmed Benjelloun</p>
+<p>45 Residence Les Fleurs, Maarif</p>
+<p>Casablanca, Morocco</p>
+<p class="mt-sm text-body-md text-on-surface-variant">+212 661-123456</p>
+</div>
+</div>
+<!-- Invoice/Vehicle Details -->
+<div class="flex flex-col gap-sm">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest font-bold border-b border-outline-variant pb-xs">Repair Details</h3>
+<div class="grid grid-cols-2 gap-y-sm text-body-md">
+<span class="text-on-surface-variant">Invoice Number:</span>
+<span class="font-bold text-right">#SG-2024-8842</span>
+<span class="text-on-surface-variant">Date:</span>
+<span class="font-bold text-right">October 24, 2024</span>
+<span class="text-on-surface-variant">Vehicle:</span>
+<span class="font-bold text-right">Mercedes C300 (2022)</span>
+<span class="text-on-surface-variant">License Plate:</span>
+<span class="font-bold text-right">12345 | A | 10</span>
+<span class="text-on-surface-variant">Mileage:</span>
+<span class="font-bold text-right">42,500 KM</span>
+</div>
+</div>
+</section>
+<!-- Itemized Table -->
+<section class="flex flex-col">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container border-y border-outline-variant">
+<th class="py-sm px-md font-label-sm text-label-sm uppercase text-on-surface-variant tracking-wider">Description</th>
+<th class="py-sm px-md font-label-sm text-label-sm uppercase text-on-surface-variant tracking-wider text-center">Qty/Hrs</th>
+<th class="py-sm px-md font-label-sm text-label-sm uppercase text-on-surface-variant tracking-wider text-right">Unit Price</th>
+<th class="py-sm px-md font-label-sm text-label-sm uppercase text-on-surface-variant tracking-wider text-right">Amount</th>
+</tr>
+</thead>
+<tbody class="text-body-md">
+<!-- Labor Items -->
+<tr class="border-b border-outline-variant">
+<td class="py-md px-md">
+<p class="font-bold text-on-surface">Full Engine Diagnostic</p>
+<p class="text-xs text-on-surface-variant italic">Systematic check of all electronics and mechanical parts</p>
+</td>
+<td class="py-md px-md text-center">2.0</td>
+<td class="py-md px-md text-right">450.00 MAD</td>
+<td class="py-md px-md text-right">900.00 MAD</td>
+</tr>
+<tr class="border-b border-outline-variant">
+<td class="py-md px-md">
+<p class="font-bold text-on-surface">Brake Pad Replacement (Front)</p>
+<p class="text-xs text-on-surface-variant italic">Labor for installation and testing</p>
+</td>
+<td class="py-md px-md text-center">1.5</td>
+<td class="py-md px-md text-right">300.00 MAD</td>
+<td class="py-md px-md text-right">450.00 MAD</td>
+</tr>
+<!-- Parts Items -->
+<tr class="border-b border-outline-variant">
+<td class="py-md px-md">
+<p class="font-bold text-on-surface">Ceramic Brake Pads - Set</p>
+<p class="text-xs text-on-surface-variant italic">OEM Genuine Parts - Front Axle</p>
+</td>
+<td class="py-md px-md text-center">1</td>
+<td class="py-md px-md text-right">1,250.00 MAD</td>
+<td class="py-md px-md text-right">1,250.00 MAD</td>
+</tr>
+<tr class="border-b border-outline-variant">
+<td class="py-md px-md">
+<p class="font-bold text-on-surface">Synthetic Engine Oil (5W-30)</p>
+<p class="text-xs text-on-surface-variant italic">Liqui Moly Top Tec 4200</p>
+</td>
+<td class="py-md px-md text-center">5</td>
+<td class="py-md px-md text-right">140.00 MAD</td>
+<td class="py-md px-md text-right">700.00 MAD</td>
+</tr>
+</tbody>
+</table>
+</section>
+<!-- Totals Section -->
+<section class="flex justify-end">
+<div class="w-1/2 flex flex-col gap-sm">
+<div class="flex justify-between items-center text-body-md text-on-surface-variant">
+<span>Subtotal</span>
+<span class="font-medium text-on-surface">3,300.00 MAD</span>
+</div>
+<div class="flex justify-between items-center text-body-md text-on-surface-variant">
+<span>TVA (20%)</span>
+<span class="font-medium text-on-surface">660.00 MAD</span>
+</div>
+<div class="flex justify-between items-center bg-primary text-on-primary p-md rounded-lg mt-sm">
+<span class="font-headline-lg text-headline-lg uppercase tracking-tight">Total</span>
+<span class="font-headline-xl text-headline-xl">3,960.00 MAD</span>
+</div>
+</div>
+</section>
+<!-- Signature/Notes -->
+<section class="grid grid-cols-2 gap-xl mt-lg pt-lg border-t border-dashed border-outline">
+<div class="flex flex-col gap-sm">
+<h4 class="font-label-sm text-label-sm text-on-surface-variant uppercase font-bold">Technician's Notes</h4>
+<p class="text-body-md text-on-surface-variant leading-relaxed">
+                    Brake pads replaced and rotors inspected. Fluid levels topped up. Recommend monitoring tire pressure over the next 500km as part of routine maintenance. Next service due at 55,000 KM.
+                </p>
+</div>
+<div class="flex flex-col justify-end items-center gap-md">
+<div class="w-full border-b border-on-surface h-12 flex items-end justify-center">
+<span class="text-xs text-on-surface-variant italic opacity-30 pb-1 italic font-serif text-2xl">Sagman Management</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Authorized Signature</span>
+</div>
+</section>
+<!-- Footer -->
+<footer class="mt-xl text-center flex flex-col gap-md pt-xl border-t border-outline-variant">
+<div class="flex flex-col gap-xs">
+<p class="font-headline-lg text-headline-lg text-primary">Thank you for choosing Sagman Garage!</p>
+<p class="text-body-md text-on-surface-variant">Your trust drives our commitment to excellence.</p>
+</div>
+<div class="flex justify-center gap-xl text-label-sm text-on-surface-variant">
+<span>ICE: 001234567890012</span>
+<span>RC: 54321</span>
+<span>IF: 9876543</span>
+</div>
+<p class="text-[10px] text-on-surface-variant/60 mt-md">
+                © 2024 Sagman Garage Management System. All rights reserved. 
+                This document is a computer-generated invoice and does not require a physical stamp unless requested.
+            </p>
+</footer>
+</main>
+<!-- Ad / Promo Card (No-Print) -->
+<aside class="no-print w-full max-w-[800px] mt-xl">
+<div class="bg-primary-container text-on-primary-container p-lg rounded-xl flex items-center justify-between border border-primary/20">
+<div class="flex items-center gap-lg">
+<div class="w-16 h-16 rounded-full overflow-hidden border-2 border-on-primary-container/30">
+<img class="w-full h-full object-cover" data-alt="A close up high quality professional photograph of a modern automotive service bay with clean white walls, bright LED lighting, and high-performance tools neatly organized. The aesthetic is corporate and reliable with blue and gray accents, reflecting the brand identity of a premium car repair shop." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTIzUpnnfpmIQpwIAQh_knjkyhZOYIWlITeubRMmDr7aEJcS3zJDIKojCrEywC7qcENIt68AWMXAAfW5oZdM11Y-yqaOD7PlSwzPQUj9yz7JWG4Cq5bJs_RVJo2ol3nWEfgZx05NjogFa4Xcxl3u4TYu_izf8AmVBdh4n2uV2I47si9ki3eDJbKxdgTByA5eQiUP6ALDckPZZDsRizf02APOxsoc-L3l2P5_Wu_rxMlWAKXzGhkY5sJg"/>
+</div>
+<div>
+<h4 class="font-title-md text-title-md font-bold">Join our Loyalty Program</h4>
+<p class="text-body-md opacity-80">Get 10% off your next oil change by registering today.</p>
+</div>
+</div>
+<button class="bg-white text-primary px-lg py-sm rounded-full font-title-md text-title-md hover:scale-105 transition-transform">
+                Sign Up
+            </button>
+</div>
+</aside>
+<script>
+        // Simple micro-interaction for buttons
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', () => {
+                btn.classList.add('scale-95');
+            });
+            btn.addEventListener('mouseup', () => {
+                btn.classList.remove('scale-95');
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.classList.remove('scale-95');
+            });
+        });
+    </script>
+</body></html>

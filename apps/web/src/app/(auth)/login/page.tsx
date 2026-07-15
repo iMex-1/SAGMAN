@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/layout/Logo";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { Icon } from "@/components/ui/icon";
 import { api, ApiError } from "@/lib/api-client";
 import { authStorage } from "@/lib/auth";
-import { Wrench, Shield, BarChart3, Car, AlertTriangle } from "lucide-react";
 
 interface LoginResponse {
   data: {
@@ -24,13 +24,10 @@ interface LoginResponse {
   };
 }
 
-const FEATURES = [
-  { icon: Wrench, text: "Gestion complète des réparations" },
-  { icon: Shield, text: "Suivi en temps réel des véhicules" },
-  { icon: BarChart3, text: "Rapports et statistiques avancés" },
-];
+const HERO_IMG = 'https://images.ctfassets.net/5kq8dse7hipf/3KyG711s6Uiqk19b4BHcCF/adb054f0e7cfc547ff1b57b6ed13e6a5/how-to-hire-a-mechanic.jpg?w=1920&fm=webp'
 
 export default function LoginPage() {
+  const t = useTranslations();
   const router = useRouter();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
@@ -58,12 +55,16 @@ export default function LoginPage() {
         role: user.role as any,
       });
 
-      router.push("/dashboard");
+      if (user.role === "mechanic") {
+        router.push("/repairs");
+      } else {
+        router.push("/dashboard");
+      }
     } catch (err) {
       setError(
         err instanceof ApiError
           ? err.message
-          : "Une erreur inattendue est survenue.",
+          : t('auth.unexpectedError'),
       );
     } finally {
       setIsLoading(false);
@@ -71,185 +72,116 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen">
-      {/* ── Left brand panel ────────────────────────── */}
-      <div className="hidden lg:flex lg:w-[45%] bg-brand-gradient flex-col justify-between p-10 relative overflow-hidden">
-        {/* Decorative background gears */}
-        <div className="pointer-events-none absolute -right-16 -top-16 opacity-[0.06]">
-          <svg width="320" height="320" viewBox="0 0 100 100">
-            <circle
-              cx="50"
-              cy="50"
-              r="46"
-              stroke="white"
-              strokeWidth="3"
-              fill="none"
-            />
-            <circle cx="50" cy="50" r="28" fill="white" />
-            <circle
-              cx="50"
-              cy="50"
-              r="14"
-              stroke="white"
-              strokeWidth="3"
-              fill="none"
-            />
-          </svg>
-        </div>
-        <div className="pointer-events-none absolute -left-24 bottom-16 opacity-[0.04]">
-          <svg width="280" height="280" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="46" fill="white" />
-          </svg>
-        </div>
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden">
+      {/* Background image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: `url('${HERO_IMG}')` }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/95 via-primary/80 to-primary/90" />
 
-        {/* Top: wordmark */}
-        <div className="flex items-center gap-3 relative z-10">
+      {/* Decorative blur */}
+      <div className="absolute -top-40 -right-40 h-[500px] w-[500px] rounded-full bg-on-primary/5 blur-3xl" />
+      <div className="absolute -bottom-32 -left-32 h-[400px] w-[400px] rounded-full bg-on-primary/5 blur-3xl" />
+
+      {/* Card */}
+      <div className="relative z-10 w-full max-w-md px-4">
+        {/* Brand */}
+        <div className="flex items-center justify-center gap-3 mb-8">
           <Logo size="md" />
           <div>
-            <span className="block text-xl font-black tracking-wide text-white">
-              SAGMAN
+            <span className="block text-xl font-black tracking-wide text-on-primary">
+              SAGMAN AUTO
             </span>
-            <span className="block text-xs uppercase tracking-widest text-blue-300">
-              Auto Repairs
+            <span className="block text-xs uppercase tracking-widest text-on-primary/60">
+              Auto Service
             </span>
           </div>
         </div>
 
-        {/* Center: hero content */}
-        <div className="relative z-10 space-y-6">
-          {/* Animated large gear */}
-          <div className="flex justify-center mb-6">
-            <div className="gear-spin-slow">
-              <Logo size="xl" />
+        <div className="bg-white rounded-2xl shadow-2xl p-8">
+          {/* Heading */}
+          <div className="mb-6 text-center">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary">
+              <Icon name="lock" size={22} className="text-on-primary" />
             </div>
+            <h2 className="font-headline-lg text-headline-lg text-primary">{t('auth.signIn')}</h2>
+            <p className="mt-1 text-body-md font-body-md text-on-surface-variant">
+              {t('auth.subtitle')}
+            </p>
           </div>
 
-          <h1 className="text-3xl font-bold text-white leading-tight">
-            Gérez votre garage
-            <br />
-            <span className="text-blue-300">intelligemment</span>
-          </h1>
-          <p className="text-blue-200 text-base leading-relaxed max-w-xs">
-            Système de gestion intégré pour le suivi des réparations, la gestion
-            du stock et la satisfaction client.
+          {/* Error */}
+          {error && (
+            <div className="mb-5 flex items-start gap-3 rounded-xl border border-error/30 bg-error-container px-4 py-3.5 text-sm text-on-error-container">
+              <Icon name="warning" size={16} className="mt-0.5 shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-1.5">
+              <Label htmlFor="identifier" className="text-sm font-medium text-primary">
+                {t('auth.identifierLabel')}
+              </Label>
+              <Input
+                id="identifier"
+                type="text"
+                placeholder={t('auth.identifierPlaceholder')}
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
+                required
+                autoComplete="username"
+                className="h-12 w-full rounded-xl border border-outline-variant bg-white px-4 text-base text-primary placeholder:text-on-surface-variant/50 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="password" className="text-sm font-medium text-primary">
+                {t('auth.password')}
+              </Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder={t('auth.passwordPlaceholder')}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                autoComplete="current-password"
+                className="h-12 w-full rounded-xl border border-outline-variant bg-white px-4 text-base text-primary placeholder:text-on-surface-variant/50 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+              />
+            </div>
+
+            <Button
+              type="submit"
+              className="h-12 w-full text-base font-semibold bg-primary text-on-primary rounded-xl shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+              isLoading={isLoading}
+            >
+              {isLoading ? t('auth.signingIn') : t('auth.signIn')}
+            </Button>
+          </form>
+
+          <p className="mt-5 text-center text-xs text-on-surface-variant">
+            {t('auth.forgotPassword')}
           </p>
 
-          <ul className="space-y-3 pt-2">
-            {FEATURES.map(({ icon: Icon, text }) => (
-              <li key={text} className="flex items-center gap-3 text-blue-100">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/10">
-                  <Icon className="h-3.5 w-3.5" />
-                </span>
-                <span className="text-sm">{text}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Bottom: copyright */}
-        <p className="relative z-10 text-xs text-blue-300/70">
-          &copy; {new Date().getFullYear()} Sagman — Tous droits réservés
-        </p>
-      </div>
-
-      {/* ── Right login panel ───────────────────────── */}
-      <div className="flex flex-1 flex-col bg-background">
-        {/* Top bar */}
-        <div className="flex items-center justify-between px-8 py-4 border-b border-border/60">
-          {/* Mobile-only logo */}
-          <div className="flex items-center gap-2 lg:hidden">
-            <Logo size="sm" />
-            <span className="font-bold text-foreground">SAGMAN</span>
-          </div>
-          {/* Spacer on desktop so switcher sits on the right */}
-          <div className="hidden lg:block" />
-          <LanguageSwitcher />
-        </div>
-
-        {/* Centered form */}
-        <div className="flex flex-1 items-center justify-center px-6 py-12">
-          <div className="w-full max-w-sm space-y-8 animate-fade-in">
-            {/* Heading */}
-            <div>
-              <h2 className="text-2xl font-bold text-foreground">Connexion</h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Accédez au système de gestion du garage
-              </p>
+          {/* Client portal link */}
+          <div className="mt-6 space-y-3">
+            <div className="relative flex items-center">
+              <div className="flex-1 border-t border-outline-variant" />
+              <span className="mx-3 bg-white px-1 text-xs text-on-surface-variant">
+                {t('auth.clientPortal')}
+              </span>
+              <div className="flex-1 border-t border-outline-variant" />
             </div>
-
-            {/* Error alert */}
-            {error && (
-              <div className="flex items-start gap-3 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
-                <span>{error}</span>
-              </div>
-            )}
-
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div className="space-y-1.5">
-                <Label htmlFor="identifier" className="text-sm font-medium">
-                  Email ou téléphone
-                </Label>
-                <Input
-                  id="identifier"
-                  type="text"
-                  placeholder="manager@sagman.garage ou +212 6XX XXX XXX"
-                  value={identifier}
-                  onChange={(e) => setIdentifier(e.target.value)}
-                  required
-                  autoComplete="username"
-                  className="h-11"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <Label htmlFor="password" className="text-sm font-medium">
-                  Mot de passe
-                </Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  autoComplete="current-password"
-                  className="h-11"
-                />
-              </div>
-
-              <Button
-                type="submit"
-                className="h-11 w-full text-base font-semibold"
-                isLoading={isLoading}
-              >
-                {isLoading ? "Connexion…" : "Se connecter"}
-              </Button>
-            </form>
-
-            <p className="text-center text-xs text-muted-foreground">
-              Mot de passe oublié ? Contactez votre responsable.
-            </p>
-
-            {/* Client portal link */}
-            <div className="space-y-3">
-              <div className="relative flex items-center">
-                <div className="flex-1 border-t border-border" />
-                <span className="mx-3 bg-background px-1 text-xs text-muted-foreground">
-                  Vous êtes client&nbsp;?
-                </span>
-                <div className="flex-1 border-t border-border" />
-              </div>
-
-              <a
-                href="/portal"
-                className="flex w-full items-center justify-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
-              >
-                <Car className="h-4 w-4" />
-                Accéder au portail client
-              </a>
-            </div>
+            <a
+              href="/portal"
+              className="flex w-full items-center justify-center gap-2 rounded-xl border border-outline-variant px-4 py-3 text-sm font-medium text-on-surface-variant bg-surface-container-low hover:bg-surface-container transition-all"
+            >
+              <Icon name="directions_car" size={16} />
+              {t('auth.clientPortalLink')}
+            </a>
           </div>
         </div>
       </div>

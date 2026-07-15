@@ -28,6 +28,7 @@
     "yes": "Oui",
     "no": "Non",
     "required": "Obligatoire",
+    "preview": "Aperçu",
     "optional": "Optionnel",
     "unknown": "Inconnu",
     "total": "Total",
@@ -46,10 +47,35 @@
     "page": "Page",
     "of": "sur",
     "items": "éléments",
-    "language": "Langue"
+    "language": "Langue",
+    "retry": "Réessayer",
+    "cost": "Coût",
+    "unit": "Unité",
+    "price": "Prix",
+    "finalPrice": "Prix final",
+    "currentPrice": "Prix actuel",
+    "hours": "heures",
+    "hint": "Indice",
+    "example": "ex.",
+    "or": "ou",
+    "and": "et",
+    "clear": "Effacer",
+    "open": "Ouvrir",
+    "menu": "Menu",
+    "viewAll": "Voir tout",
+    "today": "Aujourd'hui",
+    "days": "jours",
+    "noData": "Aucune donnée disponible",
+    "unexpectedError": "Une erreur inattendue s'est produite.",
+    "searchPlaceholder": "Rechercher réparations, véhicules, clients...",
+    "allRightsReserved": "Tous droits réservés.",
+    "privacyPolicy": "Politique de confidentialité",
+    "termsOfService": "Conditions d'utilisation",
+    "support": "Support"
   },
   "nav": {
     "dashboard": "Tableau de bord",
+    "newRepair": "Nouvelle réparation",
     "repairs": "Réparations",
     "appointments": "Rendez-vous",
     "cars": "Véhicules",
@@ -68,39 +94,56 @@
     "emailPlaceholder": "manager@sagman.garage",
     "password": "Mot de passe",
     "passwordPlaceholder": "••••••••",
+    "identifierLabel": "Email ou téléphone",
+    "identifierPlaceholder": "manager@sagman.garage ou +212 6XX XXX XXX",
     "forgotPassword": "Mot de passe oublié ? Contactez votre responsable.",
     "invalidCredentials": "Email ou mot de passe incorrect",
     "accountDeactivated": "Votre compte a été désactivé",
+    "unexpectedError": "Une erreur inattendue est survenue.",
     "welcome": "Bienvenue",
     "systemTitle": "Système de gestion",
-    "subtitle": "Connectez-vous au système de gestion du garage"
+    "subtitle": "Connectez-vous au système de gestion du garage",
+    "clientPortal": "Vous êtes client ?",
+    "clientPortalLink": "Accéder au portail client"
   },
   "dashboard": {
     "title": "Tableau de bord",
+    "subtitle": "Aperçu de l'activité du garage",
     "today": "Aujourd'hui",
     "thisWeek": "Cette semaine",
     "thisMonth": "Ce mois",
     "totalRevenue": "Chiffre d'affaires",
+    "totalExpenses": "Dépenses",
+    "netProfit": "Bénéfice net",
     "carsReceived": "Véhicules reçus",
     "carsDelivered": "Véhicules livrés",
-    "avgRepairTime": "Durée moyenne",
     "onTimeRate": "Taux de ponctualité",
     "delayedRepairs": "Réparations en retard",
     "activeRepairs": "Réparations actives",
+    "noActiveRepairs": "Aucune réparation en cours",
     "overdueRepairs": "Réparations en souffrance",
     "lowStockParts": "Pièces en rupture",
     "pendingAppointments": "Rendez-vous en attente",
     "emergencyRepairs": "Réparations urgentes",
+    "noUrgentRepairs": "Aucune réparation urgente",
     "revenueChart": "Chiffre d'affaires du mois",
     "mechanicPerformance": "Performance des mécaniciens",
     "carsCompleted": "Véhicules traités",
     "avgTimePerRepair": "Durée moy. par réparation",
-    "delays": "Retards"
+    "delays": "Retards",
+    "score": "Score"
   },
   "repair": {
     "title": "Réparations",
     "newRepair": "Nouvelle réparation",
     "repairDetail": "Détail de la réparation",
+    "create": {
+      "title": "Nouvelle réparation",
+      "description": "Enregistrer un nouveau travail de réparation.",
+      "backLink": "Retour aux réparations",
+      "submit": "Créer la réparation",
+      "submitting": "Création..."
+    },
     "status": {
       "received": "Reçu",
       "diagnosing": "Diagnostic",
@@ -109,7 +152,8 @@
       "waiting_for_parts": "Attente de pièces",
       "complete": "Terminé",
       "delivered": "Livré",
-      "cancelled": "Annulé"
+      "cancelled": "Annulé",
+      "repairLabel": "Réparation"
     },
     "priority": {
       "low": "Faible",
@@ -118,12 +162,14 @@
       "emergency": "Urgence"
     },
     "fields": {
+      "vehicle": "Véhicule (Matricule)",
       "car": "Véhicule",
-      "mechanic": "Mécanicien",
+      "mechanic": "Mécanicien principal",
       "priority": "Priorité",
-      "description": "Description du problème",
+      "description": "Description / Problème signalé",
       "internalNotes": "Notes internes",
-      "targetDate": "Date cible",
+      "targetDate": "Date de fin prévue",
+      "startDate": "Date de début",
       "estimatedHours": "Durée estimée (heures)",
       "actualCompletion": "Date de fin réelle",
       "diagnosis": "Rapport de diagnostic",
@@ -132,37 +178,150 @@
       "discount": "Remise",
       "finalTotal": "Total final"
     },
+    "placeholders": {
+      "searchVehicle": "Rechercher par matricule...",
+      "noVehicleFound": "Aucun véhicule trouvé.",
+      "selectMechanic": "Sélectionnez un mécanicien...",
+      "loadingMechanics": "Chargement des mécaniciens...",
+      "description": "Décrivez le problème signalé par le client...",
+      "internalNotes": "Notes visibles uniquement par le personnel...",
+      "estimatedHours": "Ex : 4"
+    },
+    "priorities": {
+      "low": "Basse",
+      "normal": "Normale",
+      "high": "Haute",
+      "urgent": "🚨 Urgence"
+    },
+    "validation": {
+      "vehicleRequired": "Veuillez sélectionner un véhicule.",
+      "mechanicRequired": "Veuillez sélectionner un mécanicien principal.",
+      "descriptionRequired": "Veuillez entrer une description / problème signalé."
+    },
+    "toasts": {
+      "created": "Réparation créée avec succès",
+      "error": "Échec de la création de la réparation."
+    },
     "actions": {
       "startDiagnosis": "Démarrer le diagnostic",
-      "submitForApproval": "Soumettre pour approbation",
-      "startRepair": "Démarrer la réparation",
+      "startRepair": "Passer en réparation",
       "waitingForParts": "En attente de pièces",
-      "markComplete": "Marquer comme terminé",
+      "markComplete": "Marquer terminé",
       "markDelivered": "Marquer comme livré",
       "reopen": "Rouvrir",
+      "resume": "Reprendre la réparation",
       "cancel": "Annuler la réparation",
       "fileDelayReport": "Signaler un retard",
-      "shareDiagnosis": "Partager avec le client",
+      "sendToClient": "Confirmer et envoyer au client",
+      "confirmDelivery": "Confirmer la livraison",
       "approve": "Approuver",
       "reject": "Refuser",
       "bypass": "Contourner l'approbation"
     },
+    "updatedTo": "mis à jour vers",
+    "smsTemplates": {
+      "inRepair": "Bonjour {name}, votre véhicule {matricule} est maintenant en réparation.",
+      "estimatedDuration": "Durée estimée :",
+      "targetDate": "Date de fin prévue :"
+    },
+    "whatsapp": "Bonjour, je vous contacte concernant la réparation du véhicule {matricule} ({make} {model}).",
+    "noWorkLogs": "Aucune entrée de journal.",
+    "notFound": "Réparation introuvable.",
     "overdue": "En retard",
     "overdueWarning": "Cette réparation est en retard ! Signalez un retard pour continuer.",
     "noPaymentWarning": "Enregistrez le paiement avant de marquer comme livré",
     "reopenReason": "Raison de la réouverture",
     "cancellationReason": "Raison de l'annulation",
     "delayReason": "Raison du retard",
+    "delay": {
+      "title": "Rapport de retard",
+      "documentReason": "Documentez le motif du retard. Il sera enregistré dans l'historique.",
+      "reasonLabel": "Motif *",
+      "reasonPlaceholder": "Expliquez pourquoi la réparation est retardée...",
+      "evidenceLabel": "Preuves / Notes supplémentaires",
+      "evidencePlaceholder": "Toute preuve ou note complémentaire...",
+      "submit": "Soumettre le rapport",
+      "submitted": "Rapport de retard soumis",
+      "failed": "Échec de la soumission du rapport"
+    },
+    "info": {
+      "title": "Infos de réparation",
+      "description": "Description",
+      "internalNotes": "Notes internes",
+      "cancellationReason": "Motif d'annulation",
+      "reopenedReason": "Motif de réouverture",
+      "createdBy": "Créé par",
+      "createdAt": "Créé le",
+      "completedAt": "Terminé le"
+    },
+    "vehicle": {
+      "title": "Véhicule & Client",
+      "color": "Couleur",
+      "noClient": "Aucun client lié à ce véhicule."
+    },
+    "costs": {
+      "title": "Résumé des coûts",
+      "partsTotal": "Total pièces",
+      "laborTotal": "Total main-d'œuvre",
+      "discount": "Remise",
+      "garageFee": "Frais de garage",
+      "finalTotal": "Total final"
+    },
+    "dialogs": {
+      "cancel": {
+        "title": "Annuler la réparation",
+        "description": "Veuillez fournir un motif d'annulation. Cette action est irréversible.",
+        "reasonLabel": "Motif d'annulation *",
+        "reasonPlaceholder": "Saisissez le motif d'annulation..."
+      },
+      "reopen": {
+        "title": "Rouvrir la réparation",
+        "description": "Fournissez un motif de réouverture.",
+        "reasonLabel": "Motif de réouverture *",
+        "reasonPlaceholder": "Pourquoi cette réparation est-elle rouverte ?"
+      },
+      "timeEstimation": {
+        "title": "Estimation de la réparation",
+        "description": "Indiquez la durée estimée et la date de fin prévue avant de passer en réparation.",
+        "duration": "Durée estimée (heures)",
+        "durationPlaceholder": "ex. 6",
+        "targetDate": "Date de fin prévue",
+        "whatsappHint": "Un message WhatsApp sera envoyé au client avec ces informations."
+      },
+      "complete": {
+        "title": "Marquer comme terminé",
+        "description": "Définissez le prix final de la réparation avant de la marquer comme terminée.",
+        "currentPrice": "Prix actuel",
+        "finalPrice": "Prix final",
+        "hint": "Ce prix sera envoyé au client. Laissez vide pour utiliser le prix calculé."
+      },
+      "deliver": {
+        "title": "Marquer comme livré",
+        "description": "Confirmez que le véhicule a été livré au client."
+      }
+    },
     "diagnosisSections": {
-      "issues": "Problèmes identifiés",
+      "issues": "Problèmes trouvés",
+      "issuesPlaceholder": "Décrivez le problème...",
+      "addIssue": "Ajouter un problème",
       "severity": {
         "Minor": "Mineur",
         "Moderate": "Modéré",
         "Critical": "Critique"
       },
       "recommendations": "Réparations recommandées",
+      "recommendationsPlaceholder": "Quelles réparations sont recommandées ?",
       "additionalNotes": "Notes supplémentaires",
-      "estimatedDuration": "Durée estimée"
+      "additionalNotesPlaceholder": "Toute note supplémentaire...",
+      "estimatedDuration": "Durée estimée (heures)",
+      "estimated": "Estimé :",
+      "shared": "Partagé avec le client",
+      "noDiagnosis": "Aucun rapport de diagnostic pour le moment.",
+      "editDiagnosis": "Modifier le diagnostic",
+      "fillDiagnosis": "Remplir le diagnostic",
+      "saveDiagnosis": "Enregistrer le diagnostic",
+      "saved": "Diagnostic enregistré",
+      "saveFailed": "Échec de l'enregistrement du diagnostic"
     },
     "clientApproval": {
       "pending": "En attente",
@@ -174,41 +333,120 @@
       "title": "Journal de travail",
       "addEntry": "Ajouter une entrée",
       "description": "Description des travaux",
-      "hours": "Heures passées",
-      "by": "Par"
+      "descriptionPlaceholder": "Quel travail a été effectué ?",
+      "hours": "Heures passées *",
+      "hoursPlaceholder": "ex. 2.5",
+      "by": "Par",
+      "added": "Journal de travail ajouté",
+      "failed": "Échec de l'ajout au journal de travail"
     },
     "parts": {
       "title": "Pièces utilisées",
       "addPart": "Ajouter une pièce",
       "searchParts": "Rechercher une pièce",
-      "quantity": "Quantité",
-      "unitCost": "Coût unitaire",
+      "searchPlaceholder": "Rechercher par nom...",
+      "moduleComingSoon": "Module pièces bientôt disponible",
+      "part": "Pièce",
+      "category": "Catégorie",
+      "quantity": "Qté",
+      "unitCost": "Prix unitaire",
+      "unitLabel": "/ unité",
       "subtotal": "Sous-total",
-      "stockOverride": "Forcer (stock insuffisant)",
-      "noPartsYet": "Aucune pièce assignée"
+      "quantityLabel": "Quantité *",
+      "stockOverride": "Ignorer la vérification du stock",
+      "noPartsYet": "Aucune pièce ajoutée.",
+      "added": "Pièce ajoutée",
+      "removed": "Pièce retirée",
+      "addFailed": "Échec de l'ajout de la pièce",
+      "removeFailed": "Échec du retrait de la pièce"
     },
     "labor": {
       "title": "Main d'œuvre",
-      "addItem": "Ajouter une prestation",
+      "addItem": "Ajouter de la main-d'œuvre",
       "description": "Description",
+      "descriptionPlaceholder": "ex. Vidange d'huile",
       "cost": "Coût",
-      "noLaborYet": "Aucune prestation ajoutée"
+      "costLabel": "Coût *",
+      "noLaborYet": "Aucune main-d'œuvre ajoutée.",
+      "added": "Main-d'œuvre ajoutée",
+      "removed": "Main-d'œuvre retirée",
+      "addFailed": "Échec de l'ajout de main-d'œuvre",
+      "removeFailed": "Échec du retrait de la main-d'œuvre"
     },
     "statusHistory": "Historique des statuts",
+    "noStatusHistory": "Aucun changement de statut.",
     "mechanics": "Mécaniciens assignés",
+    "noMechanics": "Aucun mécanicien assigné.",
     "primary": "Principal",
-    "reassign": "Réassigner",
+    "reassign": "Réaffecter",
+    "reassignDialog": {
+      "title": "Réaffecter les mécaniciens",
+      "description": "Sélectionnez les mécaniciens et définissez le principal.",
+      "selectPrimary": "Mécanicien principal",
+      "selectPrimaryPlaceholder": "Sélectionnez le principal..."
+    },
     "payment": {
       "title": "Paiement",
       "register": "Enregistrer le paiement",
       "amountBilled": "Montant facturé",
       "amountReceived": "Montant reçu",
       "changeDue": "Monnaie à rendre",
-      "method": "Méthode",
-      "cash": "Espèces",
+      "method": "Méthode de paiement",
+      "cash": "Espèce",
+      "check": "Chèque",
+      "card": "Carte bancaire",
+      "transfer": "Virement",
       "paid": "PAYÉ",
+      "paidBy": "Payé par",
+      "paidByNamePlaceholder": "Optionnel — nom du client",
+      "notes": "Notes",
+      "notesPlaceholder": "Notes de paiement optionnelles...",
+      "checkImage": "Image du chèque",
+      "checkImageRequired": "Image du chèque requise",
+      "checkImageHint": "Veuillez sélectionner une image du chèque.",
+      "received": "Paiement reçu",
+      "confirm": "Confirmer le paiement",
       "invoiceNumber": "N° Facture",
-      "viewInvoice": "Voir la facture"
+      "viewInvoice": "Voir la facture n°"
+    },
+    "invoice": {
+      "backLink": "Retour à la réparation",
+      "notFound": "Facture introuvable.",
+      "retry": "Réessayer",
+      "print": "Imprimer / PDF",
+      "header": "FACTURE",
+      "invoiceNum": "Facture n°",
+      "date": "Date",
+      "repairId": "ID Réparation",
+      "billedTo": "Facturé à",
+      "noClient": "Client sans compte",
+      "vehicle": "Véhicule",
+      "color": "Couleur : {color}",
+      "descriptionHeading": "Description de la réparation",
+      "partsHeading": "Pièces utilisées",
+      "partName": "Nom de la pièce",
+      "qty": "Qté",
+      "unitPrice": "Prix unitaire",
+      "subtotal": "Sous-total",
+      "ref": "Réf : {reference}",
+      "laborHeading": "Services de main-d'œuvre",
+      "desc": "Description",
+      "cost": "Coût",
+      "partsTotal": "Total pièces :",
+      "laborTotal": "Total main-d'œuvre :",
+      "discount": "Remise :",
+      "garageFees": "Frais de garage :",
+      "total": "Total :",
+      "paymentDetails": "Détails du paiement",
+      "amountReceived": "Montant reçu :",
+      "changeDue": "Monnaie rendue :",
+      "paidBy": "Payé par : {name}",
+      "notes": "Notes : {notes}",
+      "preparedBy": "Préparé par",
+      "mechanic": "Mécanicien principal",
+      "footer": "{garage} — Merci de votre confiance",
+      "phone": "Tél : {phone}",
+      "loadFailed": "Impossible de charger la facture."
     },
     "photos": {
       "title": "Photos",
@@ -217,46 +455,157 @@
       "after": "Après",
       "upload": "Télécharger une photo"
     },
+    "unassigned": "Non assigné",
     "filters": {
       "allStatuses": "Tous les statuts",
+      "allPriorities": "Priorité : Toutes",
+      "allMechanics": "Mécanicien : Tous",
+      "period": "Période",
       "active": "Actif",
       "overdue": "En retard",
       "delivered": "Livré",
       "cancelled": "Annulé"
     }
   },
+  "client": {
+    "title": "Clients",
+    "detail": {
+      "notFound": "Client introuvable.",
+      "loadError": "Impossible de charger le client.",
+      "clientSince": "Client depuis le {date}",
+      "contactInfo": "Coordonnées",
+      "phone": "Téléphone",
+      "email": "Email",
+      "vehicles": "Véhicules ({count})",
+      "noVehicles": "Aucun véhicule enregistré.",
+      "repairs": "Réparations ({count})",
+      "noRepairs": "Aucune réparation effectuée.",
+      "vehicle": "Véhicule",
+      "description": "Description",
+      "mechanic": "Mécanicien",
+      "status": "Statut",
+      "cost": "Coût",
+      "date": "Date"
+    }
+  },
+  "search": {
+    "title": "Recherche globale",
+    "placeholder": "Rechercher véhicules, clients, réparations, factures...",
+    "button": "Chercher",
+    "error": "Erreur lors de la recherche.",
+    "results": "{count} résultat(s) pour",
+    "noResults": "Aucun résultat trouvé pour ",
+    "noResultsHint": "Essayez avec d'autres mots-clés ou vérifiez l'orthographe",
+    "vehicles": "Véhicules ({count})",
+    "clients": "Clients ({count})",
+    "repairs": "Réparations ({count})",
+    "invoices": "Factures ({count})",
+    "welcome": "Recherchez dans tous les véhicules, clients, réparations et factures",
+    "examples": "Exemples de recherche :",
+    "plateHint": "Plaque d'immatriculation",
+    "clientNameHint": "Nom du client",
+    "phoneHint": "Numéro de téléphone",
+    "repairIdHint": "ID de réparation",
+    "invoiceHint": "Numéro de facture",
+    "brandHint": "Marque de véhicule"
+  },
   "appointment": {
     "title": "Rendez-vous",
-    "newAppointment": "Nouveau rendez-vous",
+    "newTitle": "Nouveau rendez-vous",
+    "newDescription": "Planifier une visite client au garage.",
+    "backLink": "Retour aux rendez-vous",
+    "managerConfirmNote": "Les rendez-vous créés par les gestionnaires sont confirmés immédiatement.",
+    "sections": {
+      "client": "Client",
+      "vehicle": "Véhicule",
+      "details": "Détails"
+    },
+    "fields": {
+      "clientName": "Nom du client",
+      "clientPhone": "Téléphone du client",
+      "plate": "Plaque d'immatriculation (optionnel)",
+      "purpose": "Motif / Description du problème",
+      "date": "Date demandée",
+      "time": "Heure demandée",
+      "notes": "Notes (optionnel)"
+    },
+    "placeholders": {
+      "clientName": "Ahmed Benali",
+      "clientPhone": "600000000",
+      "plate": "ex. 123456-A-50",
+      "purpose": "Décrivez le problème ou le service nécessaire...",
+      "notes": "Notes supplémentaires..."
+    },
+    "validation": {
+      "nameRequired": "Le nom du client est requis.",
+      "phoneRequired": "Le téléphone du client est requis.",
+      "purposeRequired": "Le motif est requis.",
+      "dateRequired": "La date est requise.",
+      "timeRequired": "L'heure est requise."
+    },
+    "toasts": {
+      "created": "Rendez-vous créé",
+      "confirmed": "Rendez-vous confirmé",
+      "rescheduled": "Rendez-vous reporté",
+      "cancelled": "Rendez-vous annulé",
+      "converted": "Converti en réparation"
+    },
     "status": {
       "pending": "En attente",
       "confirmed": "Confirmé",
       "rescheduled": "Reporté",
       "cancelled": "Annulé",
-      "converted": "Converti en réparation"
+      "converted": "Converti"
     },
-    "fields": {
+    "errors": {
+      "generic": "Une erreur inattendue s'est produite. Veuillez réessayer.",
+      "loadFailed": "Impossible de charger le rendez-vous.",
+      "confirmFailed": "Échec de la confirmation",
+      "loadMechanicsFailed": "Impossible de charger les mécaniciens. Veuillez fermer et réessayer."
+    },
+    "detail": {
+      "title": "Détails du rendez-vous",
+      "infoCard": "Informations du rendez-vous",
       "clientName": "Nom du client",
-      "clientPhone": "Téléphone du client",
-      "vehicleMatricule": "Matricule du véhicule",
-      "purpose": "Motif / Description du problème",
-      "requestedDate": "Date souhaitée",
-      "requestedTime": "Heure souhaitée",
-      "notes": "Notes"
+      "phone": "Téléphone",
+      "vehicle": "Véhicule",
+      "purpose": "Motif",
+      "requestedDate": "Date demandée",
+      "rescheduledTo": "Reporté au",
+      "createdOn": "Créé le",
+      "relatedRepair": "Réparation liée",
+      "viewRepair": "Voir la réparation",
+      "convertToRepair": "Convertir en réparation",
+      "maxCapacity": "Capacité maximale atteinte",
+      "confirmAnyway": "Confirmer quand même",
+      "notFound": "Rendez-vous introuvable.",
+      "notes": "Notes",
+      "cancellationReason": "Motif d'annulation",
+      "confirmDialogTitle": "Confirmer le rendez-vous",
+      "confirmDialogDescription": "Confirmer ce rendez-vous ?",
+      "capacityWarningText": "Le garage est à pleine capacité ({current}/{max} rendez-vous confirmés). Voulez-vous confirmer quand même ?",
+      "rescheduleDialogTitle": "Reporter le rendez-vous",
+      "rescheduleDialogDescription": "Choisissez une nouvelle date et heure.",
+      "rescheduleButton": "Reporter",
+      "newDate": "Nouvelle date",
+      "newTime": "Nouvelle heure",
+      "dateTimeRequired": "Veuillez sélectionner une date et une heure.",
+      "cancelDialogTitle": "Annuler le rendez-vous",
+      "cancelDialogDescription": "Indiquez le motif d'annulation.",
+      "cancelButton": "Annuler le rendez-vous",
+      "cancelReasonRequired": "Un motif d'annulation est requis.",
+      "cancelReasonLabel": "Motif d'annulation",
+      "cancelReasonPlaceholder": "Expliquez pourquoi ce rendez-vous est annulé...",
+      "convertDialogTitle": "Créer une réparation à partir de ce rendez-vous.",
+      "convertMechanic": "Mécanicien principal",
+      "loadingMechanics": "Chargement des mécaniciens...",
+      "selectMechanic": "Sélectionner un mécanicien",
+      "noMechanics": "Aucun mécanicien actif trouvé",
+      "priority": "Priorité",
+      "targetDate": "Date cible d'achèvement",
+      "selectMechanicRequired": "Veuillez sélectionner un mécanicien principal.",
+      "backLink": "Retour aux rendez-vous"
     },
-    "actions": {
-      "confirm": "Confirmer",
-      "reschedule": "Reporter",
-      "cancel": "Annuler",
-      "convert": "Convertir en réparation"
-    },
-    "capacity": {
-      "warning": "La limite de capacité est atteinte pour cette date",
-      "current": "Rendez-vous déjà planifiés",
-      "limit": "Capacité maximale",
-      "proceedAnyway": "Confirmer quand même"
-    },
-    "managerNote": "Les rendez-vous créés par le responsable sont confirmés immédiatement.",
     "convertDialog": {
       "title": "Convertir en réparation",
       "primaryMechanic": "Mécanicien principal",
@@ -267,9 +616,21 @@
   },
   "car": {
     "title": "Véhicules",
+    "newTitle": "Enregistrer un véhicule",
+    "newDescription": "Ajouter un véhicule au système du garage.",
+    "backLink": "Retour aux véhicules",
+    "subtitle": "Gérer les véhicules enregistrés",
     "registerCar": "Enregistrer un véhicule",
+    "searchPlaceholder": "Rechercher par plaque, marque ou modèle...",
+    "registerFirst": "Enregistrer votre premier véhicule",
+    "repairCount": "Réparations",
+    "sections": {
+      "identity": "Identité du véhicule",
+      "reception": "Réception"
+    },
     "fields": {
       "matricule": "Matricule / Immatriculation",
+      "plate": "Numéro de plaque / Matricule",
       "make": "Marque",
       "model": "Modèle",
       "year": "Année",
@@ -280,15 +641,127 @@
       "client": "Client lié",
       "clientHint": "Laisser vide pour un passage direct"
     },
+    "placeholders": {
+      "plate": "123456-A-50",
+      "make": "Toyota, Renault...",
+      "model": "Corolla, Clio...",
+      "year": "2020",
+      "color": "Blanc",
+      "vin": "Numéro d'identification du véhicule",
+      "mileage": "45000",
+      "notes": "Observations initiales sur le véhicule..."
+    },
+    "validation": {
+      "plateRequired": "Le numéro de plaque est requis.",
+      "makeRequired": "La marque est requise.",
+      "modelRequired": "Le modèle est requis.",
+      "invalidYear": "Entrez une année valide.",
+      "invalidMileage": "Le kilométrage doit être un nombre."
+    },
+    "toasts": {
+      "created": "Véhicule enregistré",
+      "createdDesc": "{matricule} a été ajouté au système.",
+      "error": "Une erreur inattendue s'est produite. Veuillez réessayer."
+    },
+    "create": {
+      "submit": "Enregistrer le véhicule",
+      "submitting": "Enregistrement...",
+      "clientNote": "La liaison client se fait depuis la page de détail après l'enregistrement. Laissez le véhicule non lié pour les clients sans compte."
+    },
     "repairHistory": "Historique des réparations",
     "newRepair": "Nouvelle réparation",
     "noRepairs": "Aucune réparation enregistrée",
+    "noRepairsForCar": "Ce véhicule n'a pas encore de réparation enregistrée",
+    "registeredOn": "Enregistré le {date}",
+    "activeRepair": "Réparation en cours",
+    "priority": "Priorité :",
+    "scheduledFor": "Prévu pour le {date}",
+    "mechanic": "Mécanicien :",
+    "completedOn": "Terminé le {date}",
+    "backToCars": "Retour à mes véhicules",
+    "carNotFound": "Véhicule introuvable",
+    "loadCarError": "Impossible de charger les détails du véhicule",
     "activeRepairBlock": "Ce véhicule a une réparation active",
-    "walkin": "Passage direct (sans compte client)"
+    "walkin": "Passage direct (sans compte client)",
+    "detail": {
+      "backLink": "Retour aux véhicules",
+      "notFound": "Véhicule introuvable.",
+      "retry": "Réessayer",
+      "info": "Infos du véhicule",
+      "plate": "Plaque",
+      "make": "Marque",
+      "model": "Modèle",
+      "year": "Année",
+      "color": "Couleur",
+      "vin": "VIN",
+      "mileage": "Kilométrage",
+      "registeredOn": "Enregistré le",
+      "notes": "Notes",
+      "editNotes": "Modifier les notes",
+      "save": "Enregistrer",
+      "noNotes": "Aucune note. Cliquez sur le bouton d'édition pour en ajouter.",
+      "client": "Client",
+      "viewClient": "Voir le client",
+      "noClient": "Sans compte client",
+      "repairHistory": "Historique des réparations",
+      "repairCount": "{count, plural, one {# réparation} other {# réparations}}",
+      "noRepairs": "Aucune réparation enregistrée pour ce véhicule.",
+      "newRepair": "Nouvelle réparation",
+      "deleteSection": "Zone dangereuse",
+      "deleteDescription": "Supprime définitivement ce véhicule et toutes les données associées.",
+      "deleteButton": "Supprimer le véhicule",
+      "deleteConfirm": "Supprimer le véhicule",
+      "deleteConfirmMessage": "Voulez-vous vraiment supprimer ce véhicule ? Cette action est irréversible et supprimera toutes les réparations associées.",
+      "deleteSuccess": "{matricule} a été supprimé.",
+      "toasts": {
+        "notesSaved": "Notes enregistrées",
+        "saveFailed": "Échec de l'enregistrement",
+        "deleteFailed": "Échec de la suppression",
+        "genericError": "Une erreur inattendue s'est produite.",
+        "deleted": "Véhicule supprimé"
+      }
+    },
+    "table": {
+      "id": "ID",
+      "status": "Statut",
+      "priority": "Priorité",
+      "mechanic": "Mécanicien",
+      "createdAt": "Créé le",
+      "targetDate": "Date prévue",
+      "actions": "Actions",
+      "view": "Voir"
+    },
+    "errors": {
+      "loadFailed": "Impossible de charger les véhicules."
+    },
+    "empty": {
+      "noResults": "Aucun véhicule trouvé pour \"{search}\".",
+      "none": "Aucun véhicule enregistré."
+    }
   },
   "employee": {
     "title": "Employés",
+    "clientsTitle": "Clients",
+    "subtitle": "Gérer le personnel du garage et leurs accès",
+    "clientsSubtitle": "Consulter la liste des clients enregistrés",
     "newEmployee": "Nouvel employé",
+    "addFirst": "Ajouter votre premier employé",
+    "clientSearchPlaceholder": "Rechercher un client par nom ou téléphone...",
+    "clientsEmpty": "Aucun client enregistré.",
+    "clientsNoResults": "Aucun client trouvé pour cette recherche.",
+    "clientSince": "Depuis le {date}",
+    "create": {
+      "title": "Ajouter un employé",
+      "description": "Créer un compte employé pour le système de gestion du garage",
+      "backLink": "Retour aux employés",
+      "submit": "Créer l'employé",
+      "submitting": "Création...",
+      "uploading": "Upload..."
+    },
+    "sections": {
+      "personalInfo": "Informations personnelles",
+      "additionalInfo": "Informations supplémentaires"
+    },
     "roles": {
       "manager": "Responsable",
       "mechanic": "Mécanicien",
@@ -302,7 +775,19 @@
       "specialty": "Spécialité",
       "role": "Rôle",
       "status": "Statut",
-      "joinDate": "Date d'embauche"
+      "joinDate": "Date d'embauche",
+      "cin": "CIN",
+      "address": "Adresse",
+      "photo": "Photo"
+    },
+    "placeholders": {
+      "fullName": "Ahmed Benali",
+      "phone": "+213 555 123 456",
+      "cin": "Numéro de CIN",
+      "address": "Adresse",
+      "role": "Sélectionner un rôle",
+      "specialty": "Sélectionner une spécialité",
+      "customSpecialty": "Précisez votre spécialité"
     },
     "status": {
       "active": "Actif",
@@ -312,15 +797,51 @@
       "deactivate": "Désactiver",
       "activate": "Activer",
       "resetPassword": "Réinitialiser le mot de passe",
-      "newPassword": "Nouveau mot de passe"
+      "newPassword": "Nouveau mot de passe",
+      "delete": "Supprimer l'employé",
+      "deleteConfirm": "Voulez-vous vraiment supprimer {name} ?",
+      "deleteDescription": "Supprimer définitivement l'accès de cet employé au système."
     },
     "lastManager": "Impossible de désactiver le dernier responsable actif",
     "deactivateConfirm": "Êtes-vous sûr de vouloir désactiver cet employé ?",
-    "historyPreserved": "L'historique sera conservé"
+    "historyPreserved": "L'historique sera conservé",
+    "validation": {
+      "nameRequired": "Le nom est requis.",
+      "roleRequired": "Le rôle est requis.",
+      "cinRequired": "Le CIN est requis.",
+      "phoneRequired": "Le téléphone est requis."
+    },
+    "edit": {
+      "title": "Modifier l'employé",
+      "description": "Modifier les informations de l'employé.",
+      "submit": "Enregistrer les modifications",
+      "success": "Employé mis à jour avec succès."
+    },
+    "delete": {
+      "success": "{name} a été supprimé(e)."
+    },
+    "errors": {
+      "loadFailed": "Impossible de charger les employés.",
+      "actionFailed": "Échec de l'action",
+      "generic": "Une erreur inattendue s'est produite. Veuillez réessayer.",
+      "notFound": "Employé introuvable."
+    },
+    "empty": {
+      "noResults": "Aucun employé trouvé.",
+      "noActive": "Aucun employé actif trouvé.",
+      "noInactive": "Aucun employé inactif trouvé."
+    }
   },
   "stock": {
     "title": "Stock & Pièces",
     "newPart": "Nouvelle pièce",
+    "create": {
+      "title": "Créer une nouvelle pièce",
+      "backLink": "Retour au stock",
+      "partInfo": "Informations sur la pièce",
+      "submit": "Créer la pièce",
+      "submitting": "Création..."
+    },
     "fields": {
       "name": "Nom de la pièce",
       "reference": "Référence",
@@ -329,7 +850,42 @@
       "unitCost": "Coût unitaire",
       "quantity": "Quantité en stock",
       "minThreshold": "Seuil minimum",
-      "supplier": "Fournisseur"
+      "unitPrice": "Prix unitaire (MAD)",
+      "minStock": "Seuil de stock minimum",
+      "supplier": "Fournisseur (Optionnel)",
+      "stockAlert": "Alerte lorsque le stock descend en dessous de ce niveau"
+    },
+    "placeholders": {
+      "name": "Ex : Jeu de plaquettes de frein",
+      "reference": "Ex : BP-001",
+      "category": "Sélectionnez une catégorie",
+      "customCategory": "Précisez la catégorie",
+      "unitPrice": "Ex: 250",
+      "minStock": "Ex: 5",
+      "supplier": "Ex : ABC Auto Pièces"
+    },
+    "validation": {
+      "nameRequired": "Le nom de la pièce est requis.",
+      "refRequired": "Le numéro de référence est requis.",
+      "categoryRequired": "La catégorie est requise.",
+      "priceRequired": "Un prix unitaire valide est requis.",
+      "minStockRequired": "Un seuil minimum valide est requis.",
+      "customCategoryRequired": "Veuillez préciser la catégorie"
+    },
+    "preview": {
+      "title": "Aperçu",
+      "name": "Nom",
+      "reference": "Référence",
+      "category": "Catégorie",
+      "unitPrice": "Prix unitaire",
+      "minStock": "Seuil min",
+      "supplier": "Fournisseur",
+      "units": "unités"
+    },
+    "toasts": {
+      "created": "Pièce créée avec succès",
+      "error": "Une erreur inattendue s'est produite.",
+      "errorTitle": "Échec de la création"
     },
     "categories": {
       "Engine": "Moteur",
@@ -339,15 +895,121 @@
       "Suspension": "Suspension",
       "Other": "Autre"
     },
+    "categoriesMap": {
+      "Moteur": "Moteur",
+      "Transmission": "Transmission",
+      "Freins": "Freins",
+      "Suspension": "Suspension",
+      "Électrique": "Électrique",
+      "Carrosserie": "Carrosserie",
+      "Intérieur": "Intérieur",
+      "Fluides": "Fluides",
+      "Filtres": "Filtres",
+      "Courroies & Durites": "Courroies & Durites",
+      "Outils": "Outils",
+      "Autre": "Autre"
+    },
     "lowStock": "Stock faible",
     "outOfStock": "Rupture de stock",
     "addStock": "Ajouter du stock",
     "adjustStock": "Ajuster le stock",
     "transactionHistory": "Historique des transactions",
+    "searchPlaceholder": "Rechercher des pièces...",
+    "allCategories": "Toutes les catégories",
+    "totalParts": "{total} pièce(s) au total",
+    "stockAdded": "Stock ajouté",
+    "stockAdjusted": "Stock ajusté",
+    "confirmAdjust": "Ajuster",
+    "addQuantity": "Quantité à ajouter *",
+    "addQuantityPlaceholder": "Ex : 10",
+    "noteOptional": "Note (facultative)",
+    "notePlaceholder": "Ex : Livraison fournisseur",
+    "quantityChange": "Variation de quantité *",
+    "quantityChangePlaceholder": "Ex : +5 ou -3",
+    "newStockValue": "Nouveau stock : {qty} unité(s)",
+    "adjustmentReason": "Motif de l'ajustement *",
+    "adjustmentReasonPlaceholder": "Ex : Pièces endommagées retirées, Correction d'inventaire",
+    "errors": {
+      "loadFailed": "Impossible de charger les pièces.",
+      "invalidQuantity": "Quantité invalide",
+      "positiveNumber": "Entrez un nombre entier positif.",
+      "nonZeroNumber": "Entrez un nombre entier non nul.",
+      "noteRequired": "Note requise",
+      "adjustmentReason": "Veuillez expliquer le motif de l'ajustement.",
+      "addFailed": "Échec de l'ajout au stock.",
+      "adjustFailed": "Échec de l'ajustement du stock."
+    },
+    "empty": {
+      "noResults": "Aucune pièce trouvée."
+    },
     "transactions": {
       "received": "Réception",
       "used": "Utilisé",
       "adjustment": "Ajustement"
+    },
+    "detail": {
+      "backLink": "Retour au stock",
+      "notFound": "Pièce introuvable.",
+      "title": "Détails du stock",
+      "reference": "Réf :",
+      "category": "Catégorie",
+      "unitPrice": "Prix unitaire",
+      "currentStock": "Stock actuel",
+      "minThreshold": "Seuil minimum",
+      "supplier": "Fournisseur",
+      "stockValue": "Valeur du stock",
+      "createdOn": "Créé le",
+      "inStock": "en stock",
+      "lowStock": "Stock bas (min :",
+      "addStock": "Ajouter du stock",
+      "adjust": "Ajuster",
+      "transactions": "Transactions du stock",
+      "totalTransactions": "{count} transaction(s) au total",
+      "noTransactions": "Aucune transaction pour le moment",
+      "type": "Type",
+      "variation": "Variation",
+      "stockAfter": "Stock après",
+      "user": "Utilisateur",
+      "date": "Date",
+      "note": "Note",
+      "received": "Reçu",
+      "used": "Utilisé",
+      "adjusted": "Ajusté",
+      "units": "unité(s)",
+      "pageInfo": "Page {page} sur {totalPages}",
+      "repairLabel": "Réparation :"
+    },
+    "addDialog": {
+      "title": "Ajouter du stock",
+      "description": "Ajouter du stock reçu pour {name}",
+      "quantity": "Quantité reçue",
+      "note": "Note",
+      "receiptImage": "Image du reçu",
+      "quantityPlaceholder": "Entrez la quantité",
+      "notePlaceholder": "Ex : Reçu du fournisseur ABC, Facture n°12345",
+      "success": "{quantity} ajoutée(s) au stock",
+      "errors": {
+        "quantity": "Veuillez entrer une quantité valide supérieure à 0.",
+        "note": "Veuillez entrer une note décrivant cet ajout de stock."
+      }
+    },
+    "adjustDialog": {
+      "title": "Ajuster le stock",
+      "description": "Ajustement manuel du stock pour {name}. Utilisez des nombres positifs pour augmenter, négatifs pour diminuer.",
+      "quantity": "Variation de quantité",
+      "reason": "Motif",
+      "currentStock": "Stock actuel :",
+      "units": "unité(s)",
+      "newStock": "Nouveau stock :",
+      "quantityPlaceholder": "Ex : +5 ou -3",
+      "reasonPlaceholder": "Ex : Pièces endommagées retirées, Correction d'inventaire",
+      "confirm": "Ajuster",
+      "successIncreased": "Stock augmenté de {quantity} unité(s)",
+      "successDecreased": "Stock diminué de {quantity} unité(s)",
+      "errors": {
+        "quantity": "Veuillez entrer une quantité non nulle.",
+        "reason": "Veuillez entrer une note expliquant cet ajustement."
+      }
     }
   },
   "settings": {
@@ -382,6 +1044,9 @@
       "ourServices": "Nos services",
       "contactUs": "Nous contacter",
       "openingHours": "Horaires d'ouverture",
+      "servicesBadge": "Nos expertises",
+      "servicesHeading1": "Des prestations complètes",
+      "servicesHeading2": "pour tous vos besoins",
       "services": {
         "engine": "Moteur & Transmission",
         "brakes": "Freins & Suspension",
@@ -389,13 +1054,141 @@
         "bodywork": "Carrosserie & Peinture",
         "maintenance": "Entretien & Vidange",
         "tires": "Pneus & Géométrie"
-      }
+      },
+      "servicesList": {
+        "generalMechanic": {
+          "name": "Mécanique générale",
+          "desc": "Entretien, révision et réparation mécanique complète"
+        },
+        "hydraulic": {
+          "name": "Hydraulique",
+          "desc": "Direction assistée, freinage et suspension hydraulique"
+        },
+        "electricalAuto": {
+          "name": "Électricité auto",
+          "desc": "Câblage, batterie, alternateur et systèmes électroniques"
+        },
+        "advancedDiagnostic": {
+          "name": "Diagnostic avancé",
+          "desc": "Analyse électronique complète et recherche de pannes"
+        },
+        "bodywork": {
+          "name": "Tôlerie & Peinture",
+          "desc": "Carrosserie, débosselage, peinture et finitions pro"
+        },
+        "oilChange": {
+          "name": "Vidange & Entretien",
+          "desc": "Vidange d'huile, filtres et contrôles périodiques"
+        },
+        "washing": {
+          "name": "Lavage & Détailing",
+          "desc": "Lavage complet, cire protection et traitement esthétique"
+        },
+        "engineTuning": {
+          "name": "Mise au point moteur",
+          "desc": "Réglage injection, calage distribution et optimisation"
+        }
+      },
+      "hero": {
+        "badge": "Garage agréé et certifié",
+        "title1": "Votre véhicule mérite",
+        "title2": "le meilleur service",
+        "description": "SAGMAN AUTO vous offre une expertise complète pour tous vos besoins automobiles, avec un suivi transparent et des interventions de qualité supérieure."
+      },
+      "accessAccount": "Accéder à mon espace",
+      "callGarage": "Appeler le garage",
+      "stats": {
+        "yearsExperience": "Années d'expérience",
+        "satisfiedClients": "Clients satisfaits",
+        "onTimeAppointments": "De rendez-vous à l'heure",
+        "averageRating": "Note moyenne ★"
+      },
+      "floatingBadge": "+ de 15 ans",
+      "floatingBadgeDesc": "d'expertise auto",
+      "whyUs": {
+        "title": "Pourquoi nous choisir",
+        "heading1": "La confiance",
+        "heading2": "se construit dans la durée",
+        "items": {
+          "certified": {
+            "title": "Expertise certifiée",
+            "desc": "Nos mécaniciens sont formés aux dernières technologies avec certifications constructeur."
+          },
+          "equipment": {
+            "title": "Équipement professionnel",
+            "desc": "Valises diagnostiques, banc de géométrie, cabine de peinture conforme aux normes."
+          },
+          "transparency": {
+            "title": "Transparence totale",
+            "desc": "Suivez chaque étape avec photos et compte-rendu détaillé en temps réel."
+          },
+          "support": {
+            "title": "Service client réactif",
+            "desc": "Une équipe à votre écoute du diagnostic à la livraison de votre véhicule."
+          }
+        }
+      },
+      "howItWorks": {
+        "badge": "En 3 étapes",
+        "title": "Comment ça fonctionne ?",
+        "cta": "Commencer maintenant",
+        "steps": {
+          "book": {
+            "title": "Prenez rendez-vous",
+            "desc": "Réservez en ligne ou par téléphone en moins de 2 minutes."
+          },
+          "diagnosis": {
+            "title": "Diagnostic & Réparation",
+            "desc": "Notre équipe effectue un diagnostic complet puis les réparations nécessaires."
+          },
+          "tracking": {
+            "title": "Suivi & Livraison",
+            "desc": "Suivez l'avancement en temps réel et récupérez votre véhicule."
+          }
+        }
+      },
+      "testimonials": {
+        "badge": "Témoignages",
+        "title": "Ce que disent nos clients",
+        "fallback": [
+          { "name": "Karim B.", "text": "Service impeccable, équipe professionnelle et très réactive. Mon véhicule était prêt en avance !" },
+          { "name": "Sofia M.", "text": "Je recommande vivement Garage Sagman. Suivi transparent et travail de qualité." },
+          { "name": "Hicham L.", "text": "Un garage de confiance. Le diagnostic était précis et les réparations durables." }
+        ]
+      },
+      "review": {
+        "badge": "Votre avis",
+        "title": "Donnez votre avis",
+        "description": "Partagez votre expérience avec SAGMAN AUTO",
+        "thanks": "Merci pour votre avis !",
+        "thanksDesc": "Votre retour nous aide à améliorer nos services.",
+        "yourRating": "Votre note",
+        "yourComment": "Votre commentaire",
+        "commentOptional": "(optionnel)",
+        "commentPlaceholder": "Décrivez votre expérience...",
+        "submit": "Envoyer mon avis",
+        "submitting": "Envoi en cours..."
+      },
+      "contactBadge": "Contact",
+      "contactTitle": "Parlons de votre véhicule",
+      "contactDescription": "Besoin d'un renseignement, d'un devis ou de prendre rendez-vous ? Notre équipe est à votre écoute.",
+      "addressLabel": "Adresse",
+      "callNow": "Appeler maintenant",
+      "whatsapp": "Écrire sur WhatsApp",
+      "whatsappMessage": "Bonjour, je vous contacte depuis le site SAGMAN AUTO.",
+      "footer": {
+        "description": "Votre partenaire de confiance pour l'entretien et la réparation de tous vos véhicules.",
+        "followUs": "Suivez-nous"
+      },
+      "towing": "Dépannage",
+      "towingAriaLabel": "Appel d'urgence"
     },
     "login": {
       "title": "Espace client",
-      "subtitle": "Entrez votre numéro de téléphone pour accéder à votre espace",
+      "signIn": "Se connecter",
+      "subtitle": "Connectez-vous à votre compte pour accéder à votre espace",
       "phoneLabel": "Numéro de téléphone",
-      "phonePlaceholder": "+212 6XX XXX XXX",
+      "phonePlaceholder": "6XX XXX XXX",
       "sendOtp": "Envoyer le code",
       "sendingOtp": "Envoi...",
       "otpLabel": "Code de vérification",
@@ -405,12 +1198,34 @@
       "changePhone": "Changer de numéro",
       "otpSent": "Code envoyé ! Vérifiez vos SMS.",
       "invalidOtp": "Code invalide ou expiré",
-      "otpExpiry": "Le code expire dans 10 minutes"
+      "otpExpiry": "Le code expire dans 10 minutes",
+      "passwordSubtitle": "Connectez-vous à votre compte",
+      "passwordLabel": "Mot de passe",
+      "passwordPlaceholder": "Entrez votre mot de passe",
+      "signIn": "Se connecter",
+      "signingIn": "Connexion en cours…",
+      "noAccount": "Pas encore de compte ?",
+      "signUp": "S'inscrire",
+      "termsNotice": "En vous connectant, vous acceptez nos",
+      "fillAllFields": "Veuillez remplir tous les champs",
+      "invalidCredentials": "Identifiants invalides",
+      "backToHome": "Retour à l'accueil"
     },
     "myCars": {
       "title": "Mes véhicules",
       "noActiveCars": "Aucune réparation active en ce moment",
-      "viewHistory": "Voir l'historique"
+      "viewHistory": "Voir l'historique",
+      "greeting": "Bonjour, {name}",
+      "carsRegistered": "{count} véhicule enregistré",
+      "carsRegisteredPlural": "{count} véhicules enregistrés",
+      "bookAppointment": "Rendez-vous",
+      "emptyTitle": "Aucun véhicule enregistré",
+      "emptyDesc": "Prenez rendez-vous pour enregistrer votre véhicule",
+      "loadError": "Impossible de charger vos véhicules",
+      "noActiveRepair": "Aucune réparation active",
+      "repairOverdue": "Réparation en retard",
+      "estimatedDate": "Date prévue :",
+      "repairHistory": "Historique des réparations ({count})"
     },
     "repairStatus": {
       "title": "Suivi de réparation",
@@ -422,20 +1237,143 @@
       "recommendations": "Travaux recommandés",
       "estimatedCost": "Estimation du coût",
       "contactGarage": "Contacter le garage",
-      "notFound": "Réparation introuvable"
+      "notFound": "Réparation introuvable",
+      "progression": "Progression",
+      "details": "Détails de la réparation",
+      "reportedProblem": "Problème signalé",
+      "expectedDate": "Date prévue",
+      "completedDate": "Terminé le",
+      "mechanic": "Mécanicien",
+      "entryDate": "Date d'entrée",
+      "readyTitle": "Votre véhicule est prêt !",
+      "readyDesc": "Vous pouvez venir le récupérer pendant nos heures d'ouverture.",
+      "amountPaid": "Montant réglé : {amount} DH",
+      "overdue": "En retard",
+      "cancelled": "Cette réparation a été annulée",
+      "backToCars": "Mes véhicules",
+      "question": "Une question ?",
+      "call": "Appeler",
+      "whatsapp": "WhatsApp",
+      "whatsappMessage": "Bonjour, je vous contacte depuis mon espace client SAGMAN concernant ma réparation {matricule}.",
+      "technicianNotes": "Notes du technicien",
+      "invoice": "Facture",
+      "amount": "Montant",
+      "history": "Historique",
+      "paymentStatus": "PAYÉ",
+      "diagnosisTitle": "Résultat du diagnostic",
+      "issuesIdentified": "Problèmes identifiés",
+      "recommendedWork": "Travaux recommandés"
+    },
+    "register": {
+      "title": "Création de compte",
+      "subtitle": "Inscrivez-vous avec votre téléphone et un mot de passe.",
+      "nameLabel": "Nom complet",
+      "namePlaceholder": "Votre nom",
+      "phoneLabel": "Numéro de téléphone",
+      "phonePlaceholder": "6XX XXX XXX",
+      "passwordLabel": "Mot de passe",
+      "passwordPlaceholder": "Entrez votre mot de passe",
+      "submit": "Créer mon compte",
+      "submitting": "Inscription en cours…",
+      "hasAccount": "Vous avez déjà un compte ?",
+      "login": "Se connecter",
+      "fillAllFields": "Veuillez remplir tous les champs",
+      "createFailed": "Impossible de créer le compte",
+      "backToHome": "Retour à l'accueil"
     },
     "booking": {
       "title": "Prendre rendez-vous",
-      "subtitle": "Remplissez le formulaire pour demander un rendez-vous",
+      "subtitle": "Remplissez le formulaire — nous vous confirmons rapidement",
       "selectCar": "Sélectionner un véhicule",
       "orNewCar": "ou entrer un nouveau matricule",
       "newMatricule": "Nouveau matricule",
       "issue": "Description du problème",
       "preferredDate": "Date souhaitée",
       "notes": "Notes supplémentaires",
-      "submit": "Demander un rendez-vous",
+      "submit": "Envoyer ma demande",
       "success": "Votre demande a été envoyée ! Nous vous confirmerons rapidement.",
-      "availableDays": "Sélectionnez parmi les jours disponibles"
+      "availableDays": "Sélectionnez parmi les jours disponibles",
+      "authNotLoggedIn": "Vous n'êtes pas connecté",
+      "authLoginPrompt": "Connectez-vous",
+      "authDescription": "pour associer ce rendez-vous à votre compte et suivre votre réparation.",
+      "yourVehicle": "Votre véhicule",
+      "selectRegistered": "Sélectionner un véhicule enregistré",
+      "otherVehicle": "Autre véhicule (nouveau matricule)",
+      "make": "Marque",
+      "makePlaceholder": "Ex: BMW, Renault, Toyota",
+      "model": "Modèle",
+      "modelPlaceholder": "Ex: Clio, Golf, Série 3",
+      "year": "Année",
+      "yearPlaceholder": "Ex: 2020",
+      "color": "Couleur",
+      "colorPlaceholder": "Ex: Blanc, Noir, Rouge",
+      "dateTime": "Date & heure souhaitées",
+      "date": "Date",
+      "time": "Heure",
+      "availableHours": "Horaires disponibles : Lun–Sam, 08:00–17:30",
+      "problemDescription": "Description du problème",
+      "describeProblem": "Décrivez le problème",
+      "problemPlaceholder": "Ex: Bruit au démarrage, voyant moteur allumé, freins qui grincent…",
+      "extraNotes": "Notes supplémentaires (optionnel)",
+      "extraNotesPlaceholder": "Toute information utile pour le mécanicien…",
+      "submitting": "Envoi en cours…",
+      "confirmationNote": "Vous recevrez une confirmation par SMS ou appel téléphonique.",
+      "successTitle": "Demande envoyée !",
+      "successDesc": "Votre demande de rendez-vous a bien été reçue. Notre équipe vous contactera rapidement pour confirmer.",
+      "viewMyCars": "Voir mes véhicules",
+      "backToHome": "Retour à l'accueil",
+      "selectDateError": "Veuillez sélectionner une date",
+      "sendError": "Erreur lors de l'envoi de la demande. Réessayez."
+    },
+    "book": {
+      "vehiclePhoto": "Photo du véhicule",
+      "photoOptional": "Photo (optionnelle)",
+      "uploading": "Upload de l'image..."
+    }
+  },
+  "reports": {
+    "title": "Rapport journalier",
+    "subtitle": "Génération du rapport de fin de journée",
+    "generate": "Générer le rapport",
+    "regenerate": "Régénérer le rapport",
+    "generating": "Génération...",
+    "emptyPrompt": "Cliquez sur \"Générer le rapport\" pour créer le rapport de fin de journée.",
+    "carsReceived": "Véhicules reçus",
+    "carsDelivered": "Véhicules livrés",
+    "totalRevenue": "Chiffre d'affaires",
+    "sendViaWhatsApp": "Envoyer au superviseur via WhatsApp",
+    "managerNotes": "Notes du responsable",
+    "notesPlaceholder": "Ajoutez vos observations, remarques ou instructions pour le superviseur...",
+    "errors": {
+      "generateFailed": "Erreur lors de la génération du rapport.",
+      "sendFailed": "Erreur lors de l'envoi du rapport."
+    }
+  },
+  "notifications": {
+    "title": "Journal des notifications",
+    "subtitle": "Historique des messages WhatsApp envoyés",
+    "type": "Type",
+    "recipient": "Destinataire",
+    "messagePreview": "Aperçu du message",
+    "sentBy": "Envoyé par",
+    "viewRepair": "Voir réparation",
+    "pagination": "{total} notification(s) · Page {page} / {totalPages}",
+    "errors": {
+      "loadFailed": "Erreur lors du chargement des notifications."
+    }
+  },
+  "calendar": {
+    "title": "Calendrier",
+    "weekView": "Semaine",
+    "monthView": "Mois",
+    "today": "Aujourd'hui",
+    "appointments": "Rendez-vous ({count})",
+    "repairAbbr": "{count} rép.",
+    "appointmentAbbr": "{count} RDV",
+    "dayEmpty": "Aucune activité pour cette journée",
+    "dayNames": ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"],
+    "errors": {
+      "loadFailed": "Erreur de chargement."
     }
   }
 }

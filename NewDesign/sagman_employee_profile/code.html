@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Employee Profile | AutoPro Garage</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                "background": "#f7f9fb",
+                "surface-bright": "#f7f9fb",
+                "surface-container-highest": "#e0e3e5",
+                "surface-container": "#eceef0",
+                "surface-variant": "#e0e3e5",
+                "tertiary": "#222a3e",
+                "tertiary-fixed": "#dae2fd",
+                "surface-container-lowest": "#ffffff",
+                "inverse-on-surface": "#eff1f3",
+                "on-primary-fixed-variant": "#264191",
+                "inverse-surface": "#2d3133",
+                "on-secondary-fixed-variant": "#93000b",
+                "surface": "#f7f9fb",
+                "error-container": "#ffdad6",
+                "on-tertiary": "#ffffff",
+                "on-primary-container": "#90a8ff",
+                "surface-container-high": "#e6e8ea",
+                "on-tertiary-fixed": "#131b2e",
+                "on-primary": "#ffffff",
+                "surface-dim": "#d8dadc",
+                "tertiary-container": "#384055",
+                "on-tertiary-fixed-variant": "#3f465c",
+                "on-surface": "#191c1e",
+                "on-error-container": "#93000a",
+                "on-secondary-fixed": "#410002",
+                "on-background": "#191c1e",
+                "secondary-container": "#e02928",
+                "primary-fixed-dim": "#b6c4ff",
+                "on-tertiary-container": "#a4acc5",
+                "outline-variant": "#c5c5d3",
+                "surface-tint": "#4059aa",
+                "primary-fixed": "#dce1ff",
+                "secondary-fixed-dim": "#ffb4ab",
+                "surface-container-low": "#f2f4f6",
+                "inverse-primary": "#b6c4ff",
+                "error": "#ba1a1a",
+                "primary-container": "#1e3a8a",
+                "primary": "#00236f",
+                "tertiary-fixed-dim": "#bec6e0",
+                "on-surface-variant": "#444651",
+                "on-error": "#ffffff",
+                "on-secondary-container": "#fffbff",
+                "secondary": "#bb0112",
+                "outline": "#757682",
+                "secondary-fixed": "#ffdad6",
+                "on-primary-fixed": "#00164e",
+                "on-secondary": "#ffffff"
+              },
+              "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+              },
+              "spacing": {
+                "base": "4px",
+                "gutter": "16px",
+                "md": "16px",
+                "lg": "24px",
+                "sm": "8px",
+                "container-margin": "24px",
+                "xs": "4px",
+                "xl": "32px"
+              },
+              "fontFamily": {
+                "body-md": ["Inter"],
+                "headline-xl": ["Inter"],
+                "headline-lg": ["Inter"],
+                "title-md": ["Inter"],
+                "label-sm": ["Inter"],
+                "body-lg": ["Inter"]
+              },
+              "fontSize": {
+                "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                "headline-xl": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                "title-md": ["18px", {"lineHeight": "26px", "fontWeight": "600"}],
+                "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .status-chip {
+            @apply px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(224, 227, 229, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- Side Navigation Shell -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container-lowest border-r border-outline-variant flex flex-col py-lg z-50">
+<div class="px-lg mb-xl">
+<h1 class="text-headline-lg font-headline-lg text-primary">AutoPro Garage</h1>
+<p class="text-label-sm text-on-surface-variant">Casablanca Branch</p>
+</div>
+<nav class="flex-1 px-md space-y-sm">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors duration-150" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-primary font-bold border-r-4 border-primary bg-surface-container-low" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">badge</span>
+<span class="font-body-md text-body-md">Staff Profile</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors duration-150" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-body-md text-body-md">Appointments</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors duration-150" href="#">
+<span class="material-symbols-outlined">build</span>
+<span class="font-body-md text-body-md">Job Cards</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors duration-150" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-body-md text-body-md">Inventory</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors duration-150" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-body-md text-body-md">Invoicing</span>
+</a>
+</nav>
+<div class="px-md mt-auto pt-lg border-t border-outline-variant space-y-sm">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-low" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-body-md text-body-md">Support</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="h-16 flex justify-between items-center px-lg bg-surface border-b border-outline-variant sticky top-0 z-40">
+<div class="flex items-center gap-md">
+<span class="text-title-md font-title-md text-primary">Employee Details</span>
+<span class="text-outline">/</span>
+<span class="text-body-md font-body-md">Lead Mechanic Profile</span>
+</div>
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-md">
+<button class="hover:bg-surface-container-high rounded-full p-2 transition-all duration-200">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+</button>
+<button class="hover:bg-surface-container-high rounded-full p-2 transition-all duration-200">
+<span class="material-symbols-outlined text-on-surface-variant">history</span>
+</button>
+</div>
+<button class="bg-primary text-on-primary px-md py-sm rounded-lg font-body-md flex items-center gap-sm active:scale-95 duration-150">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                    Quick Action
+                </button>
+<div class="h-10 w-10 rounded-full overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a middle-aged male technician wearing a clean blue workshop uniform. He has a confident and friendly expression, set against a blurred background of a modern, well-lit automotive workshop with high-end diagnostic tools. The lighting is crisp and professional, reflecting a clean light-mode aesthetic with automotive blue accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxPIDQ9nw-TaCzU9uCBVe9TbE_-gHVq3u0S6OThz0ykJf670gyy9Vz0Mw-g0L9k-GKzyQVsTD3YrH3TsdstGKw_sAcq8TqDw7dcbX6_wXU7bqKeQbLLleQz3pmYqFOqnRvB8yrZGCens6gs0H4J-MtEoCa7-5xOmZBwH2XqY1-tBeZSYIbCwlNoiw5cp3-ou_OMq6fK0N1IcVSX6EsvUDfzy0foPMz8EN9E5IGhw7-v61OfCLqIJLWxw"/>
+</div>
+</div>
+</header>
+<!-- Profile Canvas -->
+<div class="p-lg space-y-lg">
+<!-- Hero Header & Identity Section -->
+<div class="grid grid-cols-12 gap-lg">
+<!-- Profile Card -->
+<div class="col-span-12 lg:col-span-4 bg-surface-container-lowest p-xl rounded-xl border border-outline-variant relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+<div class="flex flex-col items-center text-center">
+<div class="relative mb-lg">
+<div class="w-32 h-32 rounded-full overflow-hidden border-4 border-surface-container p-1">
+<img class="w-full h-full rounded-full object-cover" data-alt="Close up portrait of a senior automotive lead mechanic with salt and pepper hair, looking focused and professional. He wears a dark navy blue jumpsuit with an embroidered logo on the chest. The setting is a bright, high-tech garage environment with soft focus car silhouettes and steel tools in the background, maintaining a corporate and reliable aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdDd5qo_I4Cx9yAoWRioJYJhdaDsI2If_dG1ZRlTuMy-Gd6Wn_AeirGbqMo-dz2EMtleBKhuuTLxll3U81s6QIEu16JrVY5VO90jHl7u9099Tj3Q5b4AzaZE8RM7lNV14Zj0t5--pX-SkN77C_57RNeELjmLBmq-MZlvtnf7DWvy-5CFiDGKSAN6lwAIzluHkOXlEwV-eJfnrzAv8LD6VV8nstMM6jFXR2Yzj6aOvoW28j-HQcwMnLiw"/>
+</div>
+<div class="absolute bottom-2 right-2 bg-primary text-white p-1 rounded-full border-2 border-white">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+<h2 class="text-headline-lg font-headline-lg text-on-surface mb-xs">Amine EL FASSI</h2>
+<p class="text-body-lg font-body-lg text-primary font-bold mb-md uppercase tracking-wider">Lead Mechanic</p>
+<div class="flex flex-wrap justify-center gap-sm mb-lg">
+<span class="px-3 py-1 bg-primary-fixed text-on-primary-fixed-variant rounded-full text-label-sm">German Cars</span>
+<span class="px-3 py-1 bg-tertiary-fixed text-on-tertiary-fixed-variant rounded-full text-label-sm">Hydraulics</span>
+<span class="px-3 py-1 bg-surface-container text-on-surface-variant rounded-full text-label-sm">V12 Engines</span>
+</div>
+<div class="w-full space-y-md text-left pt-lg border-t border-outline-variant">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-outline">mail</span>
+<span class="text-body-md">a.elfassi@autopro.ma</span>
+</div>
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-outline">call</span>
+<span class="text-body-md">+212 661-234567</span>
+</div>
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-outline">location_on</span>
+<span class="text-body-md">Workshop Bay 04</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Performance Dashboard Bento -->
+<div class="col-span-12 lg:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-lg">
+<!-- Metric Card 1 -->
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant flex flex-col justify-between group hover:border-primary transition-colors">
+<div>
+<p class="text-label-sm text-outline mb-sm uppercase tracking-tight">Jobs Completed</p>
+<h3 class="text-headline-xl font-headline-xl text-on-surface">1,284</h3>
+</div>
+<div class="flex items-center gap-xs text-primary font-bold mt-md">
+<span class="material-symbols-outlined text-[18px]">trending_up</span>
+<span class="text-label-sm">+12% this month</span>
+</div>
+</div>
+<!-- Metric Card 2 -->
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant flex flex-col justify-between group hover:border-primary transition-colors">
+<div>
+<p class="text-label-sm text-outline mb-sm uppercase tracking-tight">Avg. Repair Time</p>
+<h3 class="text-headline-xl font-headline-xl text-on-surface">4.2h</h3>
+</div>
+<div class="flex items-center gap-xs text-secondary font-bold mt-md">
+<span class="material-symbols-outlined text-[18px]">timer</span>
+<span class="text-label-sm">-15m vs average</span>
+</div>
+</div>
+<!-- Metric Card 3 -->
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant flex flex-col justify-between group hover:border-primary transition-colors">
+<div>
+<p class="text-label-sm text-outline mb-sm uppercase tracking-tight">Customer Rating</p>
+<h3 class="text-headline-xl font-headline-xl text-on-surface">4.9/5</h3>
+</div>
+<div class="flex items-center gap-1 text-[#FFB000] mt-md">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<!-- Performance Chart Placeholder -->
+<div class="md:col-span-3 bg-surface-container-lowest p-lg rounded-xl border border-outline-variant h-48 relative overflow-hidden">
+<div class="flex justify-between items-center mb-lg">
+<p class="text-title-md font-title-md">Productivity Trend</p>
+<select class="bg-transparent border-none text-label-sm font-bold text-primary focus:ring-0">
+<option>Last 30 Days</option>
+<option>Last 6 Months</option>
+</select>
+</div>
+<!-- Simple visual graph representation using CSS -->
+<div class="flex items-end justify-between h-24 w-full gap-2 mt-4">
+<div class="bg-primary-fixed-dim w-full rounded-t-sm" style="height: 40%"></div>
+<div class="bg-primary-fixed-dim w-full rounded-t-sm" style="height: 65%"></div>
+<div class="bg-primary-fixed-dim w-full rounded-t-sm" style="height: 55%"></div>
+<div class="bg-primary-fixed-dim w-full rounded-t-sm" style="height: 85%"></div>
+<div class="bg-primary w-full rounded-t-sm" style="height: 95%"></div>
+<div class="bg-primary-fixed-dim w-full rounded-t-sm" style="height: 70%"></div>
+<div class="bg-primary-fixed-dim w-full rounded-t-sm" style="height: 60%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Repairs & Actions Grid -->
+<div class="grid grid-cols-12 gap-lg">
+<!-- Recent Repairs Table -->
+<div class="col-span-12 lg:col-span-8 bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden">
+<div class="px-lg py-md border-b border-outline-variant flex justify-between items-center bg-white">
+<h3 class="text-title-md font-title-md">Recent Assigned Repairs</h3>
+<button class="text-primary text-label-sm font-bold hover:underline">View All</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant">
+<th class="px-lg py-sm font-label-sm text-label-sm">Vehicle / Client</th>
+<th class="px-lg py-sm font-label-sm text-label-sm">Issue</th>
+<th class="px-lg py-sm font-label-sm text-label-sm">Status</th>
+<th class="px-lg py-sm font-label-sm text-label-sm">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-lg py-md">
+<div class="flex flex-col">
+<span class="font-bold text-body-md text-on-surface">Mercedes-Benz S500</span>
+<span class="text-label-sm text-outline">Ahmed Mansouri</span>
+</div>
+</td>
+<td class="px-lg py-md">
+<span class="text-body-md">Suspension Fault (Air-Matic)</span>
+</td>
+<td class="px-lg py-md">
+<span class="px-2 py-1 rounded-full bg-primary-fixed text-primary text-[10px] font-bold uppercase">In Progress</span>
+</td>
+<td class="px-lg py-md">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">open_in_new</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-lg py-md">
+<div class="flex flex-col">
+<span class="font-bold text-body-md text-on-surface">Porsche Cayenne</span>
+<span class="text-label-sm text-outline">Sara Belghiti</span>
+</div>
+</td>
+<td class="px-lg py-md">
+<span class="text-body-md">Brake System Flush &amp; Pads</span>
+</td>
+<td class="px-lg py-md">
+<span class="px-2 py-1 rounded-full bg-error-container text-on-error-container text-[10px] font-bold uppercase">Awaiting Parts</span>
+</td>
+<td class="px-lg py-md">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">open_in_new</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-lg py-md">
+<div class="flex flex-col">
+<span class="font-bold text-body-md text-on-surface">BMW X7 M50i</span>
+<span class="text-label-sm text-outline">Karim Laroui</span>
+</div>
+</td>
+<td class="px-lg py-md">
+<span class="text-body-md">Drivetrain Malfunction Audit</span>
+</td>
+<td class="px-lg py-md">
+<span class="px-2 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant text-[10px] font-bold uppercase">Completed</span>
+</td>
+<td class="px-lg py-md">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">open_in_new</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Account Settings & Actions -->
+<div class="col-span-12 lg:col-span-4 flex flex-col gap-lg">
+<!-- Management Card -->
+<div class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant space-y-md">
+<h3 class="text-title-md font-title-md border-b border-outline-variant pb-md">Account Management</h3>
+<button class="w-full flex items-center justify-between p-md rounded-lg border border-outline-variant hover:bg-surface-container-low transition-all group">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary">edit</span>
+<span class="font-body-md font-bold">Edit Profile</span>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:translate-x-1 transition-transform">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-md rounded-lg border border-outline-variant hover:bg-surface-container-low transition-all group">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary">lock_reset</span>
+<span class="font-body-md font-bold">Reset Password</span>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:translate-x-1 transition-transform">chevron_right</span>
+</button>
+<div class="pt-md">
+<button class="w-full flex items-center gap-md p-md rounded-lg bg-error-container text-on-error-container hover:bg-red-100 transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined">person_off</span>
+<span class="font-body-md font-bold">Deactivate Account</span>
+</button>
+</div>
+</div>
+<!-- Role Permissions Info -->
+<div class="bg-tertiary text-on-tertiary p-lg rounded-xl relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-[80px]">admin_panel_settings</span>
+</div>
+<h4 class="text-body-lg font-bold mb-xs">Access Level: High</h4>
+<p class="text-label-sm text-on-tertiary-container mb-md">This user has permissions to override job assignments and approve inventory requests.</p>
+<ul class="space-y-xs">
+<li class="flex items-center gap-sm text-[12px]">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                                Job Card Approval
+                            </li>
+<li class="flex items-center gap-sm text-[12px]">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                                Technician Performance Review
+                            </li>
+<li class="flex items-center gap-sm text-[12px]">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                                Critical Spare Parts Request
+                            </li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Simple micro-interaction for active scaling
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', () => {
+                btn.style.transform = 'scale(0.98)';
+            });
+            btn.addEventListener('mouseup', () => {
+                btn.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body></html>

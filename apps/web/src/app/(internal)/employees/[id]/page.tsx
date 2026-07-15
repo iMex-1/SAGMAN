@@ -3,17 +3,13 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  Loader2,
-  AlertCircle,
-  KeyRound,
-  UserX,
-  UserCheck,
-} from "lucide-react";
+import { useTranslations } from "next-intl";
+import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PhoneInput } from "@/components/ui/phone-input";
+import { normalizePhone } from "@/lib/phone";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -38,7 +34,6 @@ import {
   DialogTitle,
   DialogClose,
 } from "@/components/ui/dialog";
-import { Separator } from "@/components/ui/separator";
 import { api, ApiError } from "@/lib/api-client";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -49,7 +44,10 @@ interface Employee {
   phone: string;
   role: "manager" | "mechanic";
   specialty?: string;
-  status: "active" | "inactive";
+  cin?: string;
+  address?: string;
+  imageUrl?: string;
+  status: "active" | "inactive" | "deleted";
   createdAt: string;
   updatedAt?: string;
 }
@@ -60,13 +58,15 @@ interface EmployeeResponse {
 
 interface FieldErrors {
   name?: string;
-  email?: string;
   phone?: string;
   role?: string;
   specialty?: string;
+  cin?: string;
+  address?: string;
 }
 
 export default function EmployeeDetailPage() {
+  const t = useTranslations();
   const params = useParams();
   const router = useRouter();
   const { success, error: toastError } = useToast();
@@ -79,24 +79,24 @@ export default function EmployeeDetailPage() {
   // Edit form state
   const [form, setForm] = useState({
     name: "",
-    email: "",
     phone: "",
     role: "",
     specialty: "",
+    cin: "",
+    address: "",
   });
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [isSaving, setIsSaving] = useState(false);
 
-  // Reset password state
-  const [resetPasswordOpen, setResetPasswordOpen] = useState(false);
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [isResettingPassword, setIsResettingPassword] = useState(false);
+  // Delete state
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  // Toggle status state
-  const [statusDialogOpen, setStatusDialogOpen] = useState(false);
-  const [isTogglingStatus, setIsTogglingStatus] = useState(false);
+  // Image error fallback
+  const [profileImgError, setProfileImgError] = useState(false);
 
   const fetchEmployee = useCallback(async () => {
     setIsLoading(true);
@@ -107,23 +107,25 @@ export default function EmployeeDetailPage() {
       setEmployee(emp);
       setForm({
         name: emp.name,
-        email: emp.email,
-        phone: emp.phone ?? "",
+        phone: normalizePhone(emp.phone ?? ""),
         role: emp.role,
         specialty: emp.specialty ?? "",
+        cin: emp.cin ?? "",
+        address: emp.address ?? "",
       });
+      setImagePreview(emp.imageUrl ?? null);
     } catch (err) {
       if (err instanceof ApiError) {
         setLoadError(
-          err.statusCode === 404 ? "Employee not found." : err.message,
+          err.statusCode === 404 ? t('employee.errors.notFound') : err.message,
         );
       } else {
-        setLoadError("Failed to load employee.");
+        setLoadError(t('employee.errors.loadFailed'));
       }
     } finally {
       setIsLoading(false);
     }
-  }, [employeeId]);
+  }, [employeeId, t]);
 
   useEffect(() => {
     fetchEmployee();
@@ -136,13 +138,8 @@ export default function EmployeeDetailPage() {
 
   function validateForm(): boolean {
     const errors: FieldErrors = {};
-    if (!form.name.trim()) errors.name = "Name is required.";
-    if (!form.email.trim()) {
-      errors.email = "Email is required.";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-      errors.email = "Enter a valid email address.";
-    }
-    if (!form.role) errors.role = "Role is required.";
+    if (!form.name.trim()) errors.name = t('employee.validation.nameRequired');
+    if (!form.role) errors.role = t('employee.validation.roleRequired');
     setFieldErrors(errors);
     return Object.keys(errors).length === 0;
   }
@@ -153,98 +150,71 @@ export default function EmployeeDetailPage() {
 
     setIsSaving(true);
     try {
+      let imageUrl = employee?.imageUrl;
+      if (imageFile) {
+        setUploadingImage(true);
+        const base64 = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader()
+          reader.onload = () => {
+            const result = reader.result as string
+            resolve(result.split(',')[1])
+          }
+          reader.onerror = reject
+          reader.readAsDataURL(imageFile)
+        })
+        const uploadRes = await api.post<{ url: string }>(
+          '/uploads/employee-image',
+          { image: base64, mimeType: imageFile.type },
+        );
+        imageUrl = uploadRes.url;
+        setUploadingImage(false);
+      }
+
       const res = await api.patch<EmployeeResponse>(
         `/employees/${employeeId}`,
         {
           name: form.name.trim(),
-          email: form.email.trim(),
           phone: form.phone.trim() || undefined,
           role: form.role,
           specialty: form.specialty.trim() || undefined,
+          cin: form.cin.trim() || undefined,
+          address: form.address.trim() || undefined,
+          imageUrl,
         },
       );
       setEmployee(res.data);
-      success("Employee updated successfully.");
+      success(t('employee.edit.success'));
     } catch (err) {
       if (err instanceof ApiError) {
         if (err.statusCode === 422 && err.details) {
           setFieldErrors(err.details as Record<string, string>);
-        } else if (err.code === "EMAIL_TAKEN") {
-          setFieldErrors((prev) => ({
-            ...prev,
-            email: "This email is already in use.",
-          }));
         } else {
-          toastError("Update failed", err.message);
+          toastError(t('common.error'), err.message);
         }
       } else {
-        toastError("Update failed", "An unexpected error occurred.");
+        toastError(t('common.error'), t('employee.errors.generic'));
       }
     } finally {
       setIsSaving(false);
     }
   }
 
-  async function handleResetPassword(e: React.FormEvent) {
-    e.preventDefault();
-    setPasswordError("");
-
-    if (!newPassword) {
-      setPasswordError("Password is required.");
-      return;
-    }
-    if (newPassword.length < 8) {
-      setPasswordError("Password must be at least 8 characters.");
-      return;
-    }
-    if (newPassword !== confirmPassword) {
-      setPasswordError("Passwords do not match.");
-      return;
-    }
-
-    setIsResettingPassword(true);
-    try {
-      await api.patch(`/employees/${employeeId}/reset-password`, {
-        newPassword: newPassword,
-      });
-      success("Password has been reset successfully.");
-      setResetPasswordOpen(false);
-      setNewPassword("");
-      setConfirmPassword("");
-    } catch (err) {
-      if (err instanceof ApiError) {
-        setPasswordError(err.message);
-      } else {
-        setPasswordError("Failed to reset password.");
-      }
-    } finally {
-      setIsResettingPassword(false);
-    }
-  }
-
-  async function handleToggleStatus() {
+  async function handleDelete() {
     if (!employee) return;
-    setIsTogglingStatus(true);
+    setIsDeleting(true);
     try {
-      const action = employee.status === "active" ? "deactivate" : "activate";
-      const res = await api.patch<EmployeeResponse>(
-        `/employees/${employeeId}/${action}`,
-      );
-      setEmployee(res.data);
-      success(
-        res.data.status === "active"
-          ? `${res.data.name} has been activated.`
-          : `${res.data.name} has been deactivated.`,
-      );
-      setStatusDialogOpen(false);
+      await api.patch(`/employees/${employeeId}/delete`);
+      success(t('employee.delete.success', { name: employee.name }));
+      setDeleteDialogOpen(false);
+      router.push("/employees");
     } catch (err) {
       if (err instanceof ApiError) {
-        toastError("Action failed", err.message);
+        toastError(t('common.error'), err.message);
       } else {
-        toastError("Action failed", "An unexpected error occurred.");
+        toastError(t('common.error'), t('employee.errors.generic'));
       }
     } finally {
-      setIsTogglingStatus(false);
+      setIsDeleting(false);
     }
   }
 
@@ -253,7 +223,7 @@ export default function EmployeeDetailPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-16">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <Icon name="sync" size={32} className="animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -263,20 +233,20 @@ export default function EmployeeDetailPage() {
       <div className="space-y-4">
         <Button variant="ghost" size="sm" asChild>
           <Link href="/employees">
-            <ArrowLeft className="h-4 w-4" />
-            Back to Employees
+            <Icon name="arrow_back" size={16} />
+            {t('employee.create.backLink')}
           </Link>
         </Button>
         <div className="flex items-center gap-3 rounded-md border border-destructive/50 bg-destructive/10 p-4 text-destructive">
-          <AlertCircle className="h-5 w-5 shrink-0" />
-          <p className="text-sm">{loadError ?? "Employee not found."}</p>
+          <Icon name="info" size={20} className="shrink-0" />
+          <p className="text-sm">{loadError ?? t('employee.errors.notFound')}</p>
           <Button
             variant="outline"
             size="sm"
             onClick={fetchEmployee}
             className="ml-auto"
           >
-            Retry
+            {t('common.retry')}
           </Button>
         </div>
       </div>
@@ -289,8 +259,8 @@ export default function EmployeeDetailPage() {
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="sm" asChild>
           <Link href="/employees">
-            <ArrowLeft className="h-4 w-4" />
-            Back to Employees
+            <Icon name="arrow_back" size={16} />
+            {t('employee.create.backLink')}
           </Link>
         </Button>
         <div className="flex-1" />
@@ -298,30 +268,45 @@ export default function EmployeeDetailPage() {
           variant={employee.status === "active" ? "success" : "outline"}
           className="text-sm"
         >
-          {employee.status === "active" ? "Active" : "Inactive"}
+          {employee.status === "active" ? t('employee.status.active') : t('employee.status.inactive')}
         </Badge>
       </div>
 
       {/* Edit Form */}
-      <Card>
+      <Card className="bg-white border border-outline-variant rounded-xl shadow-sm">
         <CardHeader>
-          <CardTitle>{employee.name}</CardTitle>
-          <CardDescription>
-            Update employee information. Email changes will take effect on next
-            login.
-          </CardDescription>
+          <div className="flex items-center gap-4">
+            {employee.imageUrl && !profileImgError ? (
+              <img
+                src={employee.imageUrl}
+                alt={employee.name}
+                className="w-16 h-16 rounded-full object-cover border"
+                onError={() => setProfileImgError(true)}
+              />
+            ) : (
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-xl font-bold text-on-primary select-none">
+                {employee.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()}
+              </div>
+            )}
+            <div>
+              <CardTitle className="font-headline-lg text-headline-lg">{employee.name}</CardTitle>
+              <CardDescription className="font-body-md text-body-md text-on-surface-variant">
+                {t('employee.edit.description')}
+              </CardDescription>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSave} className="space-y-6" noValidate>
             {/* Personal Info */}
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-                Personal Information
+              <h3 className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wide">
+                {t('employee.sections.personalInfo')}
               </h3>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="name">
-                    Full Name <span className="text-destructive">*</span>
+                    {t('employee.fields.fullName')} <span className="text-destructive">*</span>
                   </Label>
                   <Input
                     id="name"
@@ -332,66 +317,72 @@ export default function EmployeeDetailPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Phone</Label>
-                  <Input
+                  <Label htmlFor="phone">{t('employee.fields.phone')}</Label>
+                  <PhoneInput
                     id="phone"
-                    type="tel"
                     value={form.phone}
-                    onChange={(e) => setField("phone", e.target.value)}
+                    onChange={(v) => setField("phone", v)}
                     error={fieldErrors.phone}
                   />
                 </div>
               </div>
             </div>
 
-            {/* Account */}
+            {/* Additional Info */}
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-                Account
+              <h3 className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wide">
+                {t('employee.sections.additionalInfo')}
               </h3>
-              <div className="space-y-2">
-                <Label htmlFor="email">
-                  Email <span className="text-destructive">*</span>
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={form.email}
-                  onChange={(e) => setField("email", e.target.value)}
-                  error={fieldErrors.email}
-                  required
-                />
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="cin">{t('employee.fields.cin')}</Label>
+                  <Input
+                    id="cin"
+                    value={form.cin}
+                    onChange={(e) => setField("cin", e.target.value)}
+                    error={fieldErrors.cin}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="address">{t('employee.fields.address')}</Label>
+                  <Input
+                    id="address"
+                    value={form.address}
+                    onChange={(e) => setField("address", e.target.value)}
+                    error={fieldErrors.address}
+                  />
+                </div>
               </div>
             </div>
 
             {/* Role */}
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-                Role
+              <h3 className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wide">
+                {t('employee.fields.role')}
               </h3>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="role">
-                    Role <span className="text-destructive">*</span>
+                    {t('employee.fields.role')} <span className="text-destructive">*</span>
                   </Label>
                   <Select
                     value={form.role}
                     onValueChange={(v) => setField("role", v)}
                   >
                     <SelectTrigger id="role" error={fieldErrors.role}>
-                      <SelectValue placeholder="Select a role" />
+                      <SelectValue placeholder={t('employee.placeholders.role')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="manager">Manager</SelectItem>
-                      <SelectItem value="mechanic">Mechanic</SelectItem>
+                      <SelectItem value="manager">{t('employee.roles.manager')}</SelectItem>
+                      <SelectItem value="mechanic">{t('employee.roles.mechanic')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="specialty">Specialty</Label>
+                  <Label htmlFor="specialty">{t('employee.fields.specialty')}</Label>
                   <Input
                     id="specialty"
-                    placeholder="e.g. Engine, Electrical"
+                    placeholder={t('employee.placeholders.specialty')}
                     value={form.specialty}
                     onChange={(e) => setField("specialty", e.target.value)}
                     error={fieldErrors.specialty}
@@ -400,168 +391,92 @@ export default function EmployeeDetailPage() {
               </div>
             </div>
 
+            {/* Image */}
+            <div className="space-y-4">
+              <h3 className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wide">
+                {t('employee.fields.photo')}
+              </h3>
+              <div className="space-y-2">
+                <Label htmlFor="image">{t('employee.fields.photo')}</Label>
+                <div className="flex items-center gap-3">
+                  {imagePreview && (
+                    <img src={imagePreview} alt={t('common.preview')} className="w-14 h-14 rounded-full object-cover border" />
+                  )}
+                  <Input
+                    id="image"
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] ?? null;
+                      setImageFile(file);
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onload = () => setImagePreview(reader.result as string);
+                        reader.readAsDataURL(file);
+                      } else {
+                        setImagePreview(employee?.imageUrl ?? null);
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
             <div className="flex items-center gap-3 pt-2">
               <Button
                 type="submit"
-                isLoading={isSaving}
-                className="min-w-[100px]"
+                disabled={isSaving || uploadingImage}
+                isLoading={isSaving || uploadingImage}
+                className="bg-primary text-on-primary rounded-lg px-lg py-sm font-title-md text-title-md min-w-[100px]"
               >
-                {isSaving ? "Saving..." : "Save Changes"}
+                {uploadingImage ? t('employee.create.uploading') : isSaving ? t('common.saving') : t('employee.edit.submit')}
               </Button>
             </div>
           </form>
         </CardContent>
       </Card>
 
-      {/* Security section */}
-      <Card>
+      {/* Delete section */}
+      <Card className="bg-white border border-destructive/20 rounded-xl shadow-sm">
         <CardHeader>
-          <CardTitle className="text-base">Security</CardTitle>
-          <CardDescription>Manage password and account access.</CardDescription>
+          <CardTitle className="font-title-md text-title-md text-destructive">{t('employee.actions.delete')}</CardTitle>
+          <CardDescription className="font-body-md text-body-md text-on-surface-variant">
+            {t('employee.actions.deleteDescription')}
+          </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Reset Password */}
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium">Password</p>
-              <p className="text-xs text-muted-foreground">
-                Set a new password for this employee.
-              </p>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setResetPasswordOpen(true)}
-            >
-              <KeyRound className="h-4 w-4" />
-              Reset Password
-            </Button>
-          </div>
-
-          <Separator />
-
-          {/* Activate / Deactivate */}
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium">Account Status</p>
-              <p className="text-xs text-muted-foreground">
-                {employee.status === "active"
-                  ? "Employee can currently access the system."
-                  : "Employee is currently blocked from the system."}
-              </p>
-            </div>
-            <Button
-              variant={employee.status === "active" ? "destructive" : "outline"}
-              size="sm"
-              onClick={() => setStatusDialogOpen(true)}
-            >
-              {employee.status === "active" ? (
-                <>
-                  <UserX className="h-4 w-4" />
-                  Deactivate
-                </>
-              ) : (
-                <>
-                  <UserCheck className="h-4 w-4" />
-                  Activate
-                </>
-              )}
-            </Button>
-          </div>
+        <CardContent>
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={() => setDeleteDialogOpen(true)}
+          >
+            <Icon name="delete" size={16} />
+            {t('employee.actions.delete')}
+          </Button>
         </CardContent>
       </Card>
 
-      {/* Reset Password Dialog */}
-      <Dialog open={resetPasswordOpen} onOpenChange={setResetPasswordOpen}>
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Reset Password</DialogTitle>
+            <DialogTitle>{t('employee.actions.delete')}</DialogTitle>
             <DialogDescription>
-              Set a new password for {employee.name}. They will need to use this
-              new password on their next login.
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleResetPassword} className="space-y-4">
-            {passwordError && (
-              <div className="rounded-md border border-destructive/50 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-                {passwordError}
-              </div>
-            )}
-            <div className="space-y-2">
-              <Label htmlFor="newPassword">New Password</Label>
-              <Input
-                id="newPassword"
-                type="password"
-                placeholder="Min. 8 characters"
-                value={newPassword}
-                onChange={(e) => {
-                  setNewPassword(e.target.value);
-                  setPasswordError("");
-                }}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="confirmNewPassword">Confirm Password</Label>
-              <Input
-                id="confirmNewPassword"
-                type="password"
-                placeholder="Repeat password"
-                value={confirmPassword}
-                onChange={(e) => {
-                  setConfirmPassword(e.target.value);
-                  setPasswordError("");
-                }}
-                required
-              />
-            </div>
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button type="button" variant="outline">
-                  Cancel
-                </Button>
-              </DialogClose>
-              <Button type="submit" isLoading={isResettingPassword}>
-                {isResettingPassword ? "Resetting..." : "Reset Password"}
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
-
-      {/* Status Confirmation Dialog */}
-      <Dialog open={statusDialogOpen} onOpenChange={setStatusDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              {employee.status === "active"
-                ? "Deactivate Employee"
-                : "Activate Employee"}
-            </DialogTitle>
-            <DialogDescription>
-              {employee.status === "active"
-                ? `Are you sure you want to deactivate ${employee.name}? They will no longer be able to log in.`
-                : `Are you sure you want to activate ${employee.name}? They will be able to log in again.`}
+              {t('employee.actions.deleteConfirm', { name: employee.name })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <DialogClose asChild>
-              <Button type="button" variant="outline">
-                Cancel
+              <Button type="button" variant="outline" className="border border-outline-variant text-on-surface-variant">
+                {t('common.cancel')}
               </Button>
             </DialogClose>
             <Button
-              variant={employee.status === "active" ? "destructive" : "default"}
-              isLoading={isTogglingStatus}
-              onClick={handleToggleStatus}
+              variant="destructive"
+              isLoading={isDeleting}
+              onClick={handleDelete}
             >
-              {isTogglingStatus
-                ? employee.status === "active"
-                  ? "Deactivating..."
-                  : "Activating..."
-                : employee.status === "active"
-                  ? "Yes, Deactivate"
-                  : "Yes, Activate"}
+              {isDeleting ? t('common.deleting') : t('common.confirm')}
             </Button>
           </DialogFooter>
         </DialogContent>

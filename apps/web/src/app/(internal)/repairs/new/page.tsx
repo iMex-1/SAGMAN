@@ -3,8 +3,9 @@
 import { Suspense } from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { ArrowLeft, Loader2, Search, X, CheckCircle2 } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -56,6 +57,7 @@ interface CreateRepairResponse {
 }
 
 function NewRepairPageContent() {
+  const t = useTranslations();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
@@ -175,15 +177,15 @@ function NewRepairPageContent() {
     setFormError(null);
 
     if (!selectedCar) {
-      setFormError("Please select a car.");
+      setFormError(t("repair.validation.vehicleRequired"));
       return;
     }
     if (!primaryMechanicId) {
-      setFormError("Please select a primary mechanic.");
+      setFormError(t("repair.validation.mechanicRequired"));
       return;
     }
     if (!description.trim()) {
-      setFormError("Please enter a description / reported issue.");
+      setFormError(t("repair.validation.descriptionRequired"));
       return;
     }
 
@@ -200,11 +202,11 @@ function NewRepairPageContent() {
           ? Number(estimatedHours)
           : undefined,
       });
-      toast({ title: "Repair created successfully", variant: "default" });
+      toast({ title: t("repair.toasts.created"), variant: "default" });
       router.push(`/repairs/${res.data.id}`);
     } catch (err) {
       setFormError(
-        err instanceof ApiError ? err.message : "Failed to create repair.",
+        err instanceof ApiError ? err.message : t("repair.toasts.error"),
       );
     } finally {
       setSubmitting(false);
@@ -217,16 +219,20 @@ function NewRepairPageContent() {
       <div>
         <Button variant="ghost" size="sm" asChild>
           <Link href="/repairs">
-            <ArrowLeft className="h-4 w-4" />
-            Back to Repairs
+            <Icon name="arrow_back" size={16} />
+            {t("repair.create.backLink")}
           </Link>
         </Button>
       </div>
 
-      <Card>
+      <Card className="bg-white border border-outline-variant rounded-xl shadow-sm">
         <CardHeader>
-          <CardTitle>New Repair</CardTitle>
-          <CardDescription>Register a new vehicle repair job.</CardDescription>
+          <CardTitle className="font-headline-lg text-headline-lg">
+            {t("repair.create.title")}
+          </CardTitle>
+          <CardDescription className="font-body-md text-body-md text-on-surface-variant">
+            {t("repair.create.description")}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6" noValidate>
@@ -239,14 +245,19 @@ function NewRepairPageContent() {
             {/* Car Search */}
             <div className="space-y-2">
               <Label htmlFor="car-search">
-                Car (Matricule) <span className="text-destructive">*</span>
+                {t("repair.fields.vehicle")}{" "}
+                <span className="text-destructive">*</span>
               </Label>
               <div className="relative" ref={dropdownRef}>
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Icon
+                    name="search"
+                    size={16}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                  />
                   <Input
                     id="car-search"
-                    placeholder="Search by matricule..."
+                    placeholder={t("repair.placeholders.searchVehicle")}
                     value={carQuery}
                     onChange={(e) => handleCarQueryChange(e.target.value)}
                     onFocus={() =>
@@ -261,11 +272,15 @@ function NewRepairPageContent() {
                       onClick={clearCarSelection}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                     >
-                      <X className="h-4 w-4" />
+                      <Icon name="close" size={16} />
                     </button>
                   )}
                   {carLoading && (
-                    <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted-foreground" />
+                    <Icon
+                      name="sync"
+                      size={16}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-muted-foreground"
+                    />
                   )}
                 </div>
 
@@ -280,7 +295,9 @@ function NewRepairPageContent() {
                         onClick={() => handleSelectCar(car)}
                       >
                         <div>
-                          <span className="font-semibold">{car.matricule}</span>
+                          <span className="font-semibold">
+                            {car.matricule}
+                          </span>
                           <span className="ml-1 text-muted-foreground">
                             {car.make} {car.model}
                             {car.year ? ` (${car.year})` : ""}
@@ -301,7 +318,7 @@ function NewRepairPageContent() {
                   !carLoading &&
                   carQuery.trim() && (
                     <div className="absolute z-10 mt-1 w-full rounded-md border bg-background px-3 py-2 text-sm text-muted-foreground shadow-md">
-                      No cars found.
+                      {t("repair.placeholders.noVehicleFound")}
                     </div>
                   )}
               </div>
@@ -309,7 +326,11 @@ function NewRepairPageContent() {
               {/* Selected car info */}
               {selectedCar && (
                 <div className="flex items-center gap-2 rounded-md border border-green-200 bg-green-50 px-3 py-2 text-sm">
-                  <CheckCircle2 className="h-4 w-4 text-green-600 shrink-0" />
+                  <Icon
+                    name="check_circle"
+                    size={16}
+                    className="text-green-600 shrink-0"
+                  />
                   <div>
                     <span className="font-semibold text-green-700">
                       {selectedCar.matricule}
@@ -331,12 +352,13 @@ function NewRepairPageContent() {
             {/* Primary Mechanic */}
             <div className="space-y-2">
               <Label>
-                Primary Mechanic <span className="text-destructive">*</span>
+                {t("repair.fields.mechanic")}{" "}
+                <span className="text-destructive">*</span>
               </Label>
               {mechanicsLoading ? (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Loading mechanics...
+                  <Icon name="sync" size={16} className="animate-spin" />
+                  {t("repair.placeholders.loadingMechanics")}
                 </div>
               ) : (
                 <Select
@@ -344,7 +366,9 @@ function NewRepairPageContent() {
                   onValueChange={setPrimaryMechanicId}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select mechanic..." />
+                    <SelectValue
+                      placeholder={t("repair.placeholders.selectMechanic")}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {mechanics.map((m) => (
@@ -360,16 +384,24 @@ function NewRepairPageContent() {
 
             {/* Priority */}
             <div className="space-y-2">
-              <Label>Priority</Label>
+              <Label>{t("repair.fields.priority")}</Label>
               <Select value={priority} onValueChange={setPriority}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="low">Low</SelectItem>
-                  <SelectItem value="normal">Normal</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
-                  <SelectItem value="emergency">🚨 Emergency</SelectItem>
+                  <SelectItem value="low">
+                    {t("repair.priorities.low")}
+                  </SelectItem>
+                  <SelectItem value="normal">
+                    {t("repair.priorities.normal")}
+                  </SelectItem>
+                  <SelectItem value="high">
+                    {t("repair.priorities.high")}
+                  </SelectItem>
+                  <SelectItem value="emergency">
+                    {t("repair.priorities.urgent")}
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -377,14 +409,14 @@ function NewRepairPageContent() {
             {/* Description */}
             <div className="space-y-2">
               <Label htmlFor="description">
-                Description / Reported Issue{" "}
+                {t("repair.fields.description")}{" "}
                 <span className="text-destructive">*</span>
               </Label>
               <textarea
                 id="description"
                 rows={3}
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
-                placeholder="Describe the issue reported by the client..."
+                placeholder={t("repair.placeholders.description")}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 required
@@ -393,12 +425,14 @@ function NewRepairPageContent() {
 
             {/* Internal Notes */}
             <div className="space-y-2">
-              <Label htmlFor="internal-notes">Internal Notes</Label>
+              <Label htmlFor="internal-notes">
+                {t("repair.fields.internalNotes")}
+              </Label>
               <textarea
                 id="internal-notes"
                 rows={2}
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
-                placeholder="Notes visible only to staff..."
+                placeholder={t("repair.placeholders.internalNotes")}
                 value={internalNotes}
                 onChange={(e) => setInternalNotes(e.target.value)}
               />
@@ -407,7 +441,9 @@ function NewRepairPageContent() {
             {/* Date + Duration */}
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="target-date">Target Completion Date</Label>
+                <Label htmlFor="target-date">
+                  {t("repair.fields.targetDate")}
+                </Label>
                 <Input
                   id="target-date"
                   type="date"
@@ -416,13 +452,15 @@ function NewRepairPageContent() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="est-hours">Estimated Duration (hours)</Label>
+                <Label htmlFor="est-hours">
+                  {t("repair.fields.estimatedHours")}
+                </Label>
                 <Input
                   id="est-hours"
                   type="number"
                   min="0"
                   step="0.5"
-                  placeholder="e.g. 4"
+                  placeholder={t("repair.placeholders.estimatedHours")}
                   value={estimatedHours}
                   onChange={(e) => setEstimatedHours(e.target.value)}
                 />
@@ -431,11 +469,22 @@ function NewRepairPageContent() {
 
             {/* Actions */}
             <div className="flex items-center gap-3 pt-2">
-              <Button type="submit" isLoading={submitting}>
-                {submitting ? "Creating..." : "Create Repair"}
+              <Button
+                type="submit"
+                isLoading={submitting}
+                className="bg-primary text-on-primary rounded-lg px-lg py-sm font-title-md text-title-md"
+              >
+                {submitting
+                  ? t("repair.create.submitting")
+                  : t("repair.create.submit")}
               </Button>
-              <Button variant="outline" type="button" asChild>
-                <Link href="/repairs">Cancel</Link>
+              <Button
+                variant="outline"
+                type="button"
+                asChild
+                className="border border-outline-variant text-on-surface-variant"
+              >
+                <Link href="/repairs">{t("common.cancel")}</Link>
               </Button>
             </div>
           </form>
@@ -446,9 +495,12 @@ function NewRepairPageContent() {
 }
 
 export default function NewRepairPage() {
+  const t = useTranslations();
   return (
     <Suspense
-      fallback={<div className="p-6 text-muted-foreground">Loading...</div>}
+      fallback={
+        <div className="p-6 text-muted-foreground">{t("common.loading")}</div>
+      }
     >
       <NewRepairPageContent />
     </Suspense>

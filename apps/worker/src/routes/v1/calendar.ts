@@ -7,8 +7,24 @@ import { authenticate } from '../../middleware/auth';
 const calendar = new Hono<AppBindings>();
 calendar.use('/*', authenticate);
 
+function mapAppointment(a: any) {
+  return {
+    id: a.id,
+    clientId: a.client_id,
+    clientName: a.client_name,
+    clientPhone: a.client_phone,
+    carId: a.car_id,
+    carMatricule: a.car_matricule,
+    purpose: a.purpose,
+    requestedAt: a.requested_at,
+    status: a.status,
+    notes: a.notes,
+    car: a.c_id ? { id: a.c_id, matricule: a.matricule, make: a.make, model: a.model } : undefined,
+  };
+}
+
 // GET /calendar/day
-calendar.get('/day', authorize(['manager', 'mechanic']), async (c) => {
+calendar.get('/day', authorize(['manager', 'mechanic', 'overseer']), async (c) => {
   const user = c.get('user');
   const date = c.req.query('date');
   const targetDate = date ? new Date(date) : new Date();
@@ -45,7 +61,7 @@ calendar.get('/day', authorize(['manager', 'mechanic']), async (c) => {
   }
 
   const appointments = await c.env.DB.prepare(
-    `SELECT a.*, c.matricule, c.make, c.model
+    `SELECT a.*, c.id as c_id, c.matricule, c.make, c.model
      FROM appointments a
      LEFT JOIN cars c ON c.id = a.car_id
      WHERE a.status IN ('confirmed', 'rescheduled') AND a.requested_at >= ? AND a.requested_at < ? AND a.deleted_at IS NULL`,
@@ -59,11 +75,17 @@ calendar.get('/day', authorize(['manager', 'mechanic']), async (c) => {
     mechanics: mechanicsByRepair[r.id] ?? [],
   }));
 
-  return c.json({ data: { date: dayStart, repairs: repairData, appointments: appointments.results ?? [] } });
+  return c.json({
+    data: {
+      date: dayStart,
+      repairs: repairData,
+      appointments: (appointments.results ?? []).map(mapAppointment),
+    },
+  });
 });
 
 // GET /calendar/week
-calendar.get('/week', authorize(['manager', 'mechanic']), async (c) => {
+calendar.get('/week', authorize(['manager', 'mechanic', 'overseer']), async (c) => {
   const user = c.get('user');
   const startDate = c.req.query('startDate');
   const weekStart = startDate ? new Date(startDate) : new Date();
@@ -92,20 +114,30 @@ calendar.get('/week', authorize(['manager', 'mechanic']), async (c) => {
   ).bind(...params).all<any>();
 
   const appointments = await c.env.DB.prepare(
-    `SELECT * FROM appointments WHERE status IN ('confirmed', 'rescheduled') AND requested_at >= ? AND requested_at < ? AND deleted_at IS NULL ORDER BY requested_at ASC`,
-  ).bind(ws, we).all();
+    `SELECT a.*, c.id as c_id, c.matricule, c.make, c.model
+     FROM appointments a
+     LEFT JOIN cars c ON c.id = a.car_id
+     WHERE a.status IN ('confirmed', 'rescheduled') AND a.requested_at >= ? AND a.requested_at < ? AND a.deleted_at IS NULL ORDER BY a.requested_at ASC`,
+  ).bind(ws, we).all<any>();
+
+  const repairData = (repairs.results ?? []).map((r: any) => ({
+    id: r.id, status: r.status, priority: r.priority, description: r.description,
+    createdAt: r.created_at, targetCompletionDate: r.target_completion_date,
+    car: { id: r.c_id, matricule: r.matricule, make: r.make, model: r.model },
+    primaryMechanic: r.mech_id ? { id: r.mech_id, name: r.mech_name } : null,
+  }));
 
   return c.json({
     data: {
       weekStart: ws, weekEnd: we,
-      repairs: repairs.results ?? [],
-      appointments: appointments.results ?? [],
+      repairs: repairData,
+      appointments: (appointments.results ?? []).map(mapAppointment),
     },
   });
 });
 
 // GET /calendar/month
-calendar.get('/month', authorize(['manager']), async (c) => {
+calendar.get('/month', authorize(['manager', 'mechanic', 'overseer']), async (c) => {
   const now = new Date();
   const query = c.req.query();
   const y = parseInt(query.year ?? String(now.getFullYear()));

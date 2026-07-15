@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GarageMaster - Inventory Quick-Check</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error-container": "#93000a",
+                    "background": "#f7f9fb",
+                    "on-primary-container": "#90a8ff",
+                    "secondary-container": "#e02928",
+                    "primary-container": "#1e3a8a",
+                    "surface-variant": "#e0e3e5",
+                    "secondary-fixed": "#ffdad6",
+                    "primary-fixed-dim": "#b6c4ff",
+                    "on-primary-fixed": "#00164e",
+                    "outline-variant": "#c5c5d3",
+                    "surface": "#f7f9fb",
+                    "on-surface-variant": "#444651",
+                    "surface-container-low": "#f2f4f6",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed-variant": "#3f465c",
+                    "error-container": "#ffdad6",
+                    "on-secondary-fixed-variant": "#93000b",
+                    "on-primary": "#ffffff",
+                    "outline": "#757682",
+                    "on-secondary": "#ffffff",
+                    "inverse-on-surface": "#eff1f3",
+                    "inverse-surface": "#2d3133",
+                    "on-background": "#191c1e",
+                    "surface-bright": "#f7f9fb",
+                    "primary": "#00236f",
+                    "secondary": "#bb0112",
+                    "on-secondary-fixed": "#410002",
+                    "tertiary-fixed": "#dae2fd",
+                    "on-error": "#ffffff",
+                    "surface-container": "#eceef0",
+                    "primary-fixed": "#dce1ff",
+                    "surface-dim": "#d8dadc",
+                    "on-tertiary": "#ffffff",
+                    "on-surface": "#191c1e",
+                    "on-primary-fixed-variant": "#264191",
+                    "tertiary": "#222a3e",
+                    "surface-tint": "#4059aa",
+                    "inverse-primary": "#b6c4ff",
+                    "surface-container-high": "#e6e8ea",
+                    "on-tertiary-container": "#a4acc5",
+                    "tertiary-container": "#384055",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed-dim": "#ffb4ab",
+                    "tertiary-fixed-dim": "#bec6e0",
+                    "on-tertiary-fixed": "#131b2e",
+                    "on-secondary-container": "#fffbff",
+                    "surface-container-highest": "#e0e3e5"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "sm": "8px",
+                    "xs": "4px",
+                    "gutter": "16px",
+                    "xl": "32px",
+                    "md": "16px",
+                    "lg": "24px",
+                    "container-margin": "24px",
+                    "base": "4px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "title-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "title-md": ["18px", {"lineHeight": "26px", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-xl": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-tab-indicator {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .part-card:active {
+            transform: scale(0.98);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-background text-primary dark:text-primary-fixed w-full top-0 sticky z-40 border-b border-outline-variant dark:border-on-surface-variant transition-colors duration-200 ease-in-out flex justify-between items-center px-gutter py-sm">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional close-up of a workshop technician's profile picture, wearing a clean navy blue branded garage uniform. The background is a slightly blurred high-tech automotive workshop with subtle blue lighting. The style is modern, sharp, and corporate, emphasizing reliability and professional expertise in the automotive repair industry." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3rEm3o7lrgl5xQE99kC8j1NXG0AeAJ9G7PSXM_0VXUATtj8uvZttiKc3NMzXkn8N4M_s5POxi3SCtvR7LNllWf8R1CEARVWHUtPVgrajPLl4ts8LXPuZvpevweC1ZDNUo4LdTrad-S6_ctORNPDmKsobbBTONfnr4Ml6HOQuUYNqqH6yIbyZW4DvJA3BWwe5uHHN780fmBT1978mzSPtwShn8ofL7MC_1gRoARe_H6S26NuodmhecQA"/>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary dark:text-primary-fixed">GarageMaster</h1>
+</div>
+<button class="hover:bg-surface-container dark:hover:bg-surface-container-high p-xs rounded-full transition-colors">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed">toggle_on</span>
+</button>
+</header>
+<main class="flex-1 pb-24 overflow-y-auto px-gutter py-md">
+<!-- Search and Filter Bar - Optimized for Thumb Access -->
+<div class="mb-lg space-y-sm">
+<div class="relative flex items-center group">
+<span class="material-symbols-outlined absolute left-4 text-outline group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full pl-12 pr-12 py-3 bg-surface-container-lowest border border-outline-variant rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent outline-none font-body-md text-on-surface transition-all" placeholder="Search part name or barcode..." type="text"/>
+<button class="absolute right-3 p-2 text-primary hover:bg-surface-container rounded-lg">
+<span class="material-symbols-outlined">barcode_scanner</span>
+</button>
+</div>
+<div class="flex gap-xs overflow-x-auto pb-xs no-scrollbar">
+<button class="px-md py-2 bg-primary text-on-primary rounded-full text-label-sm font-medium whitespace-nowrap">All Parts</button>
+<button class="px-md py-2 bg-white border border-outline-variant text-on-surface-variant rounded-full text-label-sm font-medium whitespace-nowrap">Oil Filters</button>
+<button class="px-md py-2 bg-white border border-outline-variant text-on-surface-variant rounded-full text-label-sm font-medium whitespace-nowrap">Brake Pads</button>
+<button class="px-md py-2 bg-white border border-outline-variant text-on-surface-variant rounded-full text-label-sm font-medium whitespace-nowrap">Bulbs</button>
+</div>
+</div>
+<!-- Inventory List (Bento-style Cards) -->
+<div class="grid grid-cols-1 gap-md">
+<!-- Item 1: Low Stock (Warning State) -->
+<div class="part-card bg-white border border-outline-variant rounded-xl p-md flex flex-col gap-sm relative overflow-hidden transition-transform duration-150">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary"></div>
+<div class="flex justify-between items-start">
+<div>
+<span class="text-label-sm text-outline uppercase tracking-wider font-bold">BOSCH • FILTERS</span>
+<h3 class="font-title-md text-on-surface mt-xs">Oil Filter P7188</h3>
+<p class="text-body-md text-on-surface-variant">OEM Standard - Audi / VW Group</p>
+</div>
+<div class="bg-secondary-fixed text-on-secondary-fixed-variant px-sm py-xs rounded text-label-sm font-bold flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">warning</span>
+                        2 LEFT
+                    </div>
+</div>
+<div class="flex justify-between items-end mt-sm">
+<div class="text-outline text-label-sm">
+<div class="flex items-center gap-xs"><span class="material-symbols-outlined text-[14px]">location_on</span> Shelf B-12</div>
+<div class="flex items-center gap-xs"><span class="material-symbols-outlined text-[14px]">qr_code_2</span> 4047025217573</div>
+</div>
+<button class="bg-primary text-on-primary px-lg py-sm rounded-lg font-label-sm flex items-center gap-sm active:scale-95 transition-transform" onclick="this.innerHTML='Requested'; this.classList.add('opacity-70');">
+                        Request Part
+                    </button>
+</div>
+</div>
+<!-- Item 2: Healthy Stock -->
+<div class="part-card bg-white border border-outline-variant rounded-xl p-md flex flex-col gap-sm relative overflow-hidden transition-transform duration-150">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="flex justify-between items-start">
+<div>
+<span class="text-label-sm text-outline uppercase tracking-wider font-bold">BREMBO • BRAKES</span>
+<h3 class="font-title-md text-on-surface mt-xs">Front Brake Pads Set</h3>
+<p class="text-body-md text-on-surface-variant">Ceramic Low-Dust - BMW 3 Series</p>
+</div>
+<div class="bg-surface-container text-primary px-sm py-xs rounded text-label-sm font-bold">
+                        12 IN STOCK
+                    </div>
+</div>
+<div class="flex justify-between items-end mt-sm">
+<div class="text-outline text-label-sm">
+<div class="flex items-center gap-xs"><span class="material-symbols-outlined text-[14px]">location_on</span> Shelf A-04</div>
+<div class="flex items-center gap-xs"><span class="material-symbols-outlined text-[14px]">qr_code_2</span> 8020584067345</div>
+</div>
+<button class="bg-primary text-on-primary px-lg py-sm rounded-lg font-label-sm flex items-center gap-sm active:scale-95 transition-transform">
+                        Request Part
+                    </button>
+</div>
+</div>
+<!-- Item 3: Out of Stock (Error State) -->
+<div class="part-card bg-surface-container-low border border-outline-variant rounded-xl p-md flex flex-col gap-sm relative overflow-hidden transition-transform duration-150">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-on-surface-variant opacity-30"></div>
+<div class="flex justify-between items-start opacity-60">
+<div>
+<span class="text-label-sm text-outline uppercase tracking-wider font-bold">OSRAM • LIGHTING</span>
+<h3 class="font-title-md text-on-surface mt-xs">H7 Night Breaker Laser</h3>
+<p class="text-body-md text-on-surface-variant">Halogen Headlight Bulb (Pair)</p>
+</div>
+<div class="bg-error-container text-on-error-container px-sm py-xs rounded text-label-sm font-bold">
+                        OUT OF STOCK
+                    </div>
+</div>
+<div class="flex justify-between items-end mt-sm">
+<div class="text-outline text-label-sm opacity-60">
+<div class="flex items-center gap-xs"><span class="material-symbols-outlined text-[14px]">location_on</span> Shelf D-01</div>
+<div class="flex items-center gap-xs"><span class="material-symbols-outlined text-[14px]">qr_code_2</span> 4052899991392</div>
+</div>
+<button class="bg-secondary text-on-secondary px-lg py-sm rounded-lg font-label-sm flex items-center gap-sm active:scale-95 transition-transform">
+                        Report Urgent Need
+                    </button>
+</div>
+</div>
+<!-- Item 4: Regular Stock -->
+<div class="part-card bg-white border border-outline-variant rounded-xl p-md flex flex-col gap-sm relative overflow-hidden transition-transform duration-150">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="flex justify-between items-start">
+<div>
+<span class="text-label-sm text-outline uppercase tracking-wider font-bold">MANN • FILTERS</span>
+<h3 class="font-title-md text-on-surface mt-xs">Air Filter C 30 005</h3>
+<p class="text-body-md text-on-surface-variant">High Efficiency - Mercedes-Benz</p>
+</div>
+<div class="bg-surface-container text-primary px-sm py-xs rounded text-label-sm font-bold">
+                        8 IN STOCK
+                    </div>
+</div>
+<div class="flex justify-between items-end mt-sm">
+<div class="text-outline text-label-sm">
+<div class="flex items-center gap-xs"><span class="material-symbols-outlined text-[14px]">location_on</span> Shelf B-15</div>
+<div class="flex items-center gap-xs"><span class="material-symbols-outlined text-[14px]">qr_code_2</span> 4011558064402</div>
+</div>
+<button class="bg-primary text-on-primary px-lg py-sm rounded-lg font-label-sm flex items-center gap-sm active:scale-95 transition-transform">
+                        Request Part
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 right-0 w-full flex justify-around items-center py-xs bg-surface dark:bg-background border-t border-outline-variant dark:border-on-surface-variant z-50">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined">build</span>
+<span class="font-label-sm text-label-sm">Jobs</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container dark:bg-on-primary-container text-on-primary-container dark:text-primary-container rounded-full px-4 py-1 active:scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+<span class="font-label-sm text-label-sm">Inventory</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</a>
+</nav>
+<!-- Micro-interaction for part request -->
+<div class="fixed bottom-24 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface px-lg py-md rounded-full shadow-lg opacity-0 transition-all duration-300 pointer-events-none z-[60] flex items-center gap-sm" id="toast">
+<span class="material-symbols-outlined text-primary-fixed">check_circle</span>
+<span class="font-body-md">Request sent to Parts Dept.</span>
+</div>
+<script>
+        document.querySelectorAll('button').forEach(btn => {
+            if (btn.innerText.trim() === 'Request Part') {
+                btn.addEventListener('click', () => {
+                    const toast = document.getElementById('toast');
+                    toast.classList.remove('opacity-0', 'translate-y-4');
+                    toast.classList.add('opacity-100', '-translate-y-2');
+                    
+                    setTimeout(() => {
+                        toast.classList.add('opacity-0', 'translate-y-4');
+                        toast.classList.remove('opacity-100', '-translate-y-2');
+                    }, 3000);
+                });
+            }
+        });
+    </script>
+</body></html>

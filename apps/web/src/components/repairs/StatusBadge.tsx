@@ -1,5 +1,5 @@
 'use client'
-import { Badge } from '@/components/ui/badge'
+import { useTranslations } from 'next-intl'
 
 export const STATUS_COLORS: Record<string, string> = {
   received: 'bg-gray-100 text-gray-700 border-gray-200',
@@ -12,23 +12,13 @@ export const STATUS_COLORS: Record<string, string> = {
   cancelled: 'bg-red-100 text-red-700 border-red-200',
 }
 
-export const STATUS_LABELS: Record<string, string> = {
-  received: 'Received',
-  diagnosing: 'Diagnosing',
-  awaiting_approval: 'Awaiting Approval',
-  in_progress: 'In Progress',
-  waiting_for_parts: 'Waiting for Parts',
-  complete: 'Complete',
-  delivered: 'Delivered',
-  cancelled: 'Cancelled',
-}
-
 export function StatusBadge({ status }: { status: string }) {
+  const t = useTranslations()
   return (
     <span
       className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${STATUS_COLORS[status] ?? 'bg-gray-100 text-gray-700'}`}
     >
-      {STATUS_LABELS[status] ?? status}
+      {t(`repair.status.${status}`)}
     </span>
   )
 }

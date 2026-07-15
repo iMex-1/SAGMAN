@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Part Details | Sagman Garage</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000a",
+                        "error": "#ba1a1a",
+                        "surface-bright": "#f7f9fb",
+                        "on-secondary-fixed-variant": "#93000b",
+                        "on-primary": "#ffffff",
+                        "outline": "#757682",
+                        "on-secondary-container": "#fffbff",
+                        "primary": "#00236f",
+                        "tertiary": "#222a3e",
+                        "outline-variant": "#c5c5d3",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#90a8ff",
+                        "surface-dim": "#d8dadc",
+                        "primary-fixed-dim": "#b6c4ff",
+                        "on-primary-fixed-variant": "#264191",
+                        "tertiary-container": "#384055",
+                        "inverse-primary": "#b6c4ff",
+                        "surface-container": "#eceef0",
+                        "surface-container-highest": "#e0e3e5",
+                        "surface-container-high": "#e6e8ea",
+                        "primary-container": "#1e3a8a",
+                        "tertiary-fixed": "#dae2fd",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed-dim": "#ffb4ab",
+                        "on-tertiary-container": "#a4acc5",
+                        "on-error": "#ffffff",
+                        "secondary": "#bb0112",
+                        "on-background": "#191c1e",
+                        "inverse-surface": "#2d3133",
+                        "surface-variant": "#e0e3e5",
+                        "on-tertiary": "#ffffff",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface-container-low": "#f2f4f6",
+                        "on-surface-variant": "#444651",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed": "#ffdad6",
+                        "surface": "#f7f9fb",
+                        "background": "#f7f9fb",
+                        "surface-tint": "#4059aa",
+                        "primary-fixed": "#dce1ff",
+                        "on-tertiary-fixed": "#131b2e",
+                        "on-secondary-fixed": "#410002",
+                        "on-tertiary-fixed-variant": "#3f465c",
+                        "on-primary-fixed": "#00164e",
+                        "tertiary-fixed-dim": "#bec6e0",
+                        "on-surface": "#191c1e",
+                        "secondary-container": "#e02928"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "base": "4px",
+                        "lg": "24px",
+                        "container-margin": "24px",
+                        "sm": "8px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "title-md": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "title-md": ["18px", {"lineHeight": "26px", "fontWeight": "600"}],
+                        "headline-xl": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f7f9fb; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; display: inline-block; vertical-align: middle; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .card-shadow { box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.02); }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- SideNavBar -->
+<aside class="bg-surface-container-low dark:bg-surface-container-lowest h-screen w-64 fixed left-0 top-0 border-r border-outline-variant dark:border-outline flex flex-col h-full py-lg px-md z-50">
+<div class="mb-xl px-sm">
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary dark:text-primary-fixed">Sagman Garage</h1>
+<p class="font-body-md text-body-md text-on-surface-variant opacity-70">Workshop Management</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined">build</span>
+<span class="font-body-md text-body-md">Repairs</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-body-md text-body-md">Appointments</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm bg-primary-container text-on-primary-container font-semibold rounded-lg group" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-body-md text-body-md">Inventory</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined">badge</span>
+<span class="font-body-md text-body-md">Employees</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined">event</span>
+<span class="font-body-md text-body-md">Calendar</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined">assessment</span>
+<span class="font-body-md text-body-md">Reports</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-body-md text-body-md">Notifications</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-outline-variant pt-md px-sm">
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-background fixed top-0 right-0 left-64 h-16 border-b border-outline-variant dark:border-outline flex justify-between items-center px-lg w-full z-40">
+<div class="flex items-center gap-lg flex-1">
+<div class="relative w-full max-w-md focus-within:ring-2 focus-within:ring-primary rounded-lg">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-lg pl-10 py-2 font-body-md text-body-md focus:ring-0" placeholder="Search inventory, parts, or SKU..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="bg-primary text-on-primary px-lg py-sm rounded-lg font-title-md text-title-md hover:bg-primary-container transition-all active:scale-95">
+                New Entry
+            </button>
+<div class="flex items-center gap-sm pl-md border-l border-outline-variant">
+<span class="material-symbols-outlined text-primary text-[32px] cursor-pointer">account_circle</span>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 mt-16 p-lg pb-24 min-h-screen">
+<!-- Breadcrumbs -->
+<nav class="flex items-center gap-xs mb-md text-on-surface-variant font-label-sm text-label-sm">
+<span class="cursor-pointer hover:text-primary transition-colors">Repairs</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="cursor-pointer hover:text-primary transition-colors">Stock</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-on-surface font-semibold">Part Detail</span>
+</nav>
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-md mb-xl">
+<div>
+<h2 class="font-headline-xl text-headline-xl text-on-surface">Front Brake Pads - Brembo</h2>
+<div class="flex items-center gap-sm mt-xs">
+<span class="bg-surface-container-highest px-sm py-xs rounded font-label-sm text-label-sm text-on-surface-variant border border-outline-variant">SKU: BRM-7704-FX</span>
+<span class="bg-surface-container-highest px-sm py-xs rounded font-label-sm text-label-sm text-on-surface-variant border border-outline-variant">OEM: 7P0698151P</span>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<button class="flex items-center gap-sm bg-surface-container-lowest border border-outline-variant px-lg py-sm rounded-lg font-title-md text-title-md text-on-surface hover:bg-surface-container-high transition-all active:scale-95">
+<span class="material-symbols-outlined">edit</span>
+                    Edit Part
+                </button>
+<button class="flex items-center gap-sm bg-primary text-on-primary px-lg py-sm rounded-lg font-title-md text-title-md hover:opacity-90 transition-all active:scale-95 shadow-lg shadow-primary/10">
+<span class="material-symbols-outlined">inventory</span>
+                    Adjust Stock
+                </button>
+</div>
+</div>
+<!-- Dashboard-style Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-lg mb-xl">
+<!-- Part Overview Card -->
+<div class="lg:col-span-2 bg-surface-container-lowest border border-outline-variant rounded-xl p-lg card-shadow">
+<div class="flex items-center justify-between mb-lg">
+<h3 class="font-headline-lg text-headline-lg text-primary">Part Overview</h3>
+<span class="bg-on-primary-container/20 text-primary px-md py-1 rounded-full font-label-sm text-label-sm font-bold">In Stock</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
+<div class="space-y-lg">
+<div class="flex justify-between border-b border-outline-variant pb-sm">
+<span class="text-on-surface-variant font-body-md text-body-md">Current Stock</span>
+<span class="font-title-md text-title-md text-primary">24 Units</span>
+</div>
+<div class="flex justify-between border-b border-outline-variant pb-sm">
+<span class="text-on-surface-variant font-body-md text-body-md">Storage Location</span>
+<span class="font-title-md text-title-md">Shelf B-14, Bin 02</span>
+</div>
+<div class="flex justify-between border-b border-outline-variant pb-sm">
+<span class="text-on-surface-variant font-body-md text-body-md">Supplier</span>
+<span class="font-title-md text-title-md">EuroParts Morocco</span>
+</div>
+</div>
+<div class="space-y-lg">
+<div class="flex justify-between border-b border-outline-variant pb-sm">
+<span class="text-on-surface-variant font-body-md text-body-md">Unit Cost</span>
+<span class="font-title-md text-title-md">850.00 MAD</span>
+</div>
+<div class="flex justify-between border-b border-outline-variant pb-sm">
+<span class="text-on-surface-variant font-body-md text-body-md">Retail Price</span>
+<span class="font-title-md text-title-md text-secondary">1,240.00 MAD</span>
+</div>
+<div class="flex justify-between border-b border-outline-variant pb-sm">
+<span class="text-on-surface-variant font-body-md text-body-md">Minimum Alert</span>
+<span class="font-title-md text-title-md text-error">5 Units</span>
+</div>
+</div>
+</div>
+<div class="mt-xl flex gap-md">
+<div class="flex-1 p-md bg-surface-container-low rounded-lg border border-outline-variant/30 text-center">
+<p class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Turnover Rate</p>
+<p class="text-headline-lg font-headline-lg text-primary">High</p>
+</div>
+<div class="flex-1 p-md bg-surface-container-low rounded-lg border border-outline-variant/30 text-center">
+<p class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Days in Stock</p>
+<p class="text-headline-lg font-headline-lg text-primary">12 Avg</p>
+</div>
+<div class="flex-1 p-md bg-surface-container-low rounded-lg border border-outline-variant/30 text-center">
+<p class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Gross Margin</p>
+<p class="text-headline-lg font-headline-lg text-primary">31.5%</p>
+</div>
+</div>
+</div>
+<!-- Stock Consumption Trend -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg card-shadow flex flex-col">
+<div class="flex items-center justify-between mb-lg">
+<h3 class="font-title-md text-title-md text-primary">Monthly Trend</h3>
+<span class="material-symbols-outlined text-on-surface-variant">trending_up</span>
+</div>
+<div class="flex-1 relative flex items-end justify-between gap-1 h-32 pt-md">
+<!-- Simple CSS bar chart as consumption trend placeholder -->
+<div class="bg-primary/20 w-full rounded-t-sm relative group h-1/2">
+<div class="absolute inset-x-0 bottom-0 bg-primary h-2/3 rounded-t-sm"></div>
+<span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold">JAN</span>
+</div>
+<div class="bg-primary/20 w-full rounded-t-sm relative group h-3/4">
+<div class="absolute inset-x-0 bottom-0 bg-primary h-4/5 rounded-t-sm"></div>
+<span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold">FEB</span>
+</div>
+<div class="bg-primary/20 w-full rounded-t-sm relative group h-1/3">
+<div class="absolute inset-x-0 bottom-0 bg-primary h-1/2 rounded-t-sm"></div>
+<span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold">MAR</span>
+</div>
+<div class="bg-primary/20 w-full rounded-t-sm relative group h-full">
+<div class="absolute inset-x-0 bottom-0 bg-primary h-5/6 rounded-t-sm"></div>
+<span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold">APR</span>
+</div>
+<div class="bg-primary/20 w-full rounded-t-sm relative group h-2/3">
+<div class="absolute inset-x-0 bottom-0 bg-primary h-3/4 rounded-t-sm"></div>
+<span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold">MAY</span>
+</div>
+<div class="bg-primary/20 w-full rounded-t-sm relative group h-4/5">
+<div class="absolute inset-x-0 bottom-0 bg-secondary h-full rounded-t-sm"></div>
+<span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-secondary">JUN</span>
+</div>
+</div>
+<div class="mt-xl pt-lg border-t border-outline-variant space-y-md">
+<p class="font-body-md text-body-md text-on-surface-variant italic">Average consumption of 18 units per month. Projected stockout in 38 days.</p>
+<button class="w-full py-sm border border-primary text-primary rounded-lg font-title-md text-title-md hover:bg-primary hover:text-on-primary transition-colors">Order More</button>
+</div>
+</div>
+</div>
+<!-- Stock Adjustment History -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg card-shadow mb-xl">
+<div class="flex items-center justify-between mb-lg">
+<h3 class="font-headline-lg text-headline-lg text-primary">Transaction History</h3>
+<div class="flex gap-sm">
+<select class="bg-surface-container-low border-outline-variant rounded-lg text-label-sm font-label-sm py-1 pl-3 pr-8">
+<option>All Types</option>
+<option>Intake</option>
+<option>Consumption</option>
+</select>
+<button class="p-1 hover:bg-surface-container-high rounded transition-colors">
+<span class="material-symbols-outlined">download</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b-2 border-surface-container-highest">
+<th class="py-md px-md font-title-md text-title-md text-on-surface-variant">Date</th>
+<th class="py-md px-md font-title-md text-title-md text-on-surface-variant">Type</th>
+<th class="py-md px-md font-title-md text-title-md text-on-surface-variant text-right">Change</th>
+<th class="py-md px-md font-title-md text-title-md text-on-surface-variant">Ref ID</th>
+<th class="py-md px-md font-title-md text-title-md text-on-surface-variant">Technician</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md">
+<tr class="border-b border-outline-variant hover:bg-surface-container-low transition-colors">
+<td class="py-md px-md">Jun 14, 2024</td>
+<td class="py-md px-md">
+<span class="bg-secondary/10 text-secondary px-sm py-xs rounded-full font-label-sm text-label-sm border border-secondary/20">Consumption</span>
+</td>
+<td class="py-md px-md text-right font-bold text-secondary">-1 Unit</td>
+<td class="py-md px-md text-primary font-medium">RO-44921</td>
+<td class="py-md px-md flex items-center gap-sm">
+<div class="w-6 h-6 rounded-full bg-tertiary text-[10px] text-white flex items-center justify-center font-bold">AB</div>
+                                Ahmed Benali
+                            </td>
+</tr>
+<tr class="border-b border-outline-variant hover:bg-surface-container-low transition-colors">
+<td class="py-md px-md">Jun 12, 2024</td>
+<td class="py-md px-md">
+<span class="bg-primary/10 text-primary px-sm py-xs rounded-full font-label-sm text-label-sm border border-primary/20">Stock Intake</span>
+</td>
+<td class="py-md px-md text-right font-bold text-primary">+12 Units</td>
+<td class="py-md px-md text-primary font-medium">PO-99120</td>
+<td class="py-md px-md flex items-center gap-sm">
+<div class="w-6 h-6 rounded-full bg-tertiary text-[10px] text-white flex items-center justify-center font-bold">SM</div>
+                                Samira M.
+                            </td>
+</tr>
+<tr class="border-b border-outline-variant hover:bg-surface-container-low transition-colors">
+<td class="py-md px-md">Jun 10, 2024</td>
+<td class="py-md px-md">
+<span class="bg-secondary/10 text-secondary px-sm py-xs rounded-full font-label-sm text-label-sm border border-secondary/20">Consumption</span>
+</td>
+<td class="py-md px-md text-right font-bold text-secondary">-1 Unit</td>
+<td class="py-md px-md text-primary font-medium">RO-44885</td>
+<td class="py-md px-md flex items-center gap-sm">
+<div class="w-6 h-6 rounded-full bg-tertiary text-[10px] text-white flex items-center justify-center font-bold">YK</div>
+                                Youssef K.
+                            </td>
+</tr>
+<tr class="border-b border-outline-variant hover:bg-surface-container-low transition-colors">
+<td class="py-md px-md">Jun 08, 2024</td>
+<td class="py-md px-md">
+<span class="bg-on-tertiary-container/20 text-on-surface-variant px-sm py-xs rounded-full font-label-sm text-label-sm border border-outline-variant">Adjustment</span>
+</td>
+<td class="py-md px-md text-right font-bold text-on-surface-variant">-2 Units</td>
+<td class="py-md px-md text-on-surface-variant font-medium">Inventory Count</td>
+<td class="py-md px-md flex items-center gap-sm">
+<div class="w-6 h-6 rounded-full bg-tertiary text-[10px] text-white flex items-center justify-center font-bold">SM</div>
+                                Samira M.
+                            </td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="mt-md flex justify-end">
+<button class="text-primary font-title-md text-title-md hover:underline flex items-center gap-xs">
+                    View All History <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Related Parts section -->
+<h3 class="font-headline-lg text-headline-lg text-primary mb-md">Related Parts &amp; Accessories</h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-lg">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md card-shadow flex gap-md items-center group cursor-pointer hover:border-primary transition-all">
+<div class="w-16 h-16 bg-surface-container-high rounded overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" data-alt="Close up high-resolution professional studio photograph of a plastic bottle of performance brake fluid with a yellow cap, set against a clean white and blue corporate background with soft studio lighting. Minimalist aesthetic, focusing on automotive technical precision." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJK78SGmp-byj9Rm001JfTS1vVOuhmFSX0CdCSKjkuPS2Ei5eVP1NqLKe3T_Pbx6W-9UaiVnppGGi02n7TTw5zLGtR0EjE7Rdpg9cIQiW8vd_U2gKgN8A00J9SsxYFkUwckrCRaEF1n6T3N6F8kXILbya-FhJcaPQAPMfcS4Pat0qZ9R-i5dQo5LFz5rQ8AemrFQys2sEa0AyKRTeuTVmqKqKGYXGLJBWVHVRBahVqbr4hHBgmvZnyXg"/>
+</div>
+<div class="flex-1 overflow-hidden">
+<p class="font-title-md text-title-md text-on-surface truncate">Brake Fluid DOT 4</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">15 in stock</p>
+<p class="font-bold text-primary text-sm mt-1">120.00 MAD</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md card-shadow flex gap-md items-center group cursor-pointer hover:border-primary transition-all">
+<div class="w-16 h-16 bg-surface-container-high rounded overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" data-alt="A macro studio shot of an automotive brake wear sensor wire with high-quality copper connectors and black plastic insulation, captured in sharp focus against a neutral light grey background. The lighting is clean and industrial, highlighting the electrical precision of the component." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCen2cQAq39iRq5FVCIkAEM8kIfUg_JLLeAghAfv0rq8o0tq3JU8X6sg8vepzKrUOTQTfj_kfKOgCfZ2paNun-ga7bHrCwdtuCzjXomo99Wf8e7-wdQRFzVhlNLnvWYD4sLHCNWOdxf7XK_0J_mHLKUKPr4CPa6FupTMi4nxHRuPJpVRmi_UOWCWtpgj0gPcX2A9mYb5a5f5diBCQ0o42TewYgO7URGzrVkrHvKYvabXmeBmuEjnwKP2A"/>
+</div>
+<div class="flex-1 overflow-hidden">
+<p class="font-title-md text-title-md text-on-surface truncate">Wear Sensor Cable</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">8 in stock</p>
+<p class="font-bold text-primary text-sm mt-1">185.00 MAD</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md card-shadow flex gap-md items-center group cursor-pointer hover:border-primary transition-all">
+<div class="w-16 h-16 bg-surface-container-high rounded overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" data-alt="Professional commercial photograph of a set of high-temperature brake caliper grease packets, shiny silver foil packaging, arranged neatly on a workshop counter. The atmosphere is professional, clean, and organized, reflecting a high-end automotive garage environment with blue accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBf3C-DCFtC9fnEo8101TwrcewHnLsKfMS_fPt2LaN3xF3jHS6kG3mDdYf_q3kdXZSA6wi5PMw_4N3927JxqG359KILE4Ym6z34LPAwpJMQe2RYMDjkkvOZq-BwkfuiXFLJKiGgcDwB2LH7tCfWhEetQIdW1f9pt9VLAt4cd9TQds-L7Y2pl1BbsfT-67qnUiotS8Q-IXcEdKq_f-lo4Sbk8bNxd33rO3hgdHLaNSV8ekBZl9fJ3bhbfg"/>
+</div>
+<div class="flex-1 overflow-hidden">
+<p class="font-title-md text-title-md text-on-surface truncate">Brake Caliper Grease</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">42 in stock</p>
+<p class="font-bold text-primary text-sm mt-1">45.00 MAD</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md card-shadow flex gap-md items-center group cursor-pointer hover:border-primary transition-all">
+<div class="w-16 h-16 bg-surface-container-high rounded overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" data-alt="Sharp, detailed studio shot of a shiny silver steel brake rotor for a high-performance vehicle, showcasing the cross-drilled ventilation holes and smooth metallic texture. The background is a minimalist, professional bright blue and white garage theme with elegant soft shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAM2suMSKFXguwQtRoi1kfmY92jXszSdyhfwPO4wyjEGnWcMFP4oUNELhMWNTTOBCrpgqMTOSmCJeFM50G5MZsH7cRe7eZXDZ5zX8JmBnxda-Q-1SXyNTpwca0khDLEGVQkb23ADh7IIE4ABaivKqi9mSdCD2FJN6ZnQ4GAMY0C9YJKMICiYjH9Jktgbksrbluh8JlyR2IWvydtoxd6wXkAEOUe5Uv7zWUm4Yf26zKlg1LpdMax8hYu7Q"/>
+</div>
+<div class="flex-1 overflow-hidden">
+<p class="font-title-md text-title-md text-on-surface truncate">Front Rotors (Pair)</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">2 in stock</p>
+<p class="font-bold text-primary text-sm mt-1">2,850.00 MAD</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest dark:bg-surface-container-low fixed bottom-0 right-0 left-64 h-12 border-t border-outline-variant dark:border-outline flex justify-between items-center px-lg w-full z-40">
+<div class="font-label-sm text-label-sm text-on-surface-variant dark:text-outline-variant">
+            © 2024 <span class="font-bold">Sagman Garage</span> Management System. All rights reserved.
+        </div>
+<div class="flex gap-lg items-center">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:underline transition-all" href="#">Support</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:underline transition-all" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:underline transition-all" href="#">Terms</a>
+</div>
+</footer>
+<script>
+        // Simple micro-interaction for stock adjustment modal simulation (placeholder)
+        const adjustBtn = document.querySelector('button:contains("Adjust Stock")');
+        if(adjustBtn) {
+            adjustBtn.addEventListener('click', () => {
+                alert('Stock adjustment interface would open here.');
+            });
+        }
+        
+        // Custom button text selection fix since standard selectors don't support :contains natively
+        document.querySelectorAll('button').forEach(btn => {
+            if(btn.innerText.includes('Adjust Stock')) {
+                btn.onclick = () => {
+                    console.log('Stock adjustment triggered');
+                };
+            }
+        });
+    </script>
+</body></html>
